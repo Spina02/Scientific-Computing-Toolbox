@@ -15,8 +15,4 @@ double variance(const std::vector<double>* data);
 double frequency_count(const std::vector<double>* data, double value);
 std::vector<std::vector<double>> correlation_matrix(const std::vector<std::vector<double>>* data);
 
-
-
-
-
 #endif
