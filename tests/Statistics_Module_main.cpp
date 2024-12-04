@@ -1,4 +1,4 @@
-#include "Statistics_Module.hpp"
+#include "../include/Statistics_Module.hpp"
 #include <vector>
 #include <iostream>
 
@@ -6,9 +6,9 @@
 int main(){
     // squared matrix 10x10 with random values
     std::vector<std::vector<double>> data;
-    for (int i = 0; i < 10; i++){
+    for (long unsigned int i = 0; i < 10; i++){
         std::vector<double> row;
-        for (int j = 0; j < 10; j++){
+        for (long unsigned int j = 0; j < 10; j++){
             row.push_back(rand() % 100);
         }
         data.push_back(row);
@@ -16,7 +16,7 @@ int main(){
 
     // testing functionalities except correlation_matrix for first column
     std::vector<double> first_column;
-    for (int i = 0; i < 10; i++){
+    for (long unsigned int i = 0; i < 10; i++){
         first_column.push_back(data.at(i).at(0));
     }
     std::cout << "Mean: " << mean(&first_column) << std::endl;
@@ -27,8 +27,8 @@ int main(){
 
     // testing correlation_matrix
     std::vector<std::vector<double>> correlation_matrix_result = correlation_matrix(&data);
-    for (int i = 0; i < correlation_matrix_result.size(); i++){
-        for (int j = 0; j < correlation_matrix_result.at(i).size(); j++){
+    for (long unsigned int i = 0; i < correlation_matrix_result.size(); i++){
+        for (long unsigned int j = 0; j < correlation_matrix_result.at(i).size(); j++){
             std::cout << correlation_matrix_result.at(i).at(j) << " ";
         }
         std::cout << std::endl;

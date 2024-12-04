@@ -1,10 +1,10 @@
-#include "../include/Statistics_Module.hpp"
+#include "../../include/Statistics_Module.hpp"
 #include <vector>
 #include <iostream>
 
 double mean(const std::vector<double>* data){
     double sum = 0;
-    for (int i = 0; i < data->size(); i++){
+    for (long unsigned int i = 0; i < data->size(); i++){
         sum += data->at(i);
     }
     return sum / data->size();
@@ -23,7 +23,7 @@ double median(const std::vector<double>* data){
 double sd(const std::vector<double>* data){
     double mean_val = mean(data);
     double sum = 0;
-    for (int i = 0; i < data->size(); i++){
+    for (long unsigned int i = 0; i < data->size(); i++){
         sum += pow(data->at(i) - mean_val, 2);
     }
     return sqrt(sum / data->size());
@@ -32,7 +32,7 @@ double sd(const std::vector<double>* data){
 double variance(const std::vector<double>* data){
     double mean_val = mean(data);
     double sum = 0;
-    for (int i = 0; i < data->size(); i++){
+    for (long unsigned int i = 0; i < data->size(); i++){
         sum += pow(data->at(i) - mean_val, 2);
     }
     return sum / data->size();
@@ -40,7 +40,7 @@ double variance(const std::vector<double>* data){
 
 double frequency_count(const std::vector<double>* data, double value){
     double count = 0;
-    for (int i = 0; i < data->size(); i++){
+    for (long unsigned int i = 0; i < data->size(); i++){
         if (data->at(i) == value){
             count++;
         }
@@ -50,15 +50,15 @@ double frequency_count(const std::vector<double>* data, double value){
 
 std::vector<std::vector<double>> correlation_matrix(const std::vector<std::vector<double>>* data){
     std::vector<std::vector<double>> correlation_matrix;
-    for (int i = 0; i < data->size(); i++){
+    for (long unsigned int i = 0; i < data->size(); i++){
         std::vector<double> row;
-        for (int j = 0; j < data->size(); j++){
+        for (long unsigned int j = 0; j < data->size(); j++){
             double sum = 0;
             double sum_x = 0;
             double sum_y = 0;
             double sum_x_sq = 0;
             double sum_y_sq = 0;
-            for (int k = 0; k < data->at(i).size(); k++){
+            for (long unsigned int k = 0; k < data->at(i).size(); k++){
                 sum += data->at(i).at(k) * data->at(j).at(k);
                 sum_x += data->at(i).at(k);
                 sum_y += data->at(j).at(k);
@@ -75,14 +75,15 @@ std::vector<std::vector<double>> correlation_matrix(const std::vector<std::vecto
     return correlation_matrix;
 }
 
+//TODO : duplicate?
 
 // testing functionalities
 int main(){
     // squared matrix 10x10 with random values
     std::vector<std::vector<double>> data;
-    for (int i = 0; i < 10; i++){
+    for (long unsigned int i = 0; i < 10; i++){
         std::vector<double> row;
-        for (int j = 0; j < 10; j++){
+        for (long unsigned int j = 0; j < 10; j++){
             row.push_back(rand() % 100);
         }
         data.push_back(row);
@@ -90,7 +91,7 @@ int main(){
 
     // testing functionalities except correlation_matrix for first column
     std::vector<double> first_column;
-    for (int i = 0; i < 10; i++){
+    for (long unsigned int i = 0; i < 10; i++){
         first_column.push_back(data.at(i).at(0));
     }
     std::cout << "Mean: " << mean(&first_column) << std::endl;
@@ -101,8 +102,8 @@ int main(){
 
     // testing correlation_matrix
     std::vector<std::vector<double>> correlation_matrix_result = correlation_matrix(&data);
-    for (int i = 0; i < correlation_matrix_result.size(); i++){
-        for (int j = 0; j < correlation_matrix_result.at(i).size(); j++){
+    for (long unsigned int i = 0; i < correlation_matrix_result.size(); i++){
+        for (long unsigned int j = 0; j < correlation_matrix_result.at(i).size(); j++){
             std::cout << correlation_matrix_result.at(i).at(j) << " ";
         }
         std::cout << std::endl;
