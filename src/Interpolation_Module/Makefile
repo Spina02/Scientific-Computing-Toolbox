@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX = g++
-CPPFLAGS = -Iinclude
+CPPFLAGS = -Iinclude/Interpolation_Module
 CXXFLAGS = -std=c++17 -Wall -Wpedantic -Werror -fPIC
 
 # Relative paths
