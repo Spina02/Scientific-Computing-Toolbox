@@ -1,4 +1,4 @@
-#include "../../include/Interpolation_Module.hpp"
+#include "../../include/Interpolation_Module.hpp"#include "../../include/Interpolation_Module.hpp"
 
 LinearInterpolation::LinearInterpolation(const std::vector<point>& data) 
     : Interpolation(data) {

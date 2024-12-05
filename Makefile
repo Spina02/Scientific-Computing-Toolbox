@@ -8,7 +8,8 @@ OBJ_DIR = build
 INC_DIR = include
 
 # Modules and directories
-MODULES = := $(shell ls src/)
+# $(shell ls src/) but Utilities
+MODULES = $(filter-out Utilities, $(shell ls src/))
 MODULE_DIRS = $(addprefix $(SRC_DIR)/, $(MODULES))
 
 all: $(MODULES)
@@ -40,4 +41,4 @@ run-ode:
 run-interpolation:
 	@$(MAKE) -C $(SRC_DIR)/Interpolation_Module run
 
-.PHONY: all clean run
+.PHONY: all clean run statistics ode interpolation run-statistics run-ode run-interpolation
