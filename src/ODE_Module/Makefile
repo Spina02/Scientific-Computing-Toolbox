@@ -1,10 +1,11 @@
+MODULE = ODE_Module
+
 # Compiler and flags
 CXX = g++
-CPPFLAGS = -Iinclude
+CPPFLAGS = -Iinclude/$(MODULE)
 CXXFLAGS = -std=c++17 -Wall -Wpedantic -Werror -fPIC
 
 # Relative paths
-MODULE = ODE_Module
 SRC_DIR = ../../src/$(MODULE)
 TEST_DIR = ../../tests
 BUILD_DIR = ../../build/$(MODULE)
@@ -13,7 +14,7 @@ OBJ_DIR = $(BUILD_DIR)/obj
 BIN_DIR = $(BUILD_DIR)/bin
 
 # Source files and object files
-SRCS = $(SRC_DIR)/$(MODULE).cpp
+SRCS := $(wildcard $(SRC_DIR)/*.cpp)
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
 # Library and main program targets

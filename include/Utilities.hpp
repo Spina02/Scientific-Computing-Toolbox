@@ -1,6 +1,11 @@
-#ifndef Utilities_HPP
-#define Utilities_HPP
+#ifndef UTILITIES_HPP
+#define UTILITIES_HPP
 
-// function declarations here
+#include <vector>
 
-#endif
+namespace ScientificToolbox {
+    using vec = std::vector<double>;
+    // function declarations here
+}
+
+#endif // UTILITIES_HPP
