@@ -5,6 +5,33 @@ CXX = g++
 CPPFLAGS = -Iinclude/$(MODULE)
 CXXFLAGS = -std=c++17 -Wall -Wpedantic -Werror -fPIC
 
+# Dependencies configuration
+DEPS = muparser
+
+# Collect all flags from pkg-config
+PKG_CFLAGS := $(shell pkg-config --cflags $(DEPS) 2>/dev/null)
+PKG_LIBS := $(shell pkg-config --libs $(DEPS) 2>/dev/null)
+
+# Fallback paths if pkg-config fails
+ifeq ($(PKG_CFLAGS),)
+    # muParser fallback
+    MUPARSER_INCLUDE ?= /usr/include
+    MUPARSER_LIB ?= /usr/lib
+    MUPARSER_FLAGS = -I$(MUPARSER_INCLUDE)
+    MUPARSER_LIBS = -L$(MUPARSER_LIB) -lmuparser
+endif
+
+    # Eigen fallback
+    #EIGEN_INCLUDE ?= /usr/include/eigen3
+    #EIGEN_FLAGS = -I$(EIGEN_INCLUDE)
+
+    # Combine all flags
+    PKG_CFLAGS = $(MUPARSER_FLAGS) #$(EIGEN_FLAGS)
+    PKG_LIBS = $(MUPARSER_LIBS)
+
+CPPFLAGS += $(PKG_CFLAGS)
+LDFLAGS += $(PKG_LIBS)
+
 # Relative paths
 SRC_DIR = ../../src/$(MODULE)
 TEST_DIR = ../../tests
@@ -23,12 +50,34 @@ LIB_TARGET = $(LIB_DIR)/$(LIB_NAME)
 MAIN_TARGET = $(BIN_DIR)/$(MODULE)_main
 
 # Default target
-all: $(LIB_TARGET) $(MAIN_TARGET)
+all: check_deps $(LIB_TARGET) $(MAIN_TARGET)
+
+# Check for all dependencies
+check_deps:
+	@for dep in $(DEPS); do \
+		if ! pkg-config --exists $$dep 2>/dev/null; then \
+			echo "Error: $$dep not found."; \
+			echo "Please install it with one of:"; \
+			case $$dep in \
+				"muparser") \
+					echo "  sudo apt-get install libmuparser-dev    # Debian/Ubuntu"; \
+					echo "  sudo pacman -S muparser                 # Arch Linux"; \
+					echo "  sudo dnf install muparser-devel         # Fedora"; \
+					echo "  brew install muparser                   # macOS";; \
+				"eigen3") \
+					echo "  sudo apt-get install libeigen3-dev      # Debian/Ubuntu"; \
+					echo "  sudo pacman -S eigen                    # Arch Linux"; \
+					echo "  sudo dnf install eigen3-devel           # Fedora"; \
+					echo "  brew install eigen                      # macOS";; \
+			esac; \
+			exit 1; \
+		fi; \
+	done
 
 # Compiling the shared library
 $(LIB_TARGET): $(OBJS)
 	@mkdir -p $(LIB_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -shared $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -shared $^ -o $@ $(LDFLAGS)
 
 # Compiling the object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
@@ -38,7 +87,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 # Compiling the main program for testing
 $(MAIN_TARGET): $(TEST_DIR)/$(MODULE)_main.cpp $(LIB_TARGET)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $@ $(LDFLAGS)
 
 # Clean up build artifacts
 clean:
@@ -48,4 +97,4 @@ clean:
 run: $(MAIN_TARGET)
 	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(MAIN_TARGET)
 
-.PHONY: all clean run
+.PHONY: all clean run check_deps

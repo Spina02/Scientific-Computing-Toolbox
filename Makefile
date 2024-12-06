@@ -8,7 +8,6 @@ OBJ_DIR = build
 INC_DIR = include
 
 # Modules and directories
-# $(shell ls src/) but Utilities
 MODULES = $(filter-out Utilities, $(shell ls src/))
 MODULE_DIRS = $(addprefix $(SRC_DIR)/, $(MODULES))
 

@@ -1,6 +1,6 @@
 #include "../../include/Utilities.hpp"
 
 namespace ScientificToolbox {
-    // function definitions here
+    // function definitions
 }
 
