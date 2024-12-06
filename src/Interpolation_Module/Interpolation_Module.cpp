@@ -1,49 +1,61 @@
-#ifndef LINEARINTERPOLATION_HPP
-#define LINEARINTERPOLATION_HPP
-
 #include "../../include/Interpolation_Module/Interpolation.hpp"
 #include "../../include/Interpolation_Module/small_classes.hpp"
-#include <vector>
+#include <set>
 #include <algorithm>
 #include <stdexcept>
+#include <limits>
 
-template <typename T>
-class LinearInterpolation : public Interpolation<T> {
-public:
-    LinearInterpolation(const std::vector<point<T>>& data);
+namespace ScientificToolbox {
 
-    // Overload operator()
-    T operator()(T x) const;
+    template <typename T>
+    class LinearInterpolation : public Interpolation<T> {
+    public:
+        // Constructor accepts a set of points
+        LinearInterpolation(const typename Interpolation<T>::set& data);
 
-private:
-    std::vector<std::pair<interval<T>, abline<T>>> interpolated_functions;
-};
+        // Overload operator()
+        T operator()(T x) const;
 
-// Constructor implementation
-template <typename T>
-LinearInterpolation<T>::LinearInterpolation(const std::vector<point<T>>& data) : Interpolation<T>(data) {
-    std::vector<point<T>> sorted_data = data;
-    std::sort(sorted_data.begin(), sorted_data.end(), 
-        [](const point<T>& p1, const point<T>& p2) { return p1.get_x() < p2.get_x(); });
+    private:
+        std::vector<std::pair<interval<T>, abline<T>>> interpolated_functions;
+    };
 
-    for (size_t i = 0; i < sorted_data.size() - 1; ++i) {
-        interval<T> interval(sorted_data[i].get_x(), sorted_data[i + 1].get_x());
-        abline<T> abline(sorted_data[i], sorted_data[i + 1]);
-        interpolated_functions.push_back(std::make_pair(interval, abline));
+    // Constructor accepts a set of points
+    template <typename T>
+    LinearInterpolation<T>::LinearInterpolation(const typename Interpolation<T>::set& data)
+        : Interpolation<T>(data)  // Pass the set directly to the base class
+    {
+        // Iterate over the set to create intervals and ablines
+        auto it = data.begin();
+        auto prev_it = it;
+        ++it;  // Move to the next element
+
+        // Iterate over the set to create intervals and ablines
+        while (it != data.end()) {
+            interval<T> intv(prev_it->get_x(), it->get_x());  // Create an interval between x-values
+            abline<T> abline(*prev_it, *it);  // Create an abline between consecutive points
+            interpolated_functions.push_back(std::make_pair(intv, abline));
+
+            prev_it = it;
+            ++it;
+        }
     }
-}
 
-// Operator () implementation
-template <typename T>
-T LinearInterpolation<T>::operator()(T x) const {
-    auto it = std::find_if(interpolated_functions.begin(), interpolated_functions.end(), 
-        [x](const std::pair<interval<T>, abline<T>>& p) { return p.first.contains(x); });
 
-    if (it == interpolated_functions.end()) {
-        return std::numeric_limits<T>::quiet_NaN();
+    // Operator () implementation
+    template <typename T>
+    T LinearInterpolation<T>::operator()(T x) const {
+        // Find the correct interval for the given x
+        auto it = std::find_if(interpolated_functions.begin(), interpolated_functions.end(),
+            [x](const std::pair<interval<T>, abline<T>>& p) { return p.first.contains(x); });
+
+        // If no interval contains x, return NaN
+        if (it == interpolated_functions.end()) {
+            return std::numeric_limits<T>::quiet_NaN();
+        }
+
+        // Evaluate the corresponding abline at x
+        return it->second.evaluate(x);
     }
 
-    return it->second.evaluate(x);
 }
-
-#endif

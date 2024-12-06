@@ -7,38 +7,65 @@
 #include <vector>
 #include <utility> // For std::pair
 #include <random>  // For random number generation
+#include <algorithm> // For std::find_if
 #include <cmath>   // For isnan
+#include <set>     // For unique random number generation
 
-// Random number generator function guaranteeing unique values
-double random_generator_unique(std::vector<double> &values, std::mt19937 &gen, std::uniform_real_distribution<double> &dist) {
-    double random_value = dist(gen);
-    while (std::find(values.begin(), values.end(), random_value) != values.end()) {
-        random_value = dist(gen);
+using namespace ScientificToolbox;
+
+// Random number generator
+template <typename T>
+std::set<point<T>> random_numbers_generator(size_t n, T lower_bound, T upper_bound, bool unique = true) {
+    std::set<point<T>> random_numbers; // Change to set to ensure uniqueness
+
+    std::random_device rd; // seed
+    std::mt19937 gen(rd()); // random number generator
+    std::uniform_real_distribution<T> dis(lower_bound, upper_bound); // distribution of random numbers
+
+    while (random_numbers.size() < n) {
+        T x = dis(gen);
+        T y = dis(gen);
+        random_numbers.emplace(x, y);  // Insert directly into set
     }
-    return random_value;
-}
-
-// Random number generator function
-double random_generator(std::mt19937 &gen, std::uniform_real_distribution<double> &dist) {
-    return dist(gen);
+    
+    return random_numbers;
 }
 
 int main() {
-    // Specify point type as point<double>
-    std::vector<point<double>> data = {{0.0, 0.0}, {1.0, 1.0}, {2.0, 4.0}, {3.0, 9.0}};
-    LinearInterpolation<double> linear(data);
+
+    std::cout << "Enter the number of data points: ";
+    size_t n;
+    std::cin >> n;
+    std::cout << "Enter the lower bound: ";
+    double lower_bound;
+    std::cin >> lower_bound;
+    std::cout << "Enter the upper bound: ";
+    double upper_bound;
+    std::cin >> upper_bound;
+
+    // Generate random data
+    auto data = random_numbers_generator<double>(n, lower_bound, upper_bound);
+
+    // Print the generated data for verification
+    std::cout << "Generated data points:\n";
+    for (const auto& p : data) {
+        std::cout << "x: " << p.get_x() << ", y: " << p.get_y() << "\n";
+    }
+
+    // Since set is already sorted by x, no need to sort
+    std::cout << "Min x: " << data.begin()->get_x() << ", Max x: " << std::prev(data.end())->get_x() << "\n";
 
     try {
-        std::cout << "f(1.5) = " << linear(1.5) << "\n";
-        std::cout << "f(2.5) = " << linear(2.5) << "\n";
-        double result = linear(4.0); // Out of range
-        if (std::isnan(result)) {
-            std::cout << "f(4.0) = NaN (Out of range)\n";
-        } else {
-            std::cout << "f(4.0) = " << result << "\n";
-        }
-    } catch (const std::exception &e) {
-        std::cerr << e.what() << "\n";
+        // Initialize interpolation with a set of points
+        LinearInterpolation<double> linear(data);
+    
+        // Interpolate
+        std::cout << "Insert x value for interpolation: ";
+        double x;
+        std::cin >> x;
+        std::cout << "Interpolated value: " << linear(x) << "\n";
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << "\n";
     }
 
     return 0;

@@ -10,6 +10,7 @@
 #include <sstream>
 #include <optional>
 #include <variant>
+#include <set>
 
 using DataValue = std::variant<int, double, std::string>;
 using OptionalDataValue = std::optional<DataValue>;
@@ -35,6 +36,17 @@ using OptionalDataValue = std::optional<DataValue>;
  * @throws std::runtime_error if the file cannot be opened
  * 
  * Opens and reads a CSV file line by line, parsing the header and subsequent data rows.
+ */
+
+/**
+ * @method toPairVector
+ * @brief Converts the parsed data to a vector of pairs
+ * @tparam T The data type to convert the values to
+ * @return Vector of pairs containing the converted data
+ * 
+ * Converts the parsed data into a vector of pairs, where each pair contains two values
+ * of type T. This method is a template method that can be used to convert the data to
+ * different types, such as int, double, etc.
  */
 
 /**
@@ -96,6 +108,32 @@ public:
         while (std::getline(file, line)) {
             parseLine(line);
         }
+    }
+    
+    // Template method for conversion to std::set of points
+    template <typename T>
+    std::set<point<T>> toPointSet() {
+        std::set<point<T>> result;
+
+        for (const auto& row : data_) {
+            if (row.size() != 2 || !row.count("x") || !row.count("y")) {
+                throw std::runtime_error("CSV must contain exactly two columns: x and y.");
+            }
+
+            const auto& x_value = row.at("x");
+            const auto& y_value = row.at("y");
+
+            if (!isNumeric(x_value) || !isNumeric(y_value)) {
+                throw std::runtime_error("Non-numeric values detected in x or y columns.");
+            }
+
+            T x = static_cast<T>(toDouble(x_value));
+            T y = static_cast<T>(toDouble(y_value));
+
+            result.emplace(point<T>(x, y));
+        }
+
+        return result;
     }
 
 private: 
