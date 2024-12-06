@@ -6,7 +6,7 @@ CPPFLAGS = -Iinclude/$(MODULE)
 CXXFLAGS = -std=c++17 -Wall -Wpedantic -Werror -fPIC
 
 # Dependencies configuration
-DEPS = muparser
+DEPS = muparser # eigen3 getpot
 
 # Collect all flags from pkg-config
 PKG_CFLAGS := $(shell pkg-config --cflags $(DEPS) 2>/dev/null)
@@ -19,15 +19,15 @@ ifeq ($(PKG_CFLAGS),)
     MUPARSER_LIB ?= /usr/lib
     MUPARSER_FLAGS = -I$(MUPARSER_INCLUDE)
     MUPARSER_LIBS = -L$(MUPARSER_LIB) -lmuparser
-endif
 
     # Eigen fallback
-    #EIGEN_INCLUDE ?= /usr/include/eigen3
-    #EIGEN_FLAGS = -I$(EIGEN_INCLUDE)
+    EIGEN_INCLUDE ?= /usr/include/eigen3
+    EIGEN_FLAGS = -I$(EIGEN_INCLUDE)
 
     # Combine all flags
-    PKG_CFLAGS = $(MUPARSER_FLAGS) #$(EIGEN_FLAGS)
+    PKG_CFLAGS = $(MUPARSER_FLAGS) $(EIGEN_FLAGS)
     PKG_LIBS = $(MUPARSER_LIBS)
+endif
 
 CPPFLAGS += $(PKG_CFLAGS)
 LDFLAGS += $(PKG_LIBS)

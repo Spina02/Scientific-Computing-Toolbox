@@ -1,15 +1,13 @@
 #ifndef STATS_HPP
 #define STATS_HPP
 
-
 #include <vector>
 #include <unordered_map>
 #include <optional>
 #include <cmath>
 #include <algorithm>
 #include <numeric>
-#include "eigen-master/eigen-master/Eigen/Dense"
-
+#include <Eigen/Dense>
 
 /**
  * @namespace StatsModule::Statistics

@@ -1,8 +1,8 @@
 #ifndef LINEARINTERPOLATION_HPP
 #define LINEARINTERPOLATION_HPP
 
-#include "Interpolation.hpp"
-#include "small_classes.hpp"
+#include "../../include/Interpolation_Module/Interpolation.hpp"
+#include "../../include/Interpolation_Module/small_classes.hpp"
 #include <vector>
 #include <algorithm>
 #include <stdexcept>

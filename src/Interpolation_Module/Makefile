@@ -1,10 +1,11 @@
+MODULE = Interpolation_Module
+
 # Compiler and flags
 CXX = g++
-CPPFLAGS = -Iinclude/Interpolation_Module
+CPPFLAGS = -Iinclude/$(MODULE)
 CXXFLAGS = -std=c++17 -Wall -Wpedantic -Werror -fPIC
 
 # Relative paths
-MODULE = Interpolation_Module
 SRC_DIR = ../../src/$(MODULE)
 TEST_DIR = ../../tests
 BUILD_DIR = ../../build/$(MODULE)
