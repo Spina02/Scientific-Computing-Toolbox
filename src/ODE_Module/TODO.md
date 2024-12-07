@@ -26,7 +26,7 @@ The module should handle both scalar ($N=1$) and vector problems and export the 
 
    - [ ] Create an abstract class `ODESolver` with:
      - Constructor accepting the time interval, step size $h$, the function $\mathbf{f}$, and initial conditions $\mathbf{y}_0$.
-     - Pure virtual method `solve()` to perform the integration.
+     - Pure virtual method `solve()` to perform the integration.w
    - [ ] Derive concrete classes for each method:
      - `ForwardEulerSolver`
      - `RK4Solver`

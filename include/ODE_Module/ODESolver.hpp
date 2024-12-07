@@ -1,21 +1,29 @@
-
 #ifndef ODESOLVER_HPP
 #define ODESOLVER_HPP
 
-#include <vector>
-#include <functional>
 #include "../Utilities.hpp"
+#include <vector>
+#include <variant>
 
 namespace ScientificToolbox {
     
     class ODESolver {
+    // State variables
+    protected:
+        var_func f;
+        double t0;
+        double tf;
+        double h;
+        var_vec y0;
+    // Member functions
     public:
-        ODESolver() = default;
+        ODESolver(var_func f, double t0, var_vec y0, double tf, double h)
+            : f(f), t0(t0), tf(tf), h(h), y0(y0) {}
+
         virtual ~ODESolver() = default;
 
-        virtual vec_d Solve(std::function<vec_d(double, vec_d)> f, double t0, vec_d y0, double t1, double h) = 0;
-
+        virtual std::vector<var_vec> Solve() = 0; 
     };
 }
 
-#endif
+#endif // ODESOLVER_HPP

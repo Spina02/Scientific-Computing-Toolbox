@@ -1,4 +1,7 @@
 #include "../../include/Utilities.hpp"
+#include "../../include/ODE_Module/ExpressionParser.hpp"
+#include <muParser.h>
+#include <memory>
 
 namespace ScientificToolbox {
     scalar_func parseScalarExpression(const std::string& expr) {
@@ -46,6 +49,15 @@ namespace ScientificToolbox {
                 parsers[i] = std::make_shared<mu::Parser>();
                 parsers[i]->DefineVar("t", t_ptr.get());
 
+                // For single component systems, allow using just 'y'
+                if (exprs.size() == 1) {
+                    if (!y_ptrs->at(0)) {
+                        y_ptrs->at(0) = std::make_shared<double>(0.0);
+                    }
+                    parsers[i]->DefineVar("y", y_ptrs->at(0).get());
+                }
+
+                // Always define y0,y1,... style variables
                 for (size_t j = 0; j < exprs.size(); ++j) {
                     if (!y_ptrs->at(j)) {
                         y_ptrs->at(j) = std::make_shared<double>(0.0);
@@ -56,8 +68,8 @@ namespace ScientificToolbox {
             }
 
             // Lambda function that evaluates the expressions
-            return [parsers, t_ptr, y_ptrs](double t, const vec_d& y) -> vec_d {
-                if (y.size() != y_ptrs->size()) {
+            return [parsers, t_ptr, y_ptrs](double t, const vec_d &y) -> vec_d {
+                if (static_cast<size_t>(y.size()) != y_ptrs->size()) {
                     throw std::runtime_error("Mismatch between number of expressions and size of y vector.");
                 }
 
@@ -65,21 +77,34 @@ namespace ScientificToolbox {
                 *t_ptr = t;
 
                 // Update the value of each `y`
-                for (size_t i = 0; i < y.size(); ++i) {
+                for (Eigen::Index i = 0; i < y.size(); ++i) {
                     *(y_ptrs->at(i)) = y[i];
                 }
 
                 // Evaluate each expression
-                vec_d result;
-                result.reserve(parsers.size());
+                vec_d result(parsers.size());
                 for (size_t i = 0; i < parsers.size(); ++i) {
-                    result.push_back(parsers[i]->Eval());
+                    result(i) = parsers[i]->Eval();
                 }
 
                 return result;
             };
         } catch (const mu::Parser::exception_type& e) {
             throw std::runtime_error("Error parsing vector expression: " + std::string(e.GetMsg()));
+        }
+    }
+
+    var_func parseExpression(const var_expr& expr) {
+        try {
+            if (std::holds_alternative<std::string>(expr)) {
+                return parseScalarExpression(std::get<std::string>(expr));
+            } else if (std::holds_alternative<vec_s>(expr)) {
+                return parseVectorExpression(std::get<vec_s>(expr));
+            } else {
+                throw std::runtime_error("Invalid expression type.");
+            }
+        } catch (const std::exception& e) {
+            throw std::runtime_error("Error parsing expression: " + std::string(e.what()));
         }
     }
 

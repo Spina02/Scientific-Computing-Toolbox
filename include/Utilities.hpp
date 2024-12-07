@@ -3,18 +3,21 @@
 
 #include <vector>
 #include <functional>
-#include "muParser.h"
+#include <variant>
+#include <Eigen/Dense>
 
 namespace ScientificToolbox {
-    // type aliases
-    //typedef std::vector<int> vec_i;
-    using vec_i = std::vector<int>;
-    using vec_d = std::vector<double>;
-    using vec_s = std::vector<std::string>;
     using scalar_func = std::function<double(double, double)>;
-    using vec_func = std::function<vec_d(double, vec_d)>;
+    using vec_func = std::function<Eigen::VectorXd(double, const Eigen::VectorXd&)>;
+    using var_func = std::variant<scalar_func, vec_func>;
+    using var_vec = std::variant<double, Eigen::VectorXd>;
     
-    // function declarations
+    using vec_d = Eigen::VectorXd;
+    using vec_s = std::vector<std::string>;
+    using var_vecs = std::vector<var_vec>;
+    using var_expr = std::variant<std::string, vec_s>;
+
+    inline const bool DEBUG = true;
 }
 
 #endif // UTILITIES_HPP
