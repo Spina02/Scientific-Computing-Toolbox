@@ -5,9 +5,9 @@
 #include <iostream>
 #include <filesystem>
 
-
+using namespace ScientificToolbox;
 /**
- * @file StatMod_main.cpp
+ * @file Statistics_Module_main.cpp
  * @brief Main program for statistical analysis of CSV data
  * 
  * This program performs statistical analysis on numeric data from CSV files.
@@ -19,21 +19,14 @@
  * - <string>           - For string handling
  * - <vector>           - For dynamic arrays
  * - <algorithm>        - For std::find
- * - <iomanip>         - For output formatting
  * - <filesystem>      - For path handling
  * - <Eigen/Dense>     - For matrix operations
- * - "GetPot"          - For command line argument parsing
  * - "ImportCSV.hpp"   - For CSV file importing
- * - "Statistics.hpp"  - For statistical computations
- * - "Utils.hpp"       - For utility functions
+ * - "Stats.hpp"  - For statistical computations
+ * - "Utils.hpp"       - For extracting values from columns
  * 
  * @param argc Number of command line arguments
  * @param argv Array of command line argument strings
- * 
- * Command line options:
- * -i : Input CSV file path (default: "data.csv")
- * -o : Output text file path (default: "output.txt")
- * -c : Target column name for specific analysis (optional)
  * 
  * The program:
  * 1. Parses command line arguments
@@ -51,18 +44,39 @@
  * @throws std::runtime_error If target column doesn't exist or isn't numeric
  * @throws Various exceptions from file operations and data processing
  */
+// int main(int argc, char** argv) {
+
+    // std::string inputFile = "../../data/Food_and_Nutrition__.csv";
+    // std::string outputFile = "../../output/Statistics_output.txt";
+    // std::string targetColumn = "Weight"; 
+
+    
+
 int main(int argc, char** argv) {
-
-    std::string inputFile = "../../data/detailed_meals_macros_CLEANED.csv";
+    // Default values
+    std::string inputFile = "../../data/Food_and_Nutrition__.csv";
     std::string outputFile = "../../output/Statistics_output.txt";
-    std::string targetColumn = "Ages"; 
+    std::string targetColumn = "Weight"; 
 
-    // GetPot cmdline(argc, argv);
-    //std::string inputFile = cmdline.follow("../../data/detailed_meals_macros.csv", "-i");
-    // std::string outputFile = cmdline.follow("../../output/Statistics_output.txt", "-o");
-    //std::string targetColumn = cmdline.follow("Ages", "-c");
+    // Parse command line arguments
+    if (argc > 1) {
+        inputFile = argv[1];
+    }
+    if (argc > 2) {
+        outputFile = argv[2];
+    }
+    if (argc > 3) {
+        targetColumn = argv[3];
+    }
 
-
+    
+    if (argc == 1) {
+        std::cerr << "Usage: " << argv[0] << " [input_file] [output_file] [target_column]\n";
+        std::cerr << "Using default values:\n";
+        std::cerr << "Input file: " << inputFile << "\n";
+        std::cerr << "Output file: " << outputFile << "\n";
+        std::cerr << "Target column: " << targetColumn << "\n";
+    }
 
     try {
 
@@ -80,7 +94,7 @@ int main(int argc, char** argv) {
                 std::holds_alternative<int>(value.value())) {
 
                 numericCols.push_back(key);
-                numericData.push_back(StatsModule::Utils::extractColumn<double>(data, key));
+                numericData.push_back(ScientificToolbox::Utils::extractColumn<double>(data, key));
             }
         }
 
@@ -95,15 +109,15 @@ int main(int argc, char** argv) {
                 throw std::runtime_error("Column '" + targetColumn + "' does not exist or is not numeric");
             }
 
-            auto columnData = StatsModule::Utils::extractColumn<double>(data, targetColumn);
+            auto columnData = ScientificToolbox::Utils::extractColumn<double>(data, targetColumn);
 
             outFile << "Statistics for column: " << targetColumn << "\n";
-            outFile << "Mean: " << StatsModule::Statistics::mean(columnData) << "\n";
-            outFile << "Median: " << StatsModule::Statistics::median(columnData) << "\n";
-            outFile << "Variance: " << StatsModule::Statistics::variance(columnData) << "\n";
-            outFile << "Standard Deviation: " << StatsModule::Statistics::sd(columnData) << "\n";
+            outFile << "Mean: " << ScientificToolbox::Statistics::mean(columnData) << "\n";
+            outFile << "Median: " << ScientificToolbox::Statistics::median(columnData) << "\n";
+            outFile << "Variance: " << ScientificToolbox::Statistics::variance(columnData) << "\n";
+            outFile << "Standard Deviation: " << ScientificToolbox::Statistics::sd(columnData) << "\n";
 
-            auto freqCount = StatsModule::Statistics::freqCount(columnData);
+            auto freqCount = ScientificToolbox::Statistics::freqCount(columnData);
         
             outFile << "Frequency Count: \n";
             for (const auto& [key, value] : freqCount) {
@@ -116,13 +130,13 @@ int main(int argc, char** argv) {
 
         Eigen::MatrixXd dataMat(data.size(), numericCols.size());
         for (size_t i = 0; i < numericCols.size(); ++i) {
-            std::vector<double> columnData = StatsModule::Utils::extractColumn<double>(data, numericCols[i]);
+            std::vector<double> columnData = ScientificToolbox::Utils::extractColumn<double>(data, numericCols[i]);
             for (size_t j = 0; j < data.size(); ++j) {
                 dataMat(j, i) = columnData[j];
             }
         }
 
-        Eigen::MatrixXd correlationMat = StatsModule::Statistics::correlationM(dataMat);
+        Eigen::MatrixXd correlationMat = ScientificToolbox::Statistics::correlationM(dataMat);
 
         outFile << "Strong Correlations (|correlation| > 0.7): \n";
         for (int i = 0; i < correlationMat.rows(); i++) {

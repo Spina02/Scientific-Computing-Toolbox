@@ -44,7 +44,7 @@ using OptionalDataValue = std::optional<DataValue>;
  *     // Extract a column of integers
  *     std::vector<int> integerColumn = extractColumn<int>(dataset, "quantity");
  */
-namespace StatsModule::Utils{
+namespace ScientificToolbox::Utils{
 
 template <typename T>
 std::vector<T> extractColumn(const std::vector<std::unordered_map<std::string, OptionalDataValue>>& data,
