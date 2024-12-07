@@ -111,31 +111,32 @@ public:
         }
     }
 
-    // Function to return the points as a set of Point<double>
-    std::set<point<double>> toPointSet() {
-        std::set<point<double>> result;
-
-        for (const auto& row : data_) {
-            if (row.size() != 2 || !row.count("x") || !row.count("y")) {
-                throw std::runtime_error("CSV must contain exactly two columns: x and y.");
-            }
-
-            const auto& x_value = row.at("x").value_or(DataValue(0));
-            const auto& y_value = row.at("y").value_or(DataValue(0));
-
-            if (!isNumeric(x_value) || !isNumeric(y_value)) {
-                throw std::runtime_error("Non-numeric values detected in x or y columns.");
-            }
-
-            // Convert x and y to double
-            double x_double = toDouble(x_value);
-            double y_double = toDouble(y_value);
-
-            // Create a Point<double> and add to the set
-            result.emplace(point<double>(x_double, y_double));
+    // Function to read CSV file and output std::set<point<T>> for double values
+    template <typename T>
+    std::set<point<T>> read_points_from_csv(const std::string& filename) {
+        std::set<point<T>> points;
+        std::ifstream file(filename);
+        
+        // Check if the file is open
+        if (!file.is_open()) {
+            throw std::runtime_error("Could not open the file!");
+            return points;
         }
 
-        return result;
+        std::string line;
+        while (std::getline(file, line)) {
+            std::stringstream ss(line);
+            T x, y;
+
+            // Read x and y from each line (assuming CSV format "x,y")
+            char comma;
+            if (ss >> x >> comma >> y) {
+                points.insert(point<T>(x, y));
+            }
+        }
+
+        file.close();
+        return points;
     }
 
 private: 
@@ -194,22 +195,6 @@ private:
         } catch (...){}
 
         return cell;
-    }
-
-    // Checks if the value is numeric (either int or double)
-    bool isNumeric(const DataValue& value) const {
-        return std::holds_alternative<int>(value) || std::holds_alternative<double>(value);
-    }
-
-    // Converts the value to double, assuming it is numeric (int or double)
-    double toDouble(const DataValue& value) const {
-        if (std::holds_alternative<int>(value)) {
-            return static_cast<double>(std::get<int>(value)); // Convert int to double
-        } else if (std::holds_alternative<double>(value)) {
-            return std::get<double>(value); // Already a double
-        } else {
-            throw std::runtime_error("Value is not numeric and cannot be converted to double.");
-        }
     }
 
 

@@ -1,4 +1,4 @@
-#include "../../include/Utilities.hpp"
+#include "../../include/Utilities/Utilities.hpp"
 
 namespace ScientificToolbox {
     scalar_func parseScalarExpression(const std::string& expr) {

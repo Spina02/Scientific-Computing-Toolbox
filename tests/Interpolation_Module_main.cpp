@@ -2,8 +2,8 @@
 #include "../include/Interpolation_Module/Interpolation.hpp"
 #include "../include/Interpolation_Module/LinearInterpolation.hpp"
 #include "../include/Interpolation_Module/PolynomialInterpolation.hpp"
-#include "../include/Statistics_Module/ImportData.hpp"
-#include "../include/Statistics_Module/ImportCSV.hpp"
+#include "../include/Utilities/ImportCSV.hpp"
+#include "../include/Utilities/ImportData.hpp"
 
 #include <iostream>
 #include <vector>
@@ -15,31 +15,23 @@
 
 using namespace ScientificToolbox;
 
+
 int main() {
 
-    // Import data from CSV file
+    // Import data from CSV file 
     std::string filename = "../../data/points_R2.csv";
     ImportCSV importer;
-    try {
-        importer.import(filename);
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << "\n";
-        return 1;
-    }
-    std::set<point<double>> data = importer.toPointSet();
+    std::set<point<double>> points = importer.read_points_from_csv<double>(filename);
 
-    // Print the generated data for verification
-    std::cout << "Generated data points:\n";
-    for (const auto& p : data) {
-        std::cout << "x: " << p.get_x() << ", y: " << p.get_y() << "\n";
+    // Print the points in the set
+    for (const auto& p : points) {
+        std::cout << "(" << p.get_x() << ", " << p.get_y() << ")" << std::endl;
     }
 
-    // Since set is already sorted by x, no need to sort
-    std::cout << "Min x: " << data.begin()->get_x() << ", Max x: " << std::prev(data.end())->get_x() << "\n";
 
     try {
         // Initialize interpolation with a set of points
-        LinearInterpolation<double> linear(data);
+        LinearInterpolation<double> linear(points);
     
         // Interpolate
         std::cout << "Insert x value for interpolation: ";
