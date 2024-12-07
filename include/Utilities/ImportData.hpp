@@ -39,7 +39,7 @@ using OptionalDataValue = std::optional<DataValue>;
  * 
  * @see OptionalDataValue
  */
-namespace StatsModule{
+namespace ScientificToolbox{
 
 class ImportData{
 

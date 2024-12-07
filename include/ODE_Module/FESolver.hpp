@@ -2,7 +2,7 @@
 #define FORWARDEULERSOLVER_HPP
 
 #include "ODESolver.hpp"
-#include "../Utilities.hpp"
+#include "../Utilities/Utilities.hpp"
 
 namespace ScientificToolbox {
     class ForwardEulerSolver : public ODESolver {

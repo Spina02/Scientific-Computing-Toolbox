@@ -42,7 +42,7 @@ ODETester::ODETester() {
         {"y0", "-y1"},             // Expressions
         0.0,                                // t0
         1.0,                                // tf
-        0.1,                                // h
+        0.01,                                // h
         (vec_d(2) << 1.0, 2.0).finished(),  // y0
         // Exact solutions: y0(t) = e^t, y1(t) = 0
         (vec_d(2) << std::exp(1.0), 2 * std::exp(-1.0)).finished(), // Expected values at tf

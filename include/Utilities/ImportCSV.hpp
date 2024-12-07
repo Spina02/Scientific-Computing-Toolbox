@@ -3,6 +3,7 @@
 
 
 #include "ImportData.hpp"
+#include "../Interpolation_Module/small_classes.hpp"
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -10,6 +11,7 @@
 #include <sstream>
 #include <optional>
 #include <variant>
+#include <set>
 
 using DataValue = std::variant<int, double, std::string>;
 using OptionalDataValue = std::optional<DataValue>;
@@ -35,6 +37,17 @@ using OptionalDataValue = std::optional<DataValue>;
  * @throws std::runtime_error if the file cannot be opened
  * 
  * Opens and reads a CSV file line by line, parsing the header and subsequent data rows.
+ */
+
+/**
+ * @method toPairVector
+ * @brief Converts the parsed data to a vector of pairs
+ * @tparam T The data type to convert the values to
+ * @return Vector of pairs containing the converted data
+ * 
+ * Converts the parsed data into a vector of pairs, where each pair contains two values
+ * of type T. This method is a template method that can be used to convert the data to
+ * different types, such as int, double, etc.
  */
 
 /**
@@ -78,7 +91,7 @@ using OptionalDataValue = std::optional<DataValue>;
  * 
  * @note variables enending with _ are private member variables  https://stackoverflow.com/questions/3650623/trailing-underscores-for-member-variables-in-c
  */
-namespace StatsModule{
+namespace ScientificToolbox {
 
 
 class ImportCSV : public ImportData{
@@ -96,6 +109,34 @@ public:
         while (std::getline(file, line)) {
             parseLine(line);
         }
+    }
+
+    // Function to read CSV file and output std::set<point<T>> for double values
+    template <typename T>
+    std::set<point<T>> read_points_from_csv(const std::string& filename) {
+        std::set<point<T>> points;
+        std::ifstream file(filename);
+        
+        // Check if the file is open
+        if (!file.is_open()) {
+            throw std::runtime_error("Could not open the file!");
+            return points;
+        }
+
+        std::string line;
+        while (std::getline(file, line)) {
+            std::stringstream ss(line);
+            T x, y;
+
+            // Read x and y from each line (assuming CSV format "x,y")
+            char comma;
+            if (ss >> x >> comma >> y) {
+                points.insert(point<T>(x, y));
+            }
+        }
+
+        file.close();
+        return points;
     }
 
 private: 
@@ -155,6 +196,7 @@ private:
 
         return cell;
     }
+
 
 };
 }

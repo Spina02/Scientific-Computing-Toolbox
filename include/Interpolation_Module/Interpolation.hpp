@@ -2,31 +2,41 @@
 #define INTERPOLATION_HPP
 
 #include "small_classes.hpp"
-
-#include <vector>
+#include <set>
 #include <stdexcept>
 
+namespace ScientificToolbox {
 
-// Abstract base class
-template <typename T>
-class Interpolation {
-public:
-    Interpolation(const std::vector<point<T>>& data) : data(data) {
-        if (data.empty()) {
-            throw std::invalid_argument("Data points cannot be empty.");
+    // Abstract base class for interpolation
+    template <typename T>
+    class Interpolation {
+    public:
+        using set = std::set<point<T>>; // Move alias inside the class
+
+        // Constructor
+        explicit Interpolation(const set& data) : data(data) {
+            if (data.empty()) {
+                throw std::invalid_argument("Data points cannot be empty.");
+            }
         }
-    }
 
-    virtual ~Interpolation() = default;
+        // Virtual destructor
+        virtual ~Interpolation() = default;
 
-    virtual T interpolate(T x) const = 0;
-    virtual T operator()(T x) const { return interpolate(x); }
+        // Pure virtual interpolation function
+        virtual T interpolate(T x) const = 0;
 
-protected:
-    const std::vector<point<T>>& getData() const { return data; }
+        // Overload operator()
+        virtual T operator()(T x) const { return interpolate(x); }
 
-private:
-    std::vector<point<T>> data;
-};
+    protected:
+        // Getter for data
+        const set& getData() const { return data; }
+
+    private:
+        set data; // Stored interpolation data
+    };
+
+} // namespace ScientificToolbox
 
 #endif

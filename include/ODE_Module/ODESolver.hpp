@@ -1,7 +1,7 @@
 #ifndef ODESOLVER_HPP
 #define ODESOLVER_HPP
 
-#include "../Utilities.hpp"
+#include "../Utilities/Utilities.hpp"
 #include <vector>
 #include <variant>
 

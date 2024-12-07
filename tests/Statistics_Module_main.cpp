@@ -1,4 +1,4 @@
-#include "../include/Statistics_Module/ImportCSV.hpp"
+#include "../include/Utilities/ImportCSV.hpp"
 #include "../include/Statistics_Module/Utils.hpp"
 #include "../include/Statistics_Module/Stats.hpp"
 
@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
 
     try {
 
-        StatsModule::ImportCSV importer;
+        ScientificToolbox::ImportCSV importer;
         importer.import(inputFile);
         auto data = importer.getData();
 
@@ -84,7 +84,8 @@ int main(int argc, char** argv) {
             }
         }
 
-
+        // create output dir if it doesn't exist
+        std::filesystem::create_directories(std::filesystem::path(outputFile).parent_path());
 
         std::ofstream outFile(outputFile);
         outFile << std::fixed << std::setprecision(2);

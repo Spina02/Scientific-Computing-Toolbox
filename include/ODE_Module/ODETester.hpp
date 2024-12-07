@@ -1,7 +1,7 @@
 #ifndef ODETESTER_HPP
 #define ODETESTER_HPP
 
-#include "../../include/Utilities.hpp"
+#include "../../include/Utilities/Utilities.hpp"
 #include "../../include/ODE_Module/ODESolver.hpp"
 #include "../../include/ODE_Module/ExpressionParser.hpp"
 #include "../../include/ODE_Module/FESolver.hpp"

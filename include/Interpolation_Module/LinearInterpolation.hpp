@@ -4,62 +4,56 @@
 #include "Interpolation.hpp"
 #include "small_classes.hpp"
 
+#include <set>
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
 
-// Derived class for linear interpolation
-template <typename T>
-class LinearInterpolation : public Interpolation<T> {
-public:
-    LinearInterpolation(const std::vector<point<T>>& data);
+namespace ScientificToolbox {
 
-    // Overload operator()
-    T operator()(T x) const override;
+    // Derived class for linear interpolation
+    template <typename T>
+    class LinearInterpolation : public Interpolation<T> {
+    public:
+        using typename Interpolation<T>::set;
 
-    // Implement interpolate
-    T interpolate(T x) const override;
+        LinearInterpolation(const set& data) : Interpolation<T>(data) {
+            // Iterate over the set to create intervals and ablines
+            auto it = data.begin();
+            auto prev_it = it;
+            ++it;
 
-private:
-    std::vector<std::pair<interval<T>, abline<T>>> interpolated_functions;
-};
+            while (it != data.end()) {
+                interval<T> intv(prev_it->get_x(), it->get_x());
+                abline<T> ab(*prev_it, *it);
+                interpolated_functions.push_back(std::make_pair(intv, ab));
 
-// Constructor
-template <typename T>
-LinearInterpolation<T>::LinearInterpolation(const std::vector<point<T>>& data) 
-    : Interpolation<T>(data) {
-    // Create intervals and corresponding ablines
-    for (size_t i = 0; i < data.size() - 1; ++i) {
-        abline<T> ab(data[i], data[i + 1]);
-        interval<T> intv(data[i].get_x(), data[i + 1].get_x());
-        interpolated_functions.push_back(std::make_pair(intv, ab));
-    }
-}
-
-// Implementing interpolate
-template <typename T>
-T LinearInterpolation<T>::interpolate(T x) const {
-    // Use binary search to find the correct interval
-    auto it = std::lower_bound(
-        interpolated_functions.begin(),
-        interpolated_functions.end(),
-        x,
-        [](const std::pair<interval<T>, abline<T>>& func, T value) {
-            return func.first.get_upper_bound() < value;
+                prev_it = it;
+                ++it;
+            }
         }
-    );
 
-    if (it == interpolated_functions.end() || !it->first.contains(x)) {
-        throw std::out_of_range("x is out of the interpolation range.");
-    }
+        // Implement the interpolate method
+        T interpolate(T x) const override {
+            auto it = std::find_if(interpolated_functions.begin(), interpolated_functions.end(),
+                [x](const std::pair<interval<T>, abline<T>>& p) { return p.first.contains(x); });
 
-    return it->second.evaluate(x);
-}
+            if (it == interpolated_functions.end()) {
+                throw std::out_of_range("Value is outside the interpolation range.");
+            }
 
-// Overload operator()
-template <typename T>
-T LinearInterpolation<T>::operator()(T x) const {
-    return interpolate(x);
+            return it->second.evaluate(x);
+        }
+
+        // Overload operator()
+        T operator()(T x) const override {
+            return interpolate(x);
+        }
+
+    private:
+        std::vector<std::pair<interval<T>, abline<T>>> interpolated_functions;
+    };
+
 }
 
 #endif
