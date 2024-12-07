@@ -4,6 +4,7 @@
 #include "../include/Interpolation_Module/PolynomialInterpolation.hpp"
 #include "../include/Utilities/ImportCSV.hpp"
 #include "../include/Utilities/ImportData.hpp"
+#include "../include/Utilities/Lagrange_coefficients.hpp"
 
 #include <iostream>
 #include <vector>
@@ -30,14 +31,23 @@ int main() {
 
 
     try {
+
         // Initialize interpolation with a set of points
         LinearInterpolation<double> linear(points);
+
+        // Polynomial interpolation
+        Lagrange<double> poly(points);
     
         // Interpolate
         std::cout << "Insert x value for interpolation: ";
         double x;
         std::cin >> x;
-        std::cout << "Interpolated value: " << linear(x) << "\n";
+
+        // Linear interpolation result
+        std::cout << "Linear Interpolated value: " << linear(x) << "\n";
+
+        // Polynomial interpolation result
+        std::cout << "Polynomial Interpolated value: " << poly(x) << "\n";
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
     }

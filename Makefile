@@ -1,6 +1,6 @@
 # The following lines are used to define compiler and flags
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Werror -g
+CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Werror 
 
 # Directories
 SRC_DIR = src
