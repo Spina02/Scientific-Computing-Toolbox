@@ -3,6 +3,7 @@
 
 
 #include "ImportData.hpp"
+#include "../Interpolation_Module/small_classes.hpp"
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -90,7 +91,7 @@ using OptionalDataValue = std::optional<DataValue>;
  * 
  * @note variables enending with _ are private member variables  https://stackoverflow.com/questions/3650623/trailing-underscores-for-member-variables-in-c
  */
-namespace StatsModule{
+namespace ScientificToolbox {
 
 
 class ImportCSV : public ImportData{
@@ -109,28 +110,29 @@ public:
             parseLine(line);
         }
     }
-    
-    // Template method for conversion to std::set of points
-    template <typename T>
-    std::set<point<T>> toPointSet() {
-        std::set<point<T>> result;
+
+    // Function to return the points as a set of Point<double>
+    std::set<point<double>> toPointSet() {
+        std::set<point<double>> result;
 
         for (const auto& row : data_) {
             if (row.size() != 2 || !row.count("x") || !row.count("y")) {
                 throw std::runtime_error("CSV must contain exactly two columns: x and y.");
             }
 
-            const auto& x_value = row.at("x");
-            const auto& y_value = row.at("y");
+            const auto& x_value = row.at("x").value_or(DataValue(0));
+            const auto& y_value = row.at("y").value_or(DataValue(0));
 
             if (!isNumeric(x_value) || !isNumeric(y_value)) {
                 throw std::runtime_error("Non-numeric values detected in x or y columns.");
             }
 
-            T x = static_cast<T>(toDouble(x_value));
-            T y = static_cast<T>(toDouble(y_value));
+            // Convert x and y to double
+            double x_double = toDouble(x_value);
+            double y_double = toDouble(y_value);
 
-            result.emplace(point<T>(x, y));
+            // Create a Point<double> and add to the set
+            result.emplace(point<double>(x_double, y_double));
         }
 
         return result;
@@ -193,6 +195,23 @@ private:
 
         return cell;
     }
+
+    // Checks if the value is numeric (either int or double)
+    bool isNumeric(const DataValue& value) const {
+        return std::holds_alternative<int>(value) || std::holds_alternative<double>(value);
+    }
+
+    // Converts the value to double, assuming it is numeric (int or double)
+    double toDouble(const DataValue& value) const {
+        if (std::holds_alternative<int>(value)) {
+            return static_cast<double>(std::get<int>(value)); // Convert int to double
+        } else if (std::holds_alternative<double>(value)) {
+            return std::get<double>(value); // Already a double
+        } else {
+            throw std::runtime_error("Value is not numeric and cannot be converted to double.");
+        }
+    }
+
 
 };
 }

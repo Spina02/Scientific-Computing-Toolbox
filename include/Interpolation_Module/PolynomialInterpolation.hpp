@@ -1,6 +1,6 @@
 #ifndef POLYNOMIALINTERPOLATION_HPP
 #define POLYNOMIALINTERPOLATION_HPP
-
+/*
 namespace ScientificToolbox{
     
     template <typename T>
@@ -18,5 +18,6 @@ namespace ScientificToolbox{
 
     };
 }
+*/
 
 #endif

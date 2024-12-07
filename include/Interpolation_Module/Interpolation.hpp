@@ -7,31 +7,36 @@
 
 namespace ScientificToolbox {
 
-    // Alias for set of points
-    template <typename T>
-    using set = std::set<point<T>>; // Make sure to use consistent naming
-
-    // Abstract base class
+    // Abstract base class for interpolation
     template <typename T>
     class Interpolation {
     public:
-        Interpolation(const set<T>& data) : data(data) {
+        using set = std::set<point<T>>; // Move alias inside the class
+
+        // Constructor
+        explicit Interpolation(const set& data) : data(data) {
             if (data.empty()) {
                 throw std::invalid_argument("Data points cannot be empty.");
             }
         }
 
+        // Virtual destructor
         virtual ~Interpolation() = default;
 
+        // Pure virtual interpolation function
         virtual T interpolate(T x) const = 0;
+
+        // Overload operator()
         virtual T operator()(T x) const { return interpolate(x); }
 
     protected:
-        const set<T>& getData() const { return data; }
+        // Getter for data
+        const set& getData() const { return data; }
 
     private:
-        set<T> data;
+        set data; // Stored interpolation data
     };
-}
+
+} // namespace ScientificToolbox
 
 #endif
