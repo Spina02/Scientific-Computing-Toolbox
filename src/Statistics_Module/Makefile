@@ -87,6 +87,5 @@ clean:
 
 # Export library path when running the program
 run: $(MAIN_TARGET)
-	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(MAIN_TARGET) # -i ../../data/detailed_meals_macros_CLEANED.csv -o output.txt -c Ages
-
+	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(MAIN_TARGET) 
 .PHONY: all clean run check_deps

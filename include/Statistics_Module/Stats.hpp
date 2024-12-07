@@ -67,7 +67,7 @@
  * @return Correlation matrix (symmetric matrix of correlation coefficients)
  * @note Uses Eigen library for matrix operations
  */
-namespace StatsModule::Statistics{      //https://stackoverflow.com/questions/11358425/is-there-a-better-way-to-express-nested-namespaces-in-c-within-the-header
+namespace ScientificToolbox::Statistics{      //https://stackoverflow.com/questions/11358425/is-there-a-better-way-to-express-nested-namespaces-in-c-within-the-header
 
 // mean
 

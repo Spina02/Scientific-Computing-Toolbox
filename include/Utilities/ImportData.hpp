@@ -13,10 +13,9 @@ using DataValue = std::variant<int, double, std::string>;
 using OptionalDataValue = std::optional<DataValue>;
 
 /**
- * @namespace StatsModule
- * @brief Statistical analysis module for handling and processing data
+
  * 
- * The StatsModule namespace encapsulates classes and functionality related to both
+ * The Statistics namespace encapsulates classes and functionality related to both
  * statistical analysis and data manipulation. This module provides tools
  * for importing, analyzing, and processing statistical data.
  * 
@@ -45,7 +44,9 @@ class ImportData{
 
 public:
     virtual ~ImportData() = default;
+
     virtual void import(const std::string& filename) = 0;
+
     const std::vector<std::unordered_map<std::string, OptionalDataValue>>& getData() const{
         return data_;
     }
