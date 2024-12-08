@@ -3,6 +3,7 @@
 
 #include "small_classes.hpp"
 #include <set>
+#include <vector>  // Include the header for vector
 #include <stdexcept>
 
 namespace ScientificToolbox {
@@ -11,10 +12,10 @@ namespace ScientificToolbox {
     template <typename T>
     class Interpolation {
     public:
-        using set = std::set<point<T>>; // Move alias inside the class
+        using point_set = std::set<point<T>>;  // Renamed alias to avoid conflict
 
         // Constructor
-        explicit Interpolation(const set& data) : data(data) {
+        explicit Interpolation(const point_set& data) : data(data) {
             if (data.empty()) {
                 throw std::invalid_argument("Data points cannot be empty.");
             }
@@ -22,6 +23,16 @@ namespace ScientificToolbox {
 
         // Virtual destructor
         virtual ~Interpolation() = default;
+
+        // Method to change data structure to a pair of vectors
+        std::pair<std::vector<T>, std::vector<T>> toVectors() const {
+            std::vector<T> x, y;
+            for (const auto& p : data) {
+                x.push_back(p.get_x());  // Corrected access to x coordinate
+                y.push_back(p.get_y());  // Corrected access to y coordinate
+            }
+            return {x, y};
+        }
 
         // Pure virtual interpolation function
         virtual T interpolate(T x) const = 0;
@@ -31,10 +42,10 @@ namespace ScientificToolbox {
 
     protected:
         // Getter for data
-        const set& getData() const { return data; }
+        const point_set& getData() const { return data; }
 
     private:
-        set data; // Stored interpolation data
+        point_set data;  // Stored interpolation data
     };
 
 } // namespace ScientificToolbox
