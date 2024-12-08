@@ -7,7 +7,44 @@
 #include <algorithm> // For std::lower_bound, std::sort
 #include <limits> // For std::numeric_limits
 
-namespace ScientificToolbox {
+/**
+ * namespace ScientificToolbox::Interpolation
+ * @brief Interpolation module providing basic interpolation functions
+ * 
+ * This namespace contains template classes for common interpolation methods:
+ * - Linear interpolation
+ * - Polynomial interpolation
+ * - Spline interpolation
+ */
+
+/** point class
+ * @brief Class for storing data points
+ * @tparam T Type of x and y coordinates
+ * 
+ * This class stores a pair of x and y coordinates as a data point.
+ * It provides methods to access the x and y coordinates.
+ * 
+ */
+
+/** abline class
+ * @brief Class for linear interpolation
+ * @tparam T Type of x and y coordinates
+ * 
+ * This class represents a line connecting two points.
+ * It provides methods to evaluate the line at a given x coordinate.
+ * 
+ */
+
+/** interval class
+ * @brief Class for storing interval bounds
+ * @tparam T Type of interval bounds
+ * 
+ * This class stores a pair of lower and upper bounds as an interval.
+ * It provides methods to access the lower and upper bounds, and to check if a value is within the interval.
+ * 
+ */
+
+namespace ScientificToolbox::Interpolation {
     // point class
     template <typename T>
     class point {

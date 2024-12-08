@@ -15,9 +15,8 @@ using OptionalDataValue = std::optional<DataValue>;
 /**
 
  * 
- * The Statistics namespace encapsulates classes and functionality related to both
- * statistical analysis and data manipulation. This module provides tools
- * for importing, analyzing, and processing statistical data.
+ * The ScientificToolbox namespace contains utility classes and functions for
+ * scientific computing and data analysis. 
  * 
  * @class ImportData
  * @brief Abstract base class defining interface for data import operations
