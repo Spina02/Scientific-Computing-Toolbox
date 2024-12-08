@@ -1,9 +1,8 @@
-#include "../../include/Utilities/Utilities.hpp"
 #include "../../include/ODE_Module/ExpressionParser.hpp"
 #include <muParser.h>
 #include <memory>
 
-namespace ScientificToolbox {
+namespace ScientificToolbox::ODE {
     scalar_func parseScalarExpression(const std::string& expr) {
         try {
             if (expr.empty()) {
