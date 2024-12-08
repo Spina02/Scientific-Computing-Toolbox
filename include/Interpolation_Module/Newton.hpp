@@ -11,11 +11,14 @@ namespace ScientificToolbox {
     template <typename T>
     class Newton : public PolynomialInterpolation<T> {
     public:
+        // Constructor that accepts a set of points
+        explicit Newton(const std::set<point<T>>& data) : PolynomialInterpolation<T>(data) {}
+
         // Destructor
         virtual ~Newton() = default;
 
         // Function to compute divided differences
-        std::vector<std::vector<T>> divided_differences() {
+        std::vector<std::vector<T>> divided_differences() const{
             size_t n = this->x.size(); // Accessing inherited x and y values
             std::vector<std::vector<T>> table(n, std::vector<T>(n, 0.0)); // Table of divided differences
 
@@ -35,7 +38,7 @@ namespace ScientificToolbox {
         }
 
         // Function to compute Newton polynomial coefficients
-        std::vector<T> newton_coefficients() {
+        std::vector<T> newton_coefficients() const{
             auto table = divided_differences();  // No need to pass x and y explicitly
             std::vector<T> coefficients;
 

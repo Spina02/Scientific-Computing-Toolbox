@@ -11,7 +11,7 @@ namespace ScientificToolbox {
     class PolynomialInterpolation : public Interpolation<T> {
     public:
         // Constructor
-        explicit PolynomialInterpolation(const typename Interpolation<T>::set& data) : Interpolation<T>(data) {
+        explicit PolynomialInterpolation(const typename Interpolation<T>::point_set& data) : Interpolation<T>(data) {
             if (data.empty()) {
                 throw std::invalid_argument("Data points cannot be empty.");
             }

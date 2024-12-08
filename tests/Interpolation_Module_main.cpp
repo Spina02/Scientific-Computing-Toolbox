@@ -39,6 +39,46 @@ int main() {
         std::cin >> x;
         std::cout << "Interpolated value at x = " << x << ": " << linear(x) << std::endl;
 
+        // Lagrange Interpolation Test
+        Lagrange<double> lagrange(points);
+        std::cout << "\nLagrange Interpolation:" << std::endl;
+        std::cout << "Insert a value for x: ";
+        std::cin >> x;
+        std::cout << "Interpolated value at x = " << x << ": " << lagrange(x) << std::endl;
+        // printing the coefficients in the form y = a + bx + cx^2 + ...
+        std::vector<double> lagrange_coefficients = lagrange.compute_lagrange_coefficients();
+        std::cout << "Lagrange Coefficients: ";
+        for (size_t i = 0; i < lagrange_coefficients.size(); ++i) {
+            std::cout << lagrange_coefficients[i];
+            if (i > 0) {
+                std::cout << "x^" << i;
+            }
+            if (i < lagrange_coefficients.size() - 1) {
+                std::cout << " + ";
+            }
+        }
+        std::cout << std::endl;
+
+        // Newton Interpolation Test
+        Newton<double> newton(points);
+        std::cout << "\nNewton Interpolation:" << std::endl;
+        std::cout << "Insert a value for x: ";
+        std::cin >> x;
+        std::cout << "Interpolated value at x = " << x << ": " << newton(x) << std::endl;
+        // printing the coefficients in the form y = a + bx + cx^2 + ...
+        std::vector<double> newton_coefficients = newton.newton_coefficients();
+        std::cout << "Newton Coefficients: ";
+        for (size_t i = 0; i < newton_coefficients.size(); ++i) {
+            std::cout << newton_coefficients[i];
+            if (i > 0) {
+                std::cout << "x^" << i;
+            }
+            if (i < newton_coefficients.size() - 1) {
+                std::cout << " + ";
+            }
+        }
+        std::cout << std::endl;
+
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
     }

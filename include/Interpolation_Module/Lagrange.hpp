@@ -11,12 +11,14 @@ namespace ScientificToolbox {
     template <typename T>
     class Lagrange : public ScientificToolbox::PolynomialInterpolation<T> {
     public:
+        // Constructor that accepts a set of points
+        explicit Lagrange(const std::set<point<T>>& data) : PolynomialInterpolation<T>(data) {}
 
         // Destructor
         ~Lagrange() = default;
 
         // Computing Lagrange coefficients
-        std::vector<T> compute_lagrange_coefficients() {
+        std::vector<T> compute_lagrange_coefficients() const {
             size_t n = this->x.size(); // Use inherited x and y values
             std::vector<T> polynomial(n, 0.0); // Resulting polynomial coefficients
 
