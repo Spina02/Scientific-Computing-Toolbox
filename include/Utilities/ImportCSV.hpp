@@ -3,7 +3,7 @@
 
 
 #include "ImportData.hpp"
-#include "../Interpolation_Module/small_classes.hpp"
+#include "../Interpolation_Module/utilities_interpolation.hpp"
 #include <string>
 #include <vector>
 #include <unordered_map>

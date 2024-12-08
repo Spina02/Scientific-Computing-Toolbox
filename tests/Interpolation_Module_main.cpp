@@ -1,4 +1,4 @@
-#include "../include/Interpolation_Module/small_classes.hpp"
+#include "../include/Interpolation_Module/utilities_interpolation.hpp"
 #include "../include/Interpolation_Module/Interpolation.hpp"
 #include "../include/Interpolation_Module/LinearInterpolation.hpp"
 #include "../include/Interpolation_Module/PolynomialInterpolation.hpp"

@@ -2,7 +2,7 @@
 #define LINEARINTERPOLATION_HPP
 
 #include "Interpolation.hpp"
-#include "small_classes.hpp"
+#include "utilities_interpolation.hpp"
 
 #include <set>
 #include <vector>
