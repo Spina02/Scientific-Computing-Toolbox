@@ -1,16 +1,17 @@
 #ifndef ODETESTER_HPP
 #define ODETESTER_HPP
 
-#include "../../include/Utilities/Utilities.hpp"
-#include "../../include/ODE_Module/ODESolver.hpp"
-#include "../../include/ODE_Module/ExpressionParser.hpp"
-#include "../../include/ODE_Module/FESolver.hpp"
+#include "ODESolver.hpp"
+#include "ExpressionParser.hpp"
+#include "ForwardEulerSolver.hpp"
+#include "RK4Solver.hpp"
+#include "ExplicitMidpointSolver.hpp"
 #include <iostream>
-#include <string>
-#include <variant>
-#include <vector>
+//#include <string>
+//#include <variant>
+//#include <vector>
 
-namespace ScientificToolbox {
+namespace ScientificToolbox::ODE {
 
 struct ScalarODETestCase {
     std::string expr;
@@ -34,13 +35,15 @@ struct VectorODETestCase {
 
 using test_case = std::variant<ScalarODETestCase, VectorODETestCase>;
 
+static inline const vec_s solver_types = {"ForwardEulerSolver", "RK4Solver", "ExplicitMidpointSolver"}; 
+
 class ODETester {
 public:
     ODETester();
     ~ODETester() = default;
 
     bool test_expression_parser();
-    bool test_FESolver();
+    bool test_Solvers();
 
 private:
     // auxiliary functions
