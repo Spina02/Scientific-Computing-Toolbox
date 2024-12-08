@@ -6,6 +6,69 @@
 #include <vector>  // Include the header for vector
 #include <stdexcept>
 
+/**
+ * namespace ScientificToolbox::Interpolation
+ * @brief Interpolation module providing basic interpolation functions
+ * 
+ * This namespace contains template classes for common interpolation methods:
+ * - Linear interpolation
+ * - Polynomial interpolation
+ * - Spline interpolation
+ */
+
+/** Interpolation class
+ * @brief Abstract base class for interpolation
+ * @tparam T Data type for interpolation
+ * 
+ * This class provides a common interface for interpolation methods.
+ * It stores a set of data points and provides a virtual function for interpolation.
+ * The class also provides a method to convert the data to a pair of vectors.
+ * 
+ * The class is templated on the data type T and requires a point class with get_x() and get_y() methods.
+ * The class also provides an overloaded operator() for interpolation.
+ * 
+ */
+
+/** point_set
+ * @brief Alias for a set of points
+ * 
+ * This alias is used to define the data structure for interpolation.
+ * It is a set of points with a custom comparison operator.
+ * 
+ */
+
+/** Constructor
+ * @brief Constructs an interpolation object with a set of data points
+ * @param data Set of data points
+ * @throws std::invalid_argument if data is empty
+ */
+
+/** Destructor
+ * @brief Virtual destructor for interpolation class
+ */
+
+/** toVectors
+ * @brief Converts data points to a pair of vectors
+ * @return Pair of vectors (x, y) representing the data points
+ */
+
+/** interpolate
+ * @brief Pure virtual function for interpolation
+ * @param x Interpolation point
+ * @return Interpolated value at point x
+ */
+
+/** operator()
+ * @brief Overloaded operator for interpolation
+ * @param x Interpolation point
+ * @return Interpolated value at point x
+ */
+
+/** getData
+ * @brief Getter for data points
+ * @return Reference to the data points
+ */
+
 namespace ScientificToolbox {
 
     // Abstract base class for interpolation

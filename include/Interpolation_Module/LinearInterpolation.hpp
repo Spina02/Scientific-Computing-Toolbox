@@ -9,6 +9,62 @@
 #include <algorithm>
 #include <stdexcept>
 
+/**
+ * namespace ScientificToolbox::Interpolation
+ * @brief Interpolation module providing basic interpolation functions
+ * 
+ * This namespace contains template classes for common interpolation methods:
+ * - Linear interpolation
+ * - Polynomial interpolation
+ * - Spline interpolation
+ */
+
+/** class LinearInterpolation
+ * @brief Linear interpolation class
+ * 
+ * This class implements linear interpolation using the `Interpolation` base class.
+ * It computes the interpolated functions at each interval and provides the `interpolate` method.
+ * 
+ * @tparam T Data type of the x and y values
+ * 
+ * @see Interpolation
+ * 
+ */
+
+/** Constructor
+ * @brief Constructor for the LinearInterpolation class
+ * 
+ * This constructor computes the interpolated functions at each interval.
+ * It takes a set of data points and computes the linear interpolation between each pair of points.
+ * 
+ * @param data Set of data points
+ * 
+ */
+
+/** interpolate
+ * @brief Interpolate method for linear interpolation
+ * 
+ * This method evaluates the interpolated function at a given x value.
+ * It finds the interval containing the x value and evaluates the linear function at that interval.
+ * 
+ * @param x Value at which to interpolate
+ * 
+ * @return Interpolated value at x
+ * 
+ */
+
+/** operator()
+ * @brief Overloaded operator() for linear interpolation
+ * 
+ * This method overloads the function call operator to provide a more intuitive way to interpolate.
+ * It simply calls the `interpolate` method and returns the result.
+ * 
+ * @param x Value at which to interpolate
+ * 
+ * @return Interpolated value at x
+ * 
+ */
+
 namespace ScientificToolbox {
 
     // Derived class for linear interpolation

@@ -16,9 +16,12 @@
 using DataValue = std::variant<int, double, std::string>;
 using OptionalDataValue = std::optional<DataValue>;
 
-/**
- * @namespace StatsModule
- * @brief Namespace containing data import and statistical analysis functionality
+/** namespace ScientificToolbox
+ * @brief Namespace containing classes and functions for scientific computing
+ * 
+ * This namespace contains a collection of classes and functions for scientific computing,
+ * including statistical analysis, data manipulation, and numerical methods.
+ * 
  */
 
 /**
@@ -39,15 +42,15 @@ using OptionalDataValue = std::optional<DataValue>;
  * Opens and reads a CSV file line by line, parsing the header and subsequent data rows.
  */
 
-/**
- * @method toPairVector
- * @brief Converts the parsed data to a vector of pairs
- * @tparam T The data type to convert the values to
- * @return Vector of pairs containing the converted data
+/** @method read_points_from_csv
+ * @brief Reads a CSV file and returns a set of points
+ * @tparam T The data type of the points
+ * @param filename The path to the CSV file
+ * @return Set of points read from the CSV file
  * 
- * Converts the parsed data into a vector of pairs, where each pair contains two values
- * of type T. This method is a template method that can be used to convert the data to
- * different types, such as int, double, etc.
+ * This method reads a CSV file containing x,y pairs of data and returns a set of points
+ * of type T. The CSV file is expected to have a format where each line contains two values
+ * separated by a comma, representing the x and y coordinates of a point.
  */
 
 /**
@@ -110,7 +113,7 @@ public:
             parseLine(line);
         }
     }
-
+    
     // Function to read CSV file and output std::set<point<T>> for double values
     template <typename T>
     std::set<point<T>> read_points_from_csv(const std::string& filename) {

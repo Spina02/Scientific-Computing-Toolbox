@@ -15,13 +15,59 @@
 #include <cmath>   // For isnan
 #include <set>     // For unique random number generation
 
+/**
+ * namespace ScientificToolbox::Interpolation
+ * @brief Interpolation module providing basic interpolation functions
+ * 
+ * This namespace contains template classes for common interpolation methods:
+ * - Linear interpolation
+ * - Polynomial interpolation
+ * - Spline interpolation
+ */
+
+/** importer
+ * @brief Import data from a CSV file
+ * 
+ * This class provides functionality to import data from a CSV file.
+ * It reads the file line by line and parses the data into a data structure.
+ * 
+ * The class is an abstract base class that defines the import method.
+ * Derived classes can implement the import method for specific data types.
+ * 
+ * @see ImportCSV
+ * 
+ */
+
+/** 
+ * @file Interpolation_Module_main.cpp
+ * @brief Main program for interpolation module
+ * 
+ * This program demonstrates the use of the interpolation module.
+ * It reads data points from a CSV file and performs linear, Lagrange, and Newton interpolation.
+ * 
+ * Required includes:
+ * - <iostream>          - For standard I/O operations
+ * - <set>               - For std::set data structure
+ * - <vector>            - For dynamic arrays
+ * - "ImportCSV.hpp"     - For CSV file importing
+ * - "LinearInterpolation.hpp" - For linear interpolation
+ * - "Lagrange.hpp"      - For Lagrange interpolation
+ * - "Newton.hpp"        - For Newton interpolation
+ * 
+ * @return 0 on success, prints error message to stderr on failure
+ *  
+ * @throws std::runtime_error If an error occurs during interpolation
+ * 
+ */
+
+
 using namespace ScientificToolbox;
 
 int main() {
 
     // Import data from CSV file 
     std::string filename = "../../data/points_R2.csv";
-    ImportCSV importer;
+    ScientificToolbox::ImportCSV importer;
     std::set<point<double>> points = importer.read_points_from_csv<double>(filename);
 
     // Print the points in the set

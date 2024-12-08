@@ -6,6 +6,57 @@
 #include <vector>
 #include <cmath> 
 
+/**
+ * namespace ScientificToolbox::Interpolation
+ * @brief Interpolation module providing basic interpolation functions
+ * 
+ * This namespace contains template classes for common interpolation methods:
+ * - Linear interpolation
+ * - Polynomial interpolation
+ * - Spline interpolation
+ */
+
+/** Newton class
+ * @brief Newton polynomial interpolation
+ * 
+ * This class implements Newton polynomial interpolation using divided differences.
+ * It inherits from the PolynomialInterpolation class and provides the following methods:
+ * - divided_differences: Compute divided differences table
+ * - newton_coefficients: Compute Newton polynomial coefficients
+ * - interpolate: Interpolate a value using the Newton polynomial
+ * 
+ * @tparam T Data type (e.g., float, double)
+ * @see PolynomialInterpolation
+ */
+
+/** divided_differences method
+ * @brief Compute divided differences table
+ * 
+ * This method computes the divided differences table for Newton polynomial interpolation.
+ * It uses the x and y values provided in the constructor to fill the table.
+ * 
+ * @return Table of divided differences
+ */
+
+/** newton_coefficients method
+ * @brief Compute Newton polynomial coefficients
+ * 
+ * This method computes the Newton polynomial coefficients using the divided differences table.
+ * It extracts the coefficients from the table and returns them as a vector.
+ * 
+ * @return Vector of Newton polynomial coefficients
+ */
+
+/** interpolate method
+ * @brief Interpolate a value using the Newton polynomial
+ * 
+ * This method evaluates the Newton polynomial at a given point x.
+ * It uses the Newton coefficients to compute the polynomial value at x.
+ * 
+ * @param x Interpolation point
+ * @return Interpolated value at x
+ */
+
 namespace ScientificToolbox {
 
     template <typename T>
