@@ -12,6 +12,9 @@
 #include <optional>
 #include <variant>
 #include <set>
+#include <type_traits>
+#include <concepts>
+#include <stdexcept>
 
 using DataValue = std::variant<int, double, std::string>;
 using OptionalDataValue = std::optional<DataValue>;
@@ -119,28 +122,39 @@ public:
     std::set<ScientificToolbox::Interpolation::point<T>> read_points_from_csv(const std::string& filename) {
         std::set<ScientificToolbox::Interpolation::point<T>> points;
         std::ifstream file(filename);
-        
-        // Check if the file is open
+
         if (!file.is_open()) {
             throw std::runtime_error("Could not open the file!");
-            return points;
         }
 
         std::string line;
+
+        // Skip the first line (header)
+        std::getline(file, line);
+        std::cout << "Skipped header: " << line << std::endl;  // Debugging header
+
         while (std::getline(file, line)) {
             std::stringstream ss(line);
             T x, y;
-
-            // Read x and y from each line (assuming CSV format "x,y")
             char comma;
+
+            // Debugging: Print the line being read
+            std::cout << "Reading line: " << line << std::endl;
+
             if (ss >> x >> comma >> y) {
+                // Debugging: Print parsed values
+                std::cout << "Parsed values: x = " << x << ", y = " << y << std::endl;
                 points.insert(ScientificToolbox::Interpolation::point<T>(x, y));
+            } else {
+                std::cerr << "Failed to parse line: " << line << std::endl;
+                throw std::runtime_error("Failed to parse numeric values from the CSV file. Check the file content, it should not contain characters or strings but only two column with x and y values respectively.");
             }
         }
 
         file.close();
         return points;
     }
+
 
 private: 
     std::vector<std::string> headers_;
