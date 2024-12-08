@@ -15,6 +15,7 @@
 #include <type_traits>
 #include <concepts>
 #include <stdexcept>
+#include <iostream>
 
 using DataValue = std::variant<int, double, std::string>;
 using OptionalDataValue = std::optional<DataValue>;
