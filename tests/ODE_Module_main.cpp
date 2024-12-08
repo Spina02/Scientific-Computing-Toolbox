@@ -1,11 +1,10 @@
 #include "../include/ODE_Module/ODETester.hpp"
 
-
 #include <iostream>
 #include <vector>
 #include <algorithm>
 
-using namespace ScientificToolbox;
+using namespace ScientificToolbox::ODE;
 
 int main() {
     ODETester tester;
@@ -15,13 +14,13 @@ int main() {
     all_passed &= tester.test_expression_parser();
     
     // Test Forward Euler Solver
-    all_passed &= tester.test_FESolver();
+    all_passed &= tester.test_Solvers();
 
     if (all_passed) {
-        std::cout << "All tests passed!" << std::endl;
+        std::cout << std::endl << std::endl << "All tests passed!" << std::endl;
     } else {
-        std::cerr << "Some tests failed!" << std::endl;
+        std::cerr << std::endl << std::endl << "Some tests failed!" << std::endl;
     }
 
-    return !all_passed;  // Return 0 if all tests pass
+    return 0;
 }

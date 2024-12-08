@@ -81,6 +81,7 @@ double mean(const std::vector<T>& data) {
 }
 
 //median
+
 template <typename T>
 double median(std::vector<T> data) {
 

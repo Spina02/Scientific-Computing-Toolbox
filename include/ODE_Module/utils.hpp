@@ -1,5 +1,5 @@
-#ifndef UTILITIES_HPP
-#define UTILITIES_HPP
+#ifndef UTILITIES_ODE_HPP
+#define UTILITIES_ODE_HPP
 
 #include <vector>
 #include <functional>
@@ -20,4 +20,4 @@ namespace ScientificToolbox {
     using var_expr = std::variant<std::string, vec_s>;
 }
 
-#endif // UTILITIES_HPP
+#endif // UTILITIES_ODE_HPP

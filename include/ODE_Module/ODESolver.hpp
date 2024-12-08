@@ -1,11 +1,11 @@
 #ifndef ODESOLVER_HPP
 #define ODESOLVER_HPP
 
-#include "../Utilities/Utilities.hpp"
+#include "utils.hpp"
 #include <vector>
 #include <variant>
 
-namespace ScientificToolbox {
+namespace ScientificToolbox::ODE {
     
     class ODESolver {
     // State variables
