@@ -61,7 +61,7 @@
  */
 
 
-using namespace ScientificToolbox;
+using namespace ScientificToolbox::Interpolation;
 
 int main() {
 

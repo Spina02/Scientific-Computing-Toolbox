@@ -44,7 +44,7 @@
  * 
  */
 
-namespace ScientificToolbox {
+namespace ScientificToolbox::Interpolation {
     // point class
     template <typename T>
     class point {

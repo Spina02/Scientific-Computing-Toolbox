@@ -65,7 +65,7 @@
  * 
  */
 
-namespace ScientificToolbox {
+namespace ScientificToolbox::Interpolation {
 
     // Derived class for linear interpolation
     template <typename T>

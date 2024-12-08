@@ -116,8 +116,8 @@ public:
     
     // Function to read CSV file and output std::set<point<T>> for double values
     template <typename T>
-    std::set<point<T>> read_points_from_csv(const std::string& filename) {
-        std::set<point<T>> points;
+    std::set<ScientificToolbox::Interpolation::point<T>> read_points_from_csv(const std::string& filename) {
+        std::set<ScientificToolbox::Interpolation::point<T>> points;
         std::ifstream file(filename);
         
         // Check if the file is open
@@ -134,7 +134,7 @@ public:
             // Read x and y from each line (assuming CSV format "x,y")
             char comma;
             if (ss >> x >> comma >> y) {
-                points.insert(point<T>(x, y));
+                points.insert(ScientificToolbox::Interpolation::point<T>(x, y));
             }
         }
 

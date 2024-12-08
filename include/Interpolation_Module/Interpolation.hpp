@@ -69,7 +69,7 @@
  * @return Reference to the data points
  */
 
-namespace ScientificToolbox {
+namespace ScientificToolbox::Interpolation {
 
     // Abstract base class for interpolation
     template <typename T>

@@ -68,7 +68,7 @@
  * 
  */
 
-namespace ScientificToolbox {
+namespace ScientificToolbox::Interpolation {
 
     template <typename T>
     class PolynomialInterpolation : public Interpolation<T> {

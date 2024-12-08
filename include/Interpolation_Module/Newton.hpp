@@ -57,7 +57,7 @@
  * @return Interpolated value at x
  */
 
-namespace ScientificToolbox {
+namespace ScientificToolbox::Interpolation {
 
     template <typename T>
     class Newton : public PolynomialInterpolation<T> {

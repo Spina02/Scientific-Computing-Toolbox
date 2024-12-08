@@ -51,7 +51,7 @@
  * 
  */
 
-namespace ScientificToolbox {
+namespace ScientificToolbox::Interpolation {
 
     template <typename T>
     class Lagrange : public PolynomialInterpolation<T> {
