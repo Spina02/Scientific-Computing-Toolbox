@@ -57,7 +57,10 @@ using OptionalDataValue = std::optional<DataValue>;
  * 
  * This method reads a CSV file containing x,y pairs of data and returns a set of points
  * of type T. The CSV file is expected to have a format where each line contains two values
- * separated by a comma, representing the x and y coordinates of a point.
+ * separated by a comma, representing the x and y coordinates of a point. The points are
+ * stored in a set to ensure uniqueness and sorted order. The sorted order is important here since 
+ * the points are used for interpolation, and the interpolation methods require the points to be sorted.
+ * Also, the set ensures that there are no duplicate points in the data.
  */
 
 /**
