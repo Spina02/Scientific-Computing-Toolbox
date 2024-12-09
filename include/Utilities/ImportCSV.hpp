@@ -15,6 +15,10 @@
 #include <type_traits>
 #include <concepts>
 #include <stdexcept>
+#include <iostream>
+#include <charconv>
+
+const inline bool DEBUG = false;
 
 using DataValue = std::variant<int, double, std::string>;
 using OptionalDataValue = std::optional<DataValue>;
@@ -110,6 +114,7 @@ public:
 
         std::string line;
         std::getline(file, line);
+
         parseHeader(line);
 
         while (std::getline(file, line)) {
@@ -131,19 +136,23 @@ public:
 
         // Skip the first line (header)
         std::getline(file, line);
-        std::cout << "Skipped header: " << line << std::endl;  // Debugging header
+        if (DEBUG)
+            // Debugging header
+            std::cout << "Skipped header: " << line << std::endl;
 
         while (std::getline(file, line)) {
             std::stringstream ss(line);
             T x, y;
             char comma;
 
-            // Debugging: Print the line being read
-            std::cout << "Reading line: " << line << std::endl;
+            if (DEBUG)
+                // Debugging: Print the line being read
+                std::cout << "Reading line: " << line << std::endl;
 
             if (ss >> x >> comma >> y) {
-                // Debugging: Print parsed values
-                std::cout << "Parsed values: x = " << x << ", y = " << y << std::endl;
+                if (DEBUG)
+                    // Debugging: Print parsed values
+                    std::cout << "Parsed values: x = " << x << ", y = " << y << std::endl;
                 points.insert(ScientificToolbox::Interpolation::point<T>(x, y));
             } else {
                 std::cerr << "Failed to parse line: " << line << std::endl;
@@ -160,60 +169,126 @@ private:
     std::vector<std::string> headers_;
 
     void parseHeader(const std::string& line) {
-
         std::stringstream ss(line);
         std::string header;
 
-        while (std::getline(ss,header, ',')) {
-            headers_.push_back(header);
+        // Clear existing headers before parsing new ones
+        headers_.clear();
+
+        // Parse headers from the first line
+        while (std::getline(ss, header, ',')) {
+            if (!header.empty()) {
+                headers_.push_back(header);
+            } else {
+                std::cerr << "Warning: Empty header found" << std::endl;
+            }
         }
 
+        // Check if any headers were found
+        if (headers_.empty()) {
+            throw std::runtime_error("No headers found in the CSV file.");
+        }
 
+        // Debugging: Print parsed headers
+        if (DEBUG) {
+            std::cout << "Parsed headers: ";
+            for (const auto& h : headers_) {
+                std::cout << h << " ";
+            }
+            std::cout << std::endl;
+        }
     }
 
-    void parseLine(const std::string& line){
-
+    void parseLine(const std::string& line) {
         std::stringstream ss(line);
         std::string cell;
         std::unordered_map<std::string, OptionalDataValue> row;
 
         size_t i = 0;
+        bool inside_quotes = false;
+        std::string current_cell;
 
-        while (std::getline(ss,cell, ',')) {
+        // Parse each cell in the line
+        for (char ch : line) {
+            // Handle quotes and commas
+            if (ch == '"') {
+                inside_quotes = !inside_quotes;
+            } 
+            // 
+            else if (ch == ',' && !inside_quotes) {
+                if (i >= headers_.size()) {
+                    std::cerr << "Warning: More cells than headers in line: " << line << std::endl;
+                    break;
+                }
 
-            if (cell.empty()) {
-
-                row[headers_[i]] = std::nullopt;
-
+                if (current_cell.empty()) {
+                    row[headers_[i]] = std::nullopt;
+                } else {
+                    row[headers_[i]] = parseValue(current_cell);
+                }
+                current_cell.clear();
+                i++;
             } else {
-
-                row[headers_[i]] = parseValue(cell);
-
+                current_cell += ch;
             }
+        }
 
-            i++;
+        if (!current_cell.empty()) {
+            if (i >= headers_.size()) {
+                std::cerr << "Warning: More cells than headers in line: " << line << std::endl;
+            } else {
+                row[headers_[i]] = parseValue(current_cell);
+            }
+        }
+
+        if (i < headers_.size() - 1) {
+            std::cerr << "Warning: Fewer cells ("<< i <<") than headers in line ("<< headers_.size() <<"): " << std::endl; // line << std::endl;
         }
 
         data_.push_back(row);
-
     }
 
+    std::string trim(const std::string& str) {
+        size_t start = 0;
+        while (start < str.size() && std::isspace(static_cast<unsigned char>(str[start]))) {
+            ++start;
+        }
+
+        size_t end = str.size();
+        while (end > start && std::isspace(static_cast<unsigned char>(str[end - 1]))) {
+            --end;
+        }
+
+        // Remove quotes if present
+        if (start < end && str[start] == '"' && str[end - 1] == '"') {
+            ++start;
+            --end;
+        }
+
+        return str.substr(start, end - start);
+    }
 
     OptionalDataValue parseValue(const std::string& cell) {
+        std::string trimmed_cell = trim(cell);
 
-        try {
-            int int_value = std::stoi(cell);
+        if (trimmed_cell.find(',') != std::string::npos) {
+            return trimmed_cell;
+        }
+
+        int int_value;
+        auto int_result = std::from_chars(trimmed_cell.data(), trimmed_cell.data() + trimmed_cell.size(), int_value);
+        if (int_result.ec == std::errc() && int_result.ptr == trimmed_cell.data() + trimmed_cell.size()) {
             return int_value;
-        } catch (...){}
+        }
 
-        try {
-            double double_value = std::stod(cell);
-            return double_value; 
-        } catch (...){}
+        double double_value;
+        auto double_result = std::from_chars(trimmed_cell.data(), trimmed_cell.data() + trimmed_cell.size(), double_value);
+        if (double_result.ec == std::errc() && double_result.ptr == trimmed_cell.data() + trimmed_cell.size()) {
+            return double_value;
+        }
 
-        return cell;
+        return trimmed_cell;
     }
-
 
 };
 }

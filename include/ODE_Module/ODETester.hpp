@@ -6,10 +6,8 @@
 #include "ForwardEulerSolver.hpp"
 #include "RK4Solver.hpp"
 #include "ExplicitMidpointSolver.hpp"
+#include "../Utilities/ImportCSV.hpp"
 #include <iostream>
-//#include <string>
-//#include <variant>
-//#include <vector>
 
 namespace ScientificToolbox::ODE {
 
@@ -52,6 +50,9 @@ private:
     bool test_expression(const var_expr& expr_variant, double t_val, const var_vec& y_val, const var_vec& expected_val, int test_num);
     
     bool test_simple_ode(const test_case& case_variant, const std::string solver_type, int test_num);
+
+    void load_tests_from_csv(const std::string& filename);
+    void parse_test_case(const std::unordered_map<std::string, OptionalDataValue>& row);
 
     vec_d t;
     vec_d y;

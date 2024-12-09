@@ -71,11 +71,13 @@ int main(int argc, char** argv) {
 
     
     if (argc == 1) {
-        std::cerr << "Usage: " << argv[0] << " [input_file] [output_file] [target_column]\n";
-        std::cerr << "Using default values:\n";
-        std::cerr << "Input file: " << inputFile << "\n";
-        std::cerr << "Output file: " << outputFile << "\n";
-        std::cerr << "Target column: " << targetColumn << "\n";
+        std::cout << std::endl;
+        std::cout << "Usage: " << argv[0] << " [input_file] [output_file] [target_column]\n";
+        std::cout << "Using default values:\n";
+        std::cout << "Input file: " << inputFile << "\n";
+        std::cout << "Output file: " << outputFile << "\n";
+        std::cout << "Target column: " << targetColumn << "\n";
+        std::cout << std::endl;
     }
 
     try {
