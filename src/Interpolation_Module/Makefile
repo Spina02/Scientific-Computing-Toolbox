@@ -8,8 +8,8 @@ LDFLAGS = -L/opt/homebrew/opt/gsl/lib -lgsl -lgslcblas -lm
 
 # Relative paths
 SRC_DIR = ../../src/$(MODULE)
-MAIN_DIR = ../../tests/main
-TEST_DIR = ../../tests/test
+MAIN_DIR = ../../main
+TEST_DIR = ../../tests
 BUILD_DIR = ../../build/$(MODULE)
 LIB_DIR = $(BUILD_DIR)/lib
 OBJ_DIR = $(BUILD_DIR)/obj

@@ -1,6 +1,6 @@
-#include "../../include/Utilities/ImportCSV.hpp"
-#include "../../include/Statistics_Module/Utils.hpp"
-#include "../../include/Statistics_Module/Stats.hpp"
+#include "../include/Utilities/ImportCSV.hpp"
+#include "../include/Statistics_Module/Utils.hpp"
+#include "../include/Statistics_Module/Stats.hpp"
 
 #include <iostream>
 #include <filesystem>

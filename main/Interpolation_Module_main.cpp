@@ -1,11 +1,11 @@
-#include "../../include/Interpolation_Module/utilities_interpolation.hpp"
-#include "../../include/Interpolation_Module/Interpolation.hpp"
-#include "../../include/Interpolation_Module/LinearInterpolation.hpp"
-#include "../../include/Interpolation_Module/PolynomialInterpolation.hpp"
-#include "../../include/Interpolation_Module/Lagrange.hpp"
-#include "../../include/Interpolation_Module/Newton.hpp"
-#include "../../include/Utilities/ImportCSV.hpp"
-#include "../../include/Utilities/ImportData.hpp"
+#include "../include/Interpolation_Module/utilities_interpolation.hpp"
+#include "../include/Interpolation_Module/Interpolation.hpp"
+#include "../include/Interpolation_Module/LinearInterpolation.hpp"
+#include "../include/Interpolation_Module/PolynomialInterpolation.hpp"
+#include "../include/Interpolation_Module/Lagrange.hpp"
+#include "../include/Interpolation_Module/Newton.hpp"
+#include "../include/Utilities/ImportCSV.hpp"
+#include "../include/Utilities/ImportData.hpp"
 
 #include <iostream>
 #include <vector>
