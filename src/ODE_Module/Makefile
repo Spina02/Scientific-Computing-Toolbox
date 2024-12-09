@@ -3,26 +3,26 @@ MODULE = ODE_Module
 # Compiler and flags
 CXX = g++
 CPPFLAGS = -Iinclude/$(MODULE)
-CXXFLAGS = -std=c++17 -Wall -Wpedantic -Werror -fPIC
+CXXFLAGS = -std=c++17 -Wall -Wpedantic -fPIC -Wnested-anon-types -Werror
 
 # Dependencies configuration
-DEPS = muparser # eigen3 getpot
+DEPS = muparser eigen3 
 
 # Collect all flags from pkg-config
-PKG_CFLAGS := $(shell pkg-config --cflags $(DEPS) 2>/dev/null)
+PKG_CFLAGS := $(shell pkg-config --cflags $(DEPS) 2>/dev/null) -I/opt/homebrew/include/eigen3
 PKG_LIBS := $(shell pkg-config --libs $(DEPS) 2>/dev/null)
 
 # Fallback paths if pkg-config fails
 ifeq ($(PKG_CFLAGS),)
     # muParser fallback
-    MUPARSER_INCLUDE ?= /usr/include
-    MUPARSER_LIB ?= /usr/lib
-    MUPARSER_FLAGS = -I$(MUPARSER_INCLUDE)
+    MUPARSER_INCLUDE ?= /usr/local/include
+    MUPARSER_LIB ?= /usr/local/lib
+    MUPARSER_FLAGS = -I$(MUPARSER_INCLUDE) 
     MUPARSER_LIBS = -L$(MUPARSER_LIB) -lmuparser
 
     # Eigen fallback
-    EIGEN_INCLUDE ?= /usr/include/eigen3
-    EIGEN_FLAGS = -I$(EIGEN_INCLUDE)
+    EIGEN_INCLUDE ?= /usr/local/include/eigen3
+    EIGEN_FLAGS = -I$(EIGEN_INCLUDE) 
 
     # Combine all flags
     PKG_CFLAGS = $(MUPARSER_FLAGS) $(EIGEN_FLAGS)

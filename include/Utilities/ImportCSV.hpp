@@ -285,9 +285,13 @@ private:
         }
 
         double double_value;
-        auto double_result = std::from_chars(trimmed_cell.data(), trimmed_cell.data() + trimmed_cell.size(), double_value);
-        if (double_result.ec == std::errc() && double_result.ptr == trimmed_cell.data() + trimmed_cell.size()) {
+        try {
+            double_value = std::stod(trimmed_cell);
             return double_value;
+        } catch (const std::invalid_argument& e) {
+            // Not a double
+        } catch (const std::out_of_range& e) {
+            // Out of range for a double
         }
 
         return trimmed_cell;

@@ -4,8 +4,7 @@ MODULE = Interpolation_Module
 CXX = g++
 CPPFLAGS = -Iinclude/$(MODULE)
 CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Werror -g -I/opt/homebrew/opt/gsl/include
-LDFLAGS = -L/opt/homebrew/opt/gsl/lib
-LDLIBS = -lgsl -lgslcblas
+LDFLAGS = -L/opt/homebrew/opt/gsl/lib -lgsl -lgslcblas -lm
 
 # Relative paths
 SRC_DIR = ../../src/$(MODULE)
@@ -30,7 +29,7 @@ all: $(LIB_TARGET) $(MAIN_TARGET)
 # Compiling the shared library
 $(LIB_TARGET): $(OBJS)
 	@mkdir -p $(LIB_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -shared $^ -o $@ $(LDLIBS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -shared $^ -o $@
 
 # Compiling the object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
@@ -40,7 +39,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 # Compiling the main program for testing
 $(MAIN_TARGET): $(TEST_DIR)/$(MODULE)_main.cpp $(LIB_TARGET)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $(LDFLAGS) $(LDLIBS) $< -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $(LDFLAGS) $< -o $@
 
 # Clean up build artifacts
 clean:
