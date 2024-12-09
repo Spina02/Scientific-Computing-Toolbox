@@ -3,7 +3,7 @@ MODULE = ODE_Module
 # Compiler and flags
 CXX = g++
 CPPFLAGS = -Iinclude/$(MODULE)
-CXXFLAGS = -std=c++17 -Wall -Wpedantic -fPIC -Wnested-anon-types -Werror
+CXXFLAGS = -std=c++17 -Wall -Wpedantic -fPIC -Wno-nested-anon-types -Werror
 
 # Dependencies configuration
 DEPS = muparser eigen3 
