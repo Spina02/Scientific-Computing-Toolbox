@@ -14,6 +14,7 @@
 #include <algorithm> // For std::find_if
 #include <cmath>   // For isnan
 #include <set>     // For unique random number generation
+#include <limits>  // For infinity
 
 using namespace ScientificToolbox::Interpolation;
 
@@ -26,11 +27,12 @@ int main() {
     try {
         std::set<point<double>> points = importer.read_points_from_csv<double>(filename);
 
-        // Print the points in the set
-        std::cout << "Data Points:" << std::endl;
-        for (const auto& p : points) {
-            std::cout << "(" << p.get_x() << ", " << p.get_y() << ")" << std::endl;
-        }
+        
+
+        // Find the minimum and maximum x values
+        interval<double> min_max = minmax_search(points);
+        std::cout << "Minimum x value: " << min_max.get_lower_bound() << std::endl;
+        std::cout << "Maximum x value: " << min_max.get_upper_bound() << std::endl;
 
         // Linear Interpolation Test
         LinearInterpolation<double> linear(points);

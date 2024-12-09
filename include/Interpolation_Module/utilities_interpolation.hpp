@@ -6,6 +6,7 @@
 #include <stdexcept> // For exceptions
 #include <algorithm> // For std::lower_bound, std::sort
 #include <limits> // For std::numeric_limits
+#include <set> // For std::set
 
 /**
  * namespace ScientificToolbox::Interpolation
@@ -41,6 +42,14 @@
  * 
  * This class stores a pair of lower and upper bounds as an interval.
  * It provides methods to access the lower and upper bounds, and to check if a value is within the interval.
+ * 
+ */
+
+/** minmax_search function
+ * @brief Function to find the minimum and maximum x values in a set of points
+ * @tparam T Type of x and y coordinates
+ * 
+ * This function takes a set of points and returns the minimum and maximum x values.
  * 
  */
 
@@ -99,8 +108,8 @@ namespace ScientificToolbox::Interpolation {
     public:
         interval(T lower_bound, T upper_bound) 
             : lower_bound(lower_bound), upper_bound(upper_bound) {
-            if (lower_bound >= upper_bound) {
-                throw std::invalid_argument("Invalid interval: lower bound must be less than upper bound.");
+            if (lower_bound > upper_bound) {
+                throw std::invalid_argument("Invalid interval: check input data.");
             }
         }
 
@@ -119,6 +128,28 @@ namespace ScientificToolbox::Interpolation {
         T lower_bound;
         T upper_bound;
     };
+
+    // Minmax search
+    template <typename T>
+    interval<T> minmax_search(const std::set<point<T>>& points) {
+        if (points.empty()) {
+            throw std::invalid_argument("Cannot find minmax: empty set of points.");
+        }
+
+        T min = std::numeric_limits<T>::max();
+        T max = std::numeric_limits<T>::lowest();
+
+        for (const auto& p : points) {
+            if (p.get_x() < min) {
+                min = p.get_x();
+            }
+            if (p.get_x() > max) {
+                max = p.get_x();
+            }
+        }
+
+        return interval<T>(min, max);
+    }
 }
 
 #endif
