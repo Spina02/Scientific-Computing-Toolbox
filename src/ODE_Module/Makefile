@@ -34,7 +34,8 @@ LDFLAGS += $(PKG_LIBS)
 
 # Relative paths
 SRC_DIR = ../../src/$(MODULE)
-TEST_DIR = ../../tests
+MAIN_DIR = ../../tests/main
+TEST_DIR = ../../tests/test
 BUILD_DIR = ../../build/$(MODULE)
 LIB_DIR = $(BUILD_DIR)/lib
 OBJ_DIR = $(BUILD_DIR)/obj
@@ -85,7 +86,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 # Compiling the main program for testing
-$(MAIN_TARGET): $(TEST_DIR)/$(MODULE)_main.cpp $(LIB_TARGET)
+$(MAIN_TARGET): $(MAIN_DIR)/$(MODULE)_main.cpp $(LIB_TARGET)
 	@mkdir -p $(BIN_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $@ $(LDFLAGS)
 
