@@ -1,7 +1,6 @@
 #include "../include/Interpolation_Module/utilities_interpolation.hpp"
 #include "../include/Interpolation_Module/Interpolation.hpp"
 #include "../include/Interpolation_Module/LinearInterpolation.hpp"
-#include "../include/Interpolation_Module/PolynomialInterpolation.hpp"
 #include "../include/Interpolation_Module/Cubic_Spline_Interpolation.hpp"
 #include "../include/Interpolation_Module/Lagrange.hpp"
 #include "../include/Interpolation_Module/Newton.hpp"
@@ -49,19 +48,6 @@ int main() {
         std::cout << "Insert a value for x: ";
         std::cin >> x;
         std::cout << "Interpolated value at x = " << x << ": " << lagrange(x) << std::endl;
-        
-        std::vector<double> lagrange_coefficients = lagrange.compute_lagrange_coefficients();
-        std::cout << "Lagrange Coefficients: ";
-        for (size_t i = 0; i < lagrange_coefficients.size(); ++i) {
-            std::cout << lagrange_coefficients[i];
-            if (i > 0) {
-                std::cout << "x^" << i;
-            }
-            if (i < lagrange_coefficients.size() - 1) {
-                std::cout << " + ";
-            }
-        }
-        std::cout << std::endl;
 
         // Newton Interpolation Test
         Newton<double> newton(points);

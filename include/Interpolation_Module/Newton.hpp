@@ -2,7 +2,9 @@
 #define NEWTON_COEFFICIENTS_HPP
 
 #include "Interpolation.hpp"
-#include "PolynomialInterpolation.hpp"
+#include "utilities_interpolation.hpp"
+#include <gsl/gsl_interp.h>
+#include <gsl/gsl_spline.h>
 #include <vector>
 #include <cmath> 
 
@@ -58,30 +60,29 @@
  */
 
 namespace ScientificToolbox::Interpolation {
-
     template <typename T>
-    class Newton : public PolynomialInterpolation<T> {
+    class Newton : public Interpolation<T> {
     public:
         // Constructor that accepts a set of points
-        explicit Newton(const std::set<point<T>>& data) : PolynomialInterpolation<T>(data) {}
+        explicit Newton(const std::set<point<T>>& data) : Interpolation<T>(data) {}
 
         // Destructor
         virtual ~Newton() = default;
 
         // Function to compute divided differences
         std::vector<std::vector<T>> divided_differences() const{
-            size_t n = this->x.size(); // Accessing inherited x and y values
+            size_t n = this->x_.size(); // Accessing inherited x and y values
             std::vector<std::vector<T>> table(n, std::vector<T>(n, 0.0)); // Table of divided differences
 
             // Initialize the first column with y values
             for (size_t i = 0; i < n; ++i) {
-                table[i][0] = this->y[i];
+                table[i][0] = this->y_[i];
             }
 
             // Compute divided differences
             for (size_t j = 1; j < n; ++j) {
                 for (size_t i = 0; i < n - j; ++i) {
-                    table[i][j] = (table[i + 1][j - 1] - table[i][j - 1]) / (this->x[i + j] - this->x[i]);
+                    table[i][j] = (table[i + 1][j - 1] - table[i][j - 1]) / (this->x_[i + j] - this->x_[i]);
                 }
             }
 
@@ -110,8 +111,8 @@ namespace ScientificToolbox::Interpolation {
             T result = coefficients[0]; // Start with the first coefficient
 
             T product = 1.0; // Product term (x - x0)(x - x1)... 
-            for (size_t i = 1; i < this->x.size(); ++i) {
-                product *= (x - this->x[i - 1]); // (x - x0), (x - x1), ...
+            for (size_t i = 1; i < this->x_.size(); ++i) {
+                product *= (x - this->x_[i - 1]); // (x - x0), (x - x1), ...
                 result += coefficients[i] * product; // Add the corresponding term
             }
 

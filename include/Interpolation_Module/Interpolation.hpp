@@ -2,9 +2,13 @@
 #define INTERPOLATION_HPP
 
 #include "utilities_interpolation.hpp"
+
+#include <gsl/gsl_interp.h>
+#include <gsl/gsl_spline.h>
+
 #include <set>
-#include <vector>  // Include the header for vector
 #include <stdexcept>
+#include <vector>
 
 /**
  * namespace ScientificToolbox::Interpolation
@@ -22,14 +26,14 @@
  * 
  * This class provides a common interface for interpolation methods.
  * It stores a set of data points and provides a virtual function for interpolation.
- * The class also provides a method to convert the data to a pair of vectors.
+ * The class also provides a method to convert the data to a pair of std::vector<T>s.
  * 
  * The class is templated on the data type T and requires a point class with get_x() and get_y() methods.
  * The class also provides an overloaded operator() for interpolation.
  * 
  */
 
-/** point_set
+/** std::set<point<T>>
  * @brief Alias for a set of points
  * 
  * This alias is used to define the data structure for interpolation.
@@ -47,9 +51,9 @@
  * @brief Virtual destructor for interpolation class
  */
 
-/** toVectors
- * @brief Converts data points to a pair of vectors
- * @return Pair of vectors (x, y) representing the data points
+/** tostd::vector<T>s
+ * @brief Converts data points to a pair of std::vector<T>s
+ * @return Pair of std::vector<T>s (x, y) representing the data points
  */
 
 /** interpolate
@@ -75,27 +79,21 @@ namespace ScientificToolbox::Interpolation {
     template <typename T>
     class Interpolation {
     public:
-        using point_set = std::set<point<T>>;  // Renamed alias to avoid conflict
 
         // Constructor
-        explicit Interpolation(const point_set& data) : data(data) {
+        explicit Interpolation(const std::set<point<T>>& data) : data(data) {
             if (data.empty()) {
-                throw std::invalid_argument("Data points cannot be empty.");
+                throw std::invalid_argument("Data set cannot be empty.");
+            }
+
+            for (const auto& point : data) {
+                x_.push_back(point.get_x());
+                y_.push_back(point.get_y());
             }
         }
 
         // Virtual destructor
         virtual ~Interpolation() = default;
-
-        // Method to change data structure to a pair of vectors
-        std::pair<std::vector<T>, std::vector<T>> toVectors() const {
-            std::vector<T> x, y;
-            for (const auto& p : data) {
-                x.push_back(p.get_x());  // Corrected access to x coordinate
-                y.push_back(p.get_y());  // Corrected access to y coordinate
-            }
-            return {x, y};
-        }
 
         // Pure virtual interpolation function
         virtual T interpolate(T x) const = 0;
@@ -104,11 +102,9 @@ namespace ScientificToolbox::Interpolation {
         virtual T operator()(T x) const { return interpolate(x); }
 
     protected:
-        // Getter for data
-        const point_set& getData() const { return data; }
-
-    private:
-        point_set data;  // Stored interpolation data
+        std::set<point<T>> data;
+        std::vector<T> x_;
+        std::vector<T> y_;
     };
 
 } // namespace ScientificToolbox

@@ -2,8 +2,9 @@
 #define LAGRANGE_COEFFICIENTS_HPP
 
 #include "Interpolation.hpp"
-#include "PolynomialInterpolation.hpp"
-#include <gsl/gsl_poly.h>
+#include "utilities_interpolation.hpp"
+#include <gsl/gsl_interp.h>
+#include <gsl/gsl_spline.h>
 #include <vector>
 
 /**
@@ -54,58 +55,30 @@
 namespace ScientificToolbox::Interpolation {
 
     template <typename T>
-    class Lagrange : public PolynomialInterpolation<T> {
+    class Lagrange : public Interpolation<T> {
     public:
         // Constructor that accepts a set of points
-        explicit Lagrange(const std::set<point<T>>& data) : PolynomialInterpolation<T>(data) {}
+        explicit Lagrange(const std::set<point<T>>& data) : Interpolation<T>(data) {
+            // Create the spline
+            acc = gsl_interp_accel_alloc();
+            spline = gsl_spline_alloc(gsl_interp_polynomial, this->x_.size());
+        }
 
         // Destructor
-        ~Lagrange() = default;
-
-        // Computing Lagrange coefficients
-        std::vector<T> compute_lagrange_coefficients() const {
-            size_t n = this->x.size(); // Use inherited x and y values
-            std::vector<T> polynomial(n, 0.0); // Resulting polynomial coefficients
-
-            for (size_t i = 0; i < n; ++i) {
-                std::vector<T> basis(n, 0.0); // Coefficients of L_i(x)
-                basis[0] = 1.0; // Start with a constant term for L_i(x)
-
-                // Compute L_i(x)
-                for (size_t j = 0; j < n; ++j) {
-                    if (i != j) {
-                        // Update basis polynomial for (x - x_j) / (x_i - x_j)
-                        for (size_t k = n - 1; k > 0; --k) {
-                            basis[k] = basis[k] * (-this->x[j]) + basis[k - 1];
-                        }
-                        basis[0] *= -this->x[j];
-
-                        // Divide by (x_i - x_j)
-                        for (size_t k = 0; k < n; ++k) {
-                            basis[k] /= (this->x[i] - this->x[j]);
-                        }
-                    }
-                }
-
-                // Add y[i] * L_i(x) to the polynomial
-                for (size_t k = 0; k < n; ++k) {
-                    polynomial[k] += this->y[i] * basis[k];
-                }
-            }
-
-            return polynomial;
+        ~Lagrange() {
+            gsl_spline_free(spline);
+            gsl_interp_accel_free(acc);
         }
 
         // Interpolation function
-        T interpolate(T x) const override {
-            // Obtain the coefficients
-            std::vector<T> coefficients = this->compute_lagrange_coefficients();
-
-            // Evaluate the polynomial at x
-            T result = gsl_poly_eval(coefficients.data(), coefficients.size(), x);
-
-            return result;
+        T interpolate(T x_query) const override {
+            gsl_spline_init(spline, this->x_.data(), this->y_.data(), this->x_.size());
+            return gsl_spline_eval(spline, x_query, acc);
         }
+
+    protected:
+        gsl_interp_accel *acc;
+        gsl_spline *spline;
     };
 
 }

@@ -15,19 +15,11 @@ namespace ScientificToolbox::Interpolation {
     template <typename T>
     class SplineInterpolation : public Interpolation<T> {
     public:
-        using point_set = typename Interpolation<T>::point_set;
         // Constructor
-        explicit SplineInterpolation(const point_set& data) : Interpolation<T>(data) {
-            if (data.empty()) {
-                throw std::invalid_argument("Data points cannot be empty.");
-            }
-
-            x = this->toVectors().first;
-            y = this->toVectors().second;
-
+        explicit SplineInterpolation(const std::set<point<T>>& data) : Interpolation<T>(data) {
             // Create the spline
             acc = gsl_interp_accel_alloc();
-            spline = gsl_spline_alloc(gsl_interp_cspline, x.size());
+            spline = gsl_spline_alloc(gsl_interp_cspline, this->x_.size());
         }
 
         // Destructor
@@ -38,16 +30,13 @@ namespace ScientificToolbox::Interpolation {
 
         // Interpolation function
         T interpolate(T x_query) const override {
-            gsl_spline_init(spline, x.data(), y.data(), x.size());
+            gsl_spline_init(spline, this->x_.data(), this->y_.data(), this->x_.size());
             return gsl_spline_eval(spline, x_query, acc);
         }
 
     protected:
-        std::vector<T> x;
-        std::vector<T> y;
         gsl_interp_accel *acc;
         gsl_spline *spline;
-        const bool DEBUG = true;
     };
 }
 
