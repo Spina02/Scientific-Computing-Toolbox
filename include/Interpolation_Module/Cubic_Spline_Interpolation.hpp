@@ -1,58 +1,52 @@
-#ifndef CUBIC_SPLINE_INTERPOLATION_HPP
-#define CUBIC_SPLINE_INTERPOLATION_HPP
+#ifndef CUBIB_SPLINE_INTERPOLATION_HPP
+#define CUBIB_SPLINE_INTERPOLATION_HPP
 
 #include "Interpolation.hpp"
+#include "Cubic_Spline_Interpolation.hpp"
 #include "utilities_interpolation.hpp"
-#include <boost/math/interpolators/cardinal_cubic_b_spline.hpp>
-
+#include <gsl/gsl_interp.h>
+#include <gsl/gsl_spline.h>
 #include <vector>
 #include <iostream>
-
-
+#include <stdexcept>
 
 namespace ScientificToolbox::Interpolation {
 
     template <typename T>
-    class CubicSplineInterpolation : public Interpolation<T> {
+    class SplineInterpolation : public Interpolation<T> {
     public:
+        using point_set = typename Interpolation<T>::point_set;
         // Constructor
-        explicit CubicSplineInterpolation(const typename Interpolation<T>::point_set& data) : Interpolation<T>(data) {
+        explicit SplineInterpolation(const point_set& data) : Interpolation<T>(data) {
             if (data.empty()) {
                 throw std::invalid_argument("Data points cannot be empty.");
             }
 
-            // Convert point_set to vectors
-            std::pair<std::vector<T>, std::vector<T>> vectors = this->toVectors();
-            x = vectors.first;  
-            y = vectors.second;  
+            x = this->toVectors().first;
+            y = this->toVectors().second;
 
-            if(DEBUG){
-                // printing the x and y values
-                std::cout << "x values: ";
-                for (size_t i = 0; i < x.size(); ++i) {
-                    std::cout << x[i] << " ";
-                }
-                std::cout << std::endl;
-                std::cout << "y values: ";
-                for (size_t i = 0; i < y.size(); ++i) {
-                    std::cout << y[i] << " ";
-                }
-                std::cout << std::endl;
-            }
+            // Create the spline
+            acc = gsl_interp_accel_alloc();
+            spline = gsl_spline_alloc(gsl_interp_cspline, x.size());
         }
 
         // Destructor
-        ~CubicSplineInterpolation() = default;
+        ~SplineInterpolation() {
+            gsl_spline_free(spline);
+            gsl_interp_accel_free(acc);
+        }
 
         // Interpolation function
-        virtual T interpolate(T x) const = 0;
-
-        // Overload operator()
-        virtual T operator()(T x) const { return interpolate(x); }
+        T interpolate(T x_query) const override {
+            gsl_spline_init(spline, x.data(), y.data(), x.size());
+            return gsl_spline_eval(spline, x_query, acc);
+        }
 
     protected:
         std::vector<T> x;
         std::vector<T> y;
+        gsl_interp_accel *acc;
+        gsl_spline *spline;
         const bool DEBUG = true;
     };
 }
