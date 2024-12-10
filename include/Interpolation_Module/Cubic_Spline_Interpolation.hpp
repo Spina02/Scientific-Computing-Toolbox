@@ -47,14 +47,13 @@ namespace ScientificToolbox::Interpolation {
                 std::cout << "Step size: " << step_size << std::endl;
             }
 
-            /*
-            // Ensure x values are evenly spaced
-            for (size_t i = 1; i < x.size(); ++i) {
-                if (std::abs((x[i+1] - x[i]) - step_size) > std::numeric_limits<T>::epsilon()) {
-                    throw std::invalid_argument("X values must be evenly spaced for cubic spline interpolation.");
+            // Check uniform spacing
+            double epsilon = 1e-6;
+            for (size_t i=1; i < x.size(); ++i){
+                if (std::abs(x[i] - x[i-1] - step_size) > epsilon){
+                    throw std::invalid_argument("Data points must be uniformly spaced for cubic spline interpolation.");
                 }
             }
-            */
 
             spline = boost::math::interpolators::cardinal_cubic_b_spline<T>(y.data(), y.size(), x[0], step_size);
         }

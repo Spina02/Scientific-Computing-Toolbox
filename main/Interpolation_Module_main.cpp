@@ -21,6 +21,8 @@ using namespace ScientificToolbox::Interpolation;
 
 int main() {
 
+
+
     // Import data from CSV file 
     std::string filename = "../../data/uniform_points_R2.csv";
     ScientificToolbox::ImportCSV importer;
