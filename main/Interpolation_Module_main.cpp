@@ -9,25 +9,23 @@
 
 #include <iostream>
 #include <vector>
-#include <utility> // For std::pair
-#include <random>  // For random number generation
+#include <utility>   // For std::pair
+#include <random>    // For random number generation
 #include <algorithm> // For std::find_if
-#include <cmath>   // For isnan
-#include <set>     // For unique random number generation
-#include <limits>  // For infinity
+#include <cmath>     // For isnan
+#include <set>       // For unique random number generation
+#include <limits>    // For infinity
 
 using namespace ScientificToolbox::Interpolation;
 
 int main() {
 
     // Import data from CSV file 
-    std::string filename = "../../data/points_R2.csv";
+    std::string filename = "../../data/points_1_R2.csv";
     ScientificToolbox::ImportCSV importer;
     
     try {
         std::set<point<double>> points = importer.read_points_from_csv<double>(filename);
-
-        
 
         // Find the minimum and maximum x values
         interval<double> min_max = minmax_search(points);

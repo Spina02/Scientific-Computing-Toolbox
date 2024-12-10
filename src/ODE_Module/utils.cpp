@@ -4,61 +4,89 @@
 #include <filesystem>
 
 namespace ScientificToolbox::ODE {
-    std::vector<ScalarODETestCase> scalar_cases;
-    std::vector<VectorODETestCase> vector_cases;
 
-    // Overload for printing var_vec custom type
-    std::ostream& operator<<(std::ostream& os, const var_vec& vec) {
-        if (std::holds_alternative<double>(vec)) {
-            os << std::get<double>(vec);
+std::vector<ScalarODETestCase> scalar_cases;
+std::vector<VectorODETestCase> vector_cases;
+std::vector<ODETestCase> cases;
+
+std::ostream& operator<<(std::ostream& os, const var_vec& vec) {
+    return print_variant(os, vec);
+}
+
+std::ostream& operator<<(std::ostream& os, const var_expr& expr) {
+    return print_variant(os, expr);
+}
+
+var_vec operator*(double h, const var_vec& v) {
+    return apply_unary_operation(v, h, [](const auto& value, double scalar) {
+        return value * scalar;
+    });
+}
+
+var_vec operator+(const var_vec& v1, const var_vec& v2) {
+    return apply_binary_operation(v1, v2, [](const auto& a, const auto& b) {
+        return a + b;
+    });
+}
+
+var_vec operator-(const var_vec& v1, const var_vec& v2) {
+    return apply_binary_operation(v1, v2, [](const auto& a, const auto& b) {
+        return a - b;
+    });
+}
+
+var_vec operator/(const var_vec& v1, const var_vec& v2) {
+    return apply_binary_operation(v1, v2, [](const auto& a, const auto& b) {
+        if constexpr (std::is_same_v<std::decay_t<decltype(a)>, Eigen::VectorXd>) {
+            return a.cwiseQuotient(b);
         } else {
-            const Eigen::VectorXd& v = std::get<Eigen::VectorXd>(vec);
-            os << "[";
-            for (int i = 0; i < v.size(); ++i) {
-                os << v(i);
-                if (i < v.size() - 1) {
-                    os << ", ";
-                }
-            }
-            os << "]";
+            return a / b;
         }
-        return os;
+    });
+}
+
+var_vec operator/(const var_vec& v1, const double v2) {
+    if (std::holds_alternative<double>(v1)) {
+        return std::get<double>(v1) / v2;
+    } else {
+        return std::get<Eigen::VectorXd>(v1) / v2;
+    }
+}
+
+void save_on_CSV(const std::string& filename, const std::vector<std::vector<double>>& data, const std::vector<std::string>& headers) {
+
+    // create folder it does not exist
+    std::filesystem::create_directories(std::filesystem::path(filename).parent_path());
+    // open file
+    std::ofstream file(filename);
+
+    if (!file.is_open()) {
+        throw std::runtime_error("Could not open file for writing.");
     }
 
-    void save_on_CSV(const std::string& filename, const std::vector<std::vector<double>>& data, const std::vector<std::string>& headers) {
-
-        // create folder it does not exist
-        std::filesystem::create_directories(std::filesystem::path(filename).parent_path());
-        // open file
-        std::ofstream file(filename);
-
-        if (!file.is_open()) {
-            throw std::runtime_error("Could not open file for writing.");
+    // write headers
+    for (size_t i = 0; i < headers.size(); ++i) {
+        file << headers[i];
+        if (i < headers.size() - 1) {
+            file << ",";
         }
+    }
+    file << std::endl;
 
-        // write headers
-        for (size_t i = 0; i < headers.size(); ++i) {
-            file << headers[i];
-            if (i < headers.size() - 1) {
+    // write data
+    for (size_t i = 0; i < data.size(); ++i) {
+        for (size_t j = 0; j < data[i].size(); ++j) {
+            file << data[i][j];
+            if (j < data[i].size() - 1) {
                 file << ",";
             }
         }
         file << std::endl;
-
-        // write data
-        for (size_t i = 0; i < data.size(); ++i) {
-            for (size_t j = 0; j < data[i].size(); ++j) {
-                file << data[i][j];
-                if (j < data[i].size() - 1) {
-                    file << ",";
-                }
-            }
-            file << std::endl;
-        }
-
-        // close file
-        file.close();
     }
+
+    // close file
+    file.close();
+}
 
 void load_tests_from_csv(const std::string& filename) {
     try {
@@ -124,8 +152,7 @@ void load_tests_from_csv(const std::string& filename) {
                 }
             }
             
-            std::cout << "Successfully loaded " << scalar_cases.size() << " scalar and " 
-                      << vector_cases.size() << " vector test cases." << std::endl;
+            std::cout << "\nSuccessfully loaded " << cases.size() << " test cases" << std::endl;
 
         } catch (const std::exception& e) {
             std::cerr << "Error importing CSV: " << e.what() << std::endl;
@@ -138,6 +165,81 @@ void load_tests_from_csv(const std::string& filename) {
     }
 }
 
+var_expr parse_var_expr(const std::string& str) {
+    std::stringstream ss(str);
+    vec_s exprs;
+    std::string expr;
+    while (std::getline(ss, expr, ',')) {
+        exprs.push_back(expr);
+    }
+    if (exprs.size() == 1) {
+        return exprs[0];
+    }
+    return exprs;
+}
+
+var_vec parse_var_vec(const std::variant<std::string, double> value) { //! here the error
+    // rty to return a double
+    if (std::holds_alternative<double>(value)) {
+        return std::get<double>(value);
+    } else {
+        std::string str = std::get<std::string>(value);
+        std::stringstream ss(str);
+        vec_d vec;
+        std::string val;
+        while (std::getline(ss, val, ',')) {
+            vec.conservativeResize(vec.size() + 1);
+            vec(vec.size() - 1) = std::stod(val);
+        }
+        return vec;
+    }
+}
+
+void parse_test_case(const std::unordered_map<std::string, OptionalDataValue>& row) {
+    try {
+        if (!row.count("type") || !row.at("type").has_value()) {
+            std::cerr << "Warning: Skipping row without type" << std::endl;
+            return;
+        }
+
+        std::string type = std::get<std::string>(row.at("type").value());
+
+        const std::vector<std::string> required_fields = {
+            "expr", "t0", "tf", "h", "y0", "expected_final", "expected_derivative"
+        };
+
+        // Check required fields
+        for (const auto& field : required_fields) {
+            if (!row.count(field) || !row.at(field).has_value()) {
+                std::cerr << "Warning: Skipping row missing required field: " << field << std::endl;
+                return;
+            }
+        }
+
+        ODETestCase test;
+        test.expr = parse_var_expr(std::get<std::string>(row.at("expr").value()));
+        test.t0 = std::get<double>(row.at("t0").value());
+        test.tf = std::get<double>(row.at("tf").value());
+        test.h = std::get<double>(row.at("h").value());
+        try {
+            test.y0 = parse_var_vec(std::get<double>(row.at("y0").value()));
+            test.expected_final = parse_var_vec(std::get<double>(row.at("expected_final").value()));
+            test.expected_derivative = parse_var_vec(std::get<double>(row.at("expected_derivative").value()));
+        } catch (...) {
+            test.y0 = parse_var_vec(std::get<std::string>(row.at("y0").value())); //! here the error
+            std::cout << "\n  this does not appear on output  \n" << std::endl;
+            test.expected_final = parse_var_vec(std::get<std::string>(row.at("expected_final").value()));
+            test.expected_derivative = parse_var_vec(std::get<std::string>(row.at("expected_derivative").value()));
+        }
+
+        cases.push_back(test);
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error parsing test case: " << e.what() << std::endl;
+    }
+}
+
+/*
 void parse_test_case(const std::unordered_map<std::string, OptionalDataValue>& row) {
     try {
         if (!row.count("type") || !row.at("type").has_value()) {
@@ -245,4 +347,5 @@ void parse_test_case(const std::unordered_map<std::string, OptionalDataValue>& r
         std::cerr << "Error parsing test case: " << e.what() << std::endl;
     }
 }
+*/
 }

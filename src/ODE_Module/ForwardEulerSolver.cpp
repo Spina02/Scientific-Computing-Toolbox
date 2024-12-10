@@ -2,6 +2,7 @@
 
 namespace ScientificToolbox::ODE {
 
+// Implementation of Forward Euler Solver
 std::vector<var_vec> ForwardEulerSolver::Solve() {
 
     if (h <= 0) throw std::invalid_argument("Step size h must be positive.");
@@ -18,19 +19,7 @@ std::vector<var_vec> ForwardEulerSolver::Solve() {
         while (t < tf) {
             var_vec y_next = y;  // Create new variable for next step
 
-            if (auto* scalar_f = std::get_if<scalar_func>(&f)) {
-                if (auto* scalar_y = std::get_if<double>(&y)) {
-                    y_next = *scalar_y + h * (*scalar_f)(t, *scalar_y);
-                } else {
-                    throw std::runtime_error("Mismatched scalar function with vector input");
-                }
-            } else if (auto* vector_f = std::get_if<vec_func>(&f)) {
-                if (auto* vector_y = std::get_if<vec_d>(&y)) {
-                    y_next = *vector_y + h * (*vector_f)(t, *vector_y);
-                } else {
-                    throw std::runtime_error("Mismatched vector function with scalar input");
-                }
-            }
+            y_next = y + h * f(t, y);
 
             t += h;
             y = y_next;
@@ -42,4 +31,4 @@ std::vector<var_vec> ForwardEulerSolver::Solve() {
     return result;
 }
 
-} // namespace ScientificToolbox
+} // ScientificToolbox::ODE

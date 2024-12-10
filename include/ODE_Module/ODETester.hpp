@@ -23,10 +23,8 @@ public:
 
 private:
     // auxiliary functions
-    bool test_scalar_expression(const std::string& expr, double t, double y, double expected, int test_num);
-    bool test_vector_expression(const vec_s& exprs, double t, const vec_d& y, const vec_d& expected, int test_num);
     bool test_expression(const var_expr& expr_variant, double t_val, const var_vec& y_val, const var_vec& expected_val, int test_num);
-    bool test_simple_ode(const test_case& case_variant, const std::string solver_type, int test_num);
+    bool test_simple_ode(const ODETestCase& test_case, const std::string solver_type, int test_num);
     
 
     vec_d t;

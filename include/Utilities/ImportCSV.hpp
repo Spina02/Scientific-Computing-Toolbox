@@ -288,15 +288,10 @@ private:
         try {
             double_value = std::stod(trimmed_cell);
             return double_value;
-        } catch (const std::invalid_argument& e) {
-            // Not a double
-        } catch (const std::out_of_range& e) {
-            // Out of range for a double
+        } catch (...) {
+            return trimmed_cell;
         }
-
-        return trimmed_cell;
     }
-
 };
 }
 
