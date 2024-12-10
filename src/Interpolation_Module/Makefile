@@ -2,9 +2,9 @@ MODULE = Interpolation_Module
 
 # Compiler and flags
 CXX = g++
-CPPFLAGS = -Iinclude/$(MODULE)
-CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Werror -g -I/opt/homebrew/opt/gsl/include
-LDFLAGS = -L/opt/homebrew/opt/gsl/lib -lgsl -lgslcblas -lm
+CPPFLAGS = -Iinclude/$(MODULE) -I/opt/homebrew/opt/gsl/include -I/opt/homebrew/opt/boost/include
+CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Werror -Wno-nested-anon-types -g 
+LDFLAGS = -L/opt/homebrew/opt/gsl/lib -L/opt/homebrew/opt/boost/lib -lgsl -lgslcblas -lm -lboost_system -lboost_filesystem
 
 # Relative paths
 SRC_DIR = ../../src/$(MODULE)
@@ -16,7 +16,7 @@ OBJ_DIR = $(BUILD_DIR)/obj
 BIN_DIR = $(BUILD_DIR)/bin
 
 # Source files and object files
-SRCS = $(SRC_DIR)/$(MODULE).cpp
+SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
 # Library and main program targets
@@ -30,7 +30,7 @@ all: $(LIB_TARGET) $(MAIN_TARGET)
 # Compiling the shared library
 $(LIB_TARGET): $(OBJS)
 	@mkdir -p $(LIB_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -shared $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -shared $^ -o $@ $(LDFLAGS)
 
 # Compiling the object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
@@ -40,7 +40,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 # Compiling the main program for testing
 $(MAIN_TARGET): $(MAIN_DIR)/$(MODULE)_main.cpp $(LIB_TARGET)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $(LDFLAGS) $< -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $@ $(LDFLAGS)
 
 # Clean up build artifacts
 clean:

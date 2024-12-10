@@ -2,6 +2,7 @@
 #include "../include/Interpolation_Module/Interpolation.hpp"
 #include "../include/Interpolation_Module/LinearInterpolation.hpp"
 #include "../include/Interpolation_Module/PolynomialInterpolation.hpp"
+#include "../include/Interpolation_Module/Cubic_Spline_Interpolation.hpp"
 #include "../include/Interpolation_Module/Lagrange.hpp"
 #include "../include/Interpolation_Module/Newton.hpp"
 #include "../include/Utilities/ImportCSV.hpp"
@@ -21,7 +22,7 @@ using namespace ScientificToolbox::Interpolation;
 int main() {
 
     // Import data from CSV file 
-    std::string filename = "../../data/points_1_R2.csv";
+    std::string filename = "../../data/uniform_points_R2.csv";
     ScientificToolbox::ImportCSV importer;
     
     try {
@@ -79,6 +80,13 @@ int main() {
             }
         }
         std::cout << std::endl;
+
+        // Cubic Spline Interpolation Test
+        CubicSplineInterpolation<double> cubic_spline(points);
+        std::cout << "\nCubic Spline Interpolation:" << std::endl;
+        std::cout << "Insert a value for x: ";
+        std::cin >> x;
+        std::cout << "Interpolated value at x = " << x << ": " << cubic_spline(x) << std::endl;
 
     } catch (const std::exception& e) {
         std::cerr << "Error occurred during interpolation: " << e.what() << "\n";
