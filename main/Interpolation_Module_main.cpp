@@ -3,6 +3,8 @@
 #include "../include/Interpolation_Module/LinearInterpolation.hpp"
 #include "../include/Interpolation_Module/PolynomialInterpolation.hpp"
 #include "../include/Interpolation_Module/Cubic_Spline_Interpolation.hpp"
+#include "../include/Interpolation_Module/Cardinal_Cubic_Spline.hpp"
+#include "../include/Interpolation_Module/Pchip.hpp"
 #include "../include/Interpolation_Module/Lagrange.hpp"
 #include "../include/Interpolation_Module/Newton.hpp"
 #include "../include/Utilities/ImportCSV.hpp"
@@ -84,11 +86,19 @@ int main() {
         std::cout << std::endl;
 
         // Cubic Spline Interpolation Test
-        CubicSplineInterpolation<double> cubic_spline(points);
+        CardinalCubicSpline<double> cubic_spline(points);
         std::cout << "\nCubic Spline Interpolation:" << std::endl;
         std::cout << "Insert a value for x: ";
         std::cin >> x;
         std::cout << "Interpolated value at x = " << x << ": " << cubic_spline(x) << std::endl;
+
+        
+        // Pchip Interpolation Test
+        PchipInterpolation<double> pchip(points);
+        std::cout << "\nPchip Interpolation:" << std::endl;
+        std::cout << "Insert a value for x: ";
+        std::cin >> x;
+        std::cout << "Interpolated value at x = " << x << ": " << pchip(x) << std::endl;
 
     } catch (const std::exception& e) {
         std::cerr << "Error occurred during interpolation: " << e.what() << "\n";

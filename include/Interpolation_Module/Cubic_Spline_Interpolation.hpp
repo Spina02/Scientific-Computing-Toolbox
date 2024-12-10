@@ -39,37 +39,20 @@ namespace ScientificToolbox::Interpolation {
                 }
                 std::cout << std::endl;
             }
-
-            // Compute the step size
-            T step_size = x[1] - x[0];
-
-            if (DEBUG){
-                std::cout << "Step size: " << step_size << std::endl;
-            }
-
-            // Check uniform spacing
-            double epsilon = 1e-6;
-            for (size_t i=1; i < x.size(); ++i){
-                if (std::abs(x[i] - x[i-1] - step_size) > epsilon){
-                    throw std::invalid_argument("Data points must be uniformly spaced for cubic spline interpolation.");
-                }
-            }
-
-            spline = boost::math::interpolators::cardinal_cubic_b_spline<T>(y.data(), y.size(), x[0], step_size);
         }
 
         // Destructor
         ~CubicSplineInterpolation() = default;
 
         // Interpolation function
-        T interpolate(T x_query) const override {
-            return spline(x_query);
-        }
+        virtual T interpolate(T x) const = 0;
+
+        // Overload operator()
+        virtual T operator()(T x) const { return interpolate(x); }
 
     protected:
         std::vector<T> x;
         std::vector<T> y;
-        boost::math::interpolators::cardinal_cubic_b_spline<T> spline;
         const bool DEBUG = true;
     };
 }
