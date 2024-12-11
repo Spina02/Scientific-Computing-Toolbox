@@ -31,11 +31,29 @@ run:
 		$(MAKE) -C $(SRC_DIR)/$$module run; \
 	done
 
+test: 
+	@for module in $(MODULES); do \
+		$(MAKE) -C $(SRC_DIR)/$$module test; \
+	done
+
+
 run-statistics:
 	@$(MAKE) -C $(SRC_DIR)/Statistics_Module run
 
+test-statistics:
+	@$(MAKE) -C $(SRC_DIR)/Statistics_Module test
+
+clean-statistics:
+	@$(MAKE) -C $(SRC_DIR)/Statistics_Module clean
+
 run-ode:
 	@$(MAKE) -C $(SRC_DIR)/ODE_Module run
+
+test-ode:
+	@$(MAKE) -C $(SRC_DIR)/ODE_Module test
+
+clean-ode:
+	@$(MAKE) -C $(SRC_DIR)/ODE_Module clean
 
 run-interpolation:
 	@$(MAKE) -C $(SRC_DIR)/Interpolation_Module run
@@ -43,4 +61,8 @@ run-interpolation:
 test-interpolation:
 	@$(MAKE) -C $(SRC_DIR)/Interpolation_Module test
 
-.PHONY: all clean run statistics ode interpolation run-statistics run-ode run-interpolation
+clean-interpolation:
+	@$(MAKE) -C $(SRC_DIR)/Interpolation_Module clean
+
+
+.PHONY: all clean run test statistics ode interpolation run-statistics run-ode run-interpolation test-statistics test-ode test-interpolation clean-statistics clean-ode clean-interpolation

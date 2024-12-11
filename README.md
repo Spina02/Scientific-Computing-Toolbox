@@ -1,38 +1,147 @@
 # Scientific Computing Toolbox
-Homework 2 - Advanced Programming Course (UniTs)
 
-how to run statistics module: 
+## Homework 
 
+
+## Project Structure
 ```bash
-
-g++ -std=c++17 -I./include -I./include/Stats_Module/getpot-c++/GetPot StatMod_main.cpp -o StatMod_main
-
-./StatMod_main -i ../data/detailed_meals_macros_CLEANED.csv -o output.txt -c Ages
+.
+├── data/
+├── include/
+│   ├── Interpolation_Module/ 
+│   ├── ODE_Module/
+│   ├── Statistics_Module/
+│   ├── Utilities/
+│   ├── Interpolation_Module.hpp
+│   ├── ODE_Module.hpp
+│   ├── ScientificToolbox.hpp
+│   └── Statistics_Module.hpp
+├── main/
+│   ├── Interpolation_Module_main.cpp
+│   ├── ODE_Module_main.cpp
+│   └── Statistics_Module_main.cpp
+├── src/
+│   ├── Interpolation_Module/ # Here you can find the Interpolation Module Makefile
+│   ├── ODE_Module/           # Here you can find the ODE Module Makefile
+│   └── Statistics_Module/    # Here you can find the Statistics Module Makefile
+├── tests/
+│   ├── Interpolation_Module_test.cpp
+│   ├── ODE_Module_test.cpp
+│   └── Statistics_Module_test.cpp
+├── Makefile
+├── MIT-License.txt
+└── README.md
 ```
-NOTE: the -c flag is optional, if not specified the program will compute the statistics for all the columns in the input file.
 
-NOTE: in order to run the program you need to have the GetPot library (only linux compatible https://getpot.sourceforge.net/) and the Eigen library (https://gitlab.com/libeigen/eigen/-/tree/master/Eigen?ref_type=heads) located in the include/Stats_Module/ folder. 
+
 
 ## Dependencies
 
-### muParser
-The project requires ***muParser***. You can install it using your package manager:
+### External Libraries
+The project requires ***Eigen*** , ***GSL*** , ***muParser*** . You can install it using your package manager:
 
 - **Debian/Ubuntu**:
 
     ```bash
-    sudo apt-get install libmuparser-dev
+    sudo apt-get install libeigen3-dev libgsl-dev libmuparser-dev
     ```
 - **Arch-Linux**: 
     ```bash
-    sudo pacman -S muparser
+    sudo pacman -S eigen gsl muparser
     ```
 
 - **macOS**: 
     ```bash
-    brew install muparser
+    brew install eigen gsl muparser
     ```
 
-If muParser is installed in a non-standard location, you can specify the paths:
+If any of this libraries is installed in a non-standard location, you can specify the paths:
 ```bash
 MUPARSER_INCLUDE=/path/to/include MUPARSER_LIB=/path/to/lib make
+
+GSL_INCLUDE=/path/to/include 
+GSL_LIB=/path/to/lib make
+
+EIGEN_INCLUDE=/path/to/include make
+```
+
+
+## Building
+
+### Build all Modules
+```bash
+make 
+``` 
+
+### Build individual Modules
+```bash
+make interpolation
+make ode
+make statistics
+```
+
+## Testing
+
+### Test all Modules
+```bash
+make test
+```
+
+### Test individual Modules
+```bash
+make test-interpolation
+make test-ode
+make test-statistics
+```
+
+## Running
+
+### Run all Modules
+```bash 
+make run
+```
+
+### Run individual Modules
+```bash
+make run-interpolation
+make run-ode
+make run-statistics
+```
+
+
+## Module Specific example usage
+
+### Interpolation Module
+```bash
+./build/Interpolation_Module/bin/Interpolation_Module_main
+
+# Follow the interactive prompts to specify input files and interpolation parameters
+```
+
+### ODE Module
+```bash
+./build/ODE_Module/bin/ODE_Module_main
+
+# Results are saved to output/ODE_Module/
+```
+
+### Statistics Module
+```bash
+./build/Statistics_Module/bin/Statistics_Module_main [input_file] [output_file] [target_column]
+
+# Example
+./build/Statistics_Module/bin/Statistics_Module_main data/Food_and_Nutrition__.csv output/stats.txt Ages
+```
+
+
+## Cleaning all Build Files
+```bash
+make clean
+```
+
+### Cleaning individual Modules
+```bash
+make clean-interpolation
+make clean-ode
+make clean-statistics
+```

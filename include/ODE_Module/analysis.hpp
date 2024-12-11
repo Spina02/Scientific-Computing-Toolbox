@@ -5,9 +5,25 @@
 #include "ODESolver.hpp"
 #include "utils.hpp"
 
+/**
+ * @file analysis.hpp
+ * @brief Analysis utilities for ODE solvers
+ * 
+ * This module provides utility functions for analyzing the performance of ODE solvers,
+ * including:
+ * - Error computation between numerical and analytical solutions
+ * - Execution time measurement
+ */
+
 namespace ScientificToolbox::ODE {
 
-// Computes the error between the result and the expected value
+/** ### compute_error
+ * @brief Computes the error between numerical and analytical solutions
+ * @param result Numerical solution
+ * @param expected Analytical solution
+ * @param sensitivity Error sensitivity threshold
+ * @return Computed error value
+ */
 double compute_error(const var_vec& result, const var_vec& expected, double sensitivity) {
     if (std::holds_alternative<double>(result) && std::holds_alternative<double>(expected)) {
         double num = std::get<double>(result);
@@ -22,7 +38,11 @@ double compute_error(const var_vec& result, const var_vec& expected, double sens
     }
 }
 
-// Mesure time taken to run a function
+/** ### solve_and_measure_execution_time
+ * @brief Measures execution time of ODE solver
+ * @param solver The ODE solver to test
+ * @return Solution with execution time printed to stdout
+ */
 ODESolution solve_and_measure_execution_time(const ODESolver& solver) {
     auto start = std::chrono::high_resolution_clock::now();
     ODESolution sol = solver.Solve(); // Call the Solve() method

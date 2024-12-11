@@ -12,12 +12,16 @@
 using DataValue = std::variant<int, double, std::string>;
 using OptionalDataValue = std::optional<DataValue>;
 
-/**
+/** namespace ScientificToolbox
+ * @brief Namespace containing classes and functions for scientific computing
+ * 
+ * This namespace contains a collection of classes and functions for scientific computing,
+ * in particulare it contains 3 modules: ODE_Module, Interpolation_Module and Utilities.
+ * 
+ */
+namespace ScientificToolbox{
 
- * 
- * The ScientificToolbox namespace contains utility classes and functions for
- * scientific computing and data analysis. 
- * 
+/**
  * @class ImportData
  * @brief Abstract base class defining interface for data import operations
  * 
@@ -37,8 +41,6 @@ using OptionalDataValue = std::optional<DataValue>;
  * 
  * @see OptionalDataValue
  */
-namespace ScientificToolbox{
-
 class ImportData{
 
 public:

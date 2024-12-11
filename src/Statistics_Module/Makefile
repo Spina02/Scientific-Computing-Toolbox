@@ -36,14 +36,12 @@ LIB_DIR = $(BUILD_DIR)/lib
 OBJ_DIR = $(BUILD_DIR)/obj
 BIN_DIR = $(BUILD_DIR)/bin
 
-# Source files and object files
-SRCS := $(wildcard $(SRC_DIR)/*.cpp)
-OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
 # Library and main program targets
 LIB_NAME = lib$(MODULE).so
 LIB_TARGET = $(LIB_DIR)/$(LIB_NAME)
 MAIN_TARGET = $(BIN_DIR)/$(MODULE)_main
+TEST_TARGET = $(BIN_DIR)/$(MODULE)_test
 
 # Default target
 all: check_deps $(LIB_TARGET) $(MAIN_TARGET)
@@ -68,9 +66,9 @@ check_deps:
 	done
 
 # Compiling the shared library
-$(LIB_TARGET): $(OBJS)
+$(LIB_TARGET):
 	@mkdir -p $(LIB_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -shared $^ -o $@ $(LDFLAGS)
+	@touch $(LIB_TARGET)
 
 # Compiling the object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
@@ -82,11 +80,21 @@ $(MAIN_TARGET): $(MAIN_DIR)/$(MODULE)_main.cpp $(LIB_TARGET)
 	@mkdir -p $(BIN_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $@ $(LDFLAGS)
 
+$(TEST_TARGET): $(TEST_DIR)/$(MODULE)_test.cpp $(LIB_TARGET)
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -L$(LIB_DIR) -l$(MODULE)  -o $(BIN_DIR)/$(MODULE)_test $(LDFLAGS)
+
 # Clean up build artifacts
 clean:
 	rm -rf $(BUILD_DIR)
 
 # Export library path when running the program
 run: $(MAIN_TARGET)
-	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(MAIN_TARGET) 
-.PHONY: all clean run check_deps
+	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(MAIN_TARGET)
+
+test: $(TEST_TARGET) $(LIB_TARGET)
+	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(TEST_TARGET)
+
+
+
+.PHONY: all clean run check_deps test

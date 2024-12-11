@@ -77,18 +77,20 @@ $(TEST_TARGET): $(TEST_OBJS) $(OBJS)
 # Compiling the main program for testing
 $(MAIN_TARGET): $(MAIN_DIR)/$(MODULE)_main.cpp $(LIB_TARGET)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $@ $(LDFLAGS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -L$(LIB_DIR) -l$(MODULE)  -o $@ $(LDFLAGS)
 
+$(TEST_TARGET): $(TEST_DIR)/$(MODULE)_test.cpp $(LIB_TARGET)
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -L$(LIB_DIR) -l$(MODULE)  -o $(BIN_DIR)/$(MODULE)_test $(LDFLAGS)
 # Clean up build artifacts
 clean:
 	rm -rf $(BUILD_DIR)
 
 # Export library path when running the program
 run: $(MAIN_TARGET)
-	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH 
+	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(MAIN_TARGET)
 
-# Test (compiling both AnalysisInterpolation.cpp and DataTester.cpp)
-test: $(TEST_TARGET)
-	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH $(TEST_TARGET)
+test: $(TEST_TARGET) $(LIB_TARGET)
+	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(TEST_TARGET)
 
-.PHONY: all clean run test
+.PHONY: all clean run check_deps test
