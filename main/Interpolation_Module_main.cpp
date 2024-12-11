@@ -22,7 +22,9 @@ int main() {
 
 
     // Import data from CSV file 
-    std::string filename = "../../data/points_4_R2.csv";
+    std::string filename;
+    std::cout << "Enter the filename: ";
+    std::cin >> filename;
     ScientificToolbox::ImportCSV importer;
     
     try {

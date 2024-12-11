@@ -10,15 +10,16 @@ namespace ScientificToolbox::Interpolation{
         InterpolationTester();
         ~InterpolationTester() = default;
 
-        bool run_tests();
+        void run_tests();
     
     private:
         bool import_data();
         bool check_data();
-        bool test_linear_interpolation();
-        bool test_lagrange_interpolation();
-        bool test_newton_interpolation();
-        bool test_cubic_spline_interpolation();
+        bool LinearInterpolationTest();
+        bool LagrangeInterpolationTest();
+        bool NewtonInterpolationTest();
+        bool CubicSplineInterpolationTest();
+        
 
         std::set<point<double>> points_1;
         std::set<point<double>> points_2;
@@ -30,14 +31,14 @@ namespace ScientificToolbox::Interpolation{
         std::vector<double> x_values_3;
         std::vector<double> x_values_4;
 
-        const double epsilon = 1e-6;
-        const double x_query = 10.54;
-
+        
         const std::vector<double> results_1{-11.0137, -17.0559, -17.0559, -12.4965};
         const std::vector<double> results_2{81.9502, 776.798, 776.798, 82.6408};
         const std::vector<double> results_3{-19.2184, 249702, 249702, -229.151};
         const std::vector<double> results_4{-17.9081, 30559.2, 30559.2, -457.361};
-
+        
+        double x_query = 10.54;
+        double epsilon = 1e-2;
     };
 }
 

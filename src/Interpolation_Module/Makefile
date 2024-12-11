@@ -2,9 +2,9 @@ MODULE = Interpolation_Module
 
 # Compiler and flags
 CXX = g++
-CPPFLAGS = -Iinclude/$(MODULE) -I/opt/homebrew/opt/gsl/include -I/opt/homebrew/opt/boost/include
+CPPFLAGS = -Iinclude/$(MODULE) -I/opt/homebrew/opt/gsl/include -I/opt/homebrew/opt/boost/include 
 CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Werror -Wno-nested-anon-types -g 
-LDFLAGS = -L/opt/homebrew/opt/gsl/lib -L/opt/homebrew/opt/boost/lib -lgsl -lgslcblas -lm -lboost_system -lboost_filesystem
+LDFLAGS = -L/opt/homebrew/opt/gsl/lib -L/opt/homebrew/opt/boost/lib -lgsl -lgslcblas -lm -lboost_system -lboost_filesystem 
 
 # Relative paths
 SRC_DIR = ../../src/$(MODULE)
@@ -48,9 +48,9 @@ clean:
 
 # Export library path when running the program
 run: $(MAIN_TARGET)
-	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(MAIN_TARGET)
+	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH 
 
-# Test
+# Test (doing the run and then testing)
 test: $(TEST_DIR)/$(MODULE)_test.cpp $(LIB_TARGET)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $(BIN_DIR)/$(MODULE)_test $(LDFLAGS)
 	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(BIN_DIR)/$(MODULE)_test
