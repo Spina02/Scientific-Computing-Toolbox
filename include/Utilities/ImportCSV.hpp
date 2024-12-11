@@ -23,14 +23,6 @@ const inline bool DEBUG = false;
 using DataValue = std::variant<int, double, std::string>;
 using OptionalDataValue = std::optional<DataValue>;
 
-/** namespace ScientificToolbox
- * @brief Namespace containing classes and functions for scientific computing
- * 
- * This namespace contains a collection of classes and functions for scientific computing,
- * including statistical analysis, data manipulation, and numerical methods.
- * 
- */
-
 /**
  * @class ImportCSV
  * @brief Class for importing and parsing CSV files with mixed data types
@@ -103,6 +95,14 @@ using OptionalDataValue = std::optional<DataValue>;
  * 
  * 
  * @note variables enending with _ are private member variables  https://stackoverflow.com/questions/3650623/trailing-underscores-for-member-variables-in-c
+ */
+
+/** namespace ScientificToolbox
+ * @brief Namespace containing classes and functions for scientific computing
+ * 
+ * This namespace contains a collection of classes and functions for scientific computing,
+ * including statistical analysis, data manipulation, and numerical methods.
+ * 
  */
 namespace ScientificToolbox {
 

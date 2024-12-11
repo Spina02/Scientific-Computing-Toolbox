@@ -93,7 +93,7 @@ $(MAIN_TARGET): $(MAIN_DIR)/$(MODULE)_main.cpp $(LIB_TARGET)
 
 $(TEST_TARGET): $(TEST_DIR)/$(MODULE)_test.cpp $(LIB_TARGET)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -L$(LIB_DIR) -l$(MODULE)  -o $(BIN_DIR)/$(MODULE)_test $(LDFLAGS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -L$(LIB_DIR) -l$(MODULE)  -o $(TEST_TARGET) $(LDFLAGS)
 # Clean up build artifacts
 clean:
 	rm -rf $(BUILD_DIR)
