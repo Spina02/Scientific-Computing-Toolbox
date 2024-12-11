@@ -2,9 +2,37 @@ MODULE = Interpolation_Module
 
 # Compiler and flags
 CXX = g++
-CPPFLAGS = -Iinclude/$(MODULE) -I/opt/homebrew/opt/gsl/include -I/opt/homebrew/opt/boost/include 
-CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Werror -Wno-nested-anon-types -g 
-LDFLAGS = -L/opt/homebrew/opt/gsl/lib -L/opt/homebrew/opt/boost/lib -lgsl -lgslcblas -lm -lboost_system -lboost_filesystem 
+CPPFLAGS = -Iinclude/$(MODULE) -I/opt/homebrew/opt/gsl/include 
+CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Werror -Wno-nested-anon-types -g -fPIC
+LDFLAGS = -L/opt/homebrew/opt/gsl/lib  -lgsl -lgslcblas 
+
+DEPS = gsl eigen3
+
+
+# Collect all flags from pkg-config
+PKG_CFLAGS := $(shell pkg-config --cflags $(DEPS) 2>/dev/null) 
+PKG_LIBS := $(shell pkg-config --libs $(DEPS) 2>/dev/null)
+
+
+ifeq ($(PKG_CFLAGS),)
+
+
+	GSL_INCLUDE ?= /usr/include
+	GSL_LIB ?= /usr/lib
+	GSL_FLAGS = -I$(GSL_INCLUDE)
+	GSL_LIBS = -L$(GSL_LIB) -lgsl -lgslcblas 
+
+	EIGEN_INCLUDE ?= /usr/include/eigen3
+    EIGEN_FLAGS = -I$(EIGEN_INCLUDE) 
+
+	PKG_CFLAGS = $(GSL_FLAGS) $(EIGEN_FLAGS)
+	PKG_LIBS = $(GSL_LIBS)
+
+endif
+
+CPPFLAGS += $(PKG_CFLAGS)
+LDFLAGS += $(PKG_LIBS)
+
 
 # Relative paths
 SRC_DIR = ../../src/$(MODULE)
@@ -48,9 +76,9 @@ clean:
 
 # Export library path when running the program
 run: $(MAIN_TARGET)
-	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH 
+	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(MAIN_TARGET)
 
-# Test (doing the run and then testing)
+# Test
 test: $(TEST_DIR)/$(MODULE)_test.cpp $(LIB_TARGET)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $(BIN_DIR)/$(MODULE)_test $(LDFLAGS)
 	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(BIN_DIR)/$(MODULE)_test
