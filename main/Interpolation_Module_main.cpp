@@ -1,11 +1,3 @@
-#include "../include/Interpolation_Module/utilities_interpolation.hpp"
-#include "../include/Interpolation_Module/Interpolation.hpp"
-#include "../include/Interpolation_Module/LinearInterpolation.hpp"
-#include "../include/Interpolation_Module/Cubic_Spline_Interpolation.hpp"
-#include "../include/Interpolation_Module/Lagrange.hpp"
-#include "../include/Interpolation_Module/Newton.hpp"
-#include "../include/Utilities/ImportCSV.hpp"
-
 #include <iostream>
 #include <vector>
 #include <utility>   // For std::pair
@@ -15,11 +7,11 @@
 #include <set>       // For unique random number generation
 #include <limits>    // For infinity
 
+#include "../include/Interpolation_Module.hpp"
+
 using namespace ScientificToolbox::Interpolation;
 
 int main() {
-
-
 
     // Import data from CSV file 
     std::string filename = "../../data/points_4_R2.csv";

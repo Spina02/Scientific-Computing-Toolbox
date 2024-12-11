@@ -7,23 +7,21 @@
 
 namespace ScientificToolbox::ODE {
     
-    class ODESolver {
-    // State variables
-    protected:
-        Func f;
-        double t0;
-        double tf;
-        double h;
-        var_vec y0;
-    // Member functions
+    class ODESolver {    
     public:
         ODESolver(const Func& f, double t0, const var_vec& y0, double tf, double h)
             : f(f), t0(t0), tf(tf), h(h), y0(y0) {}
 
         virtual ~ODESolver() = default;
 
-        virtual std::vector<var_vec> Solve() const = 0; 
+        virtual ODESolution Solve() const = 0; 
 
+    protected:
+        Func f;
+        double t0;
+        double tf;
+        double h;
+        var_vec y0;
         };
 }
 

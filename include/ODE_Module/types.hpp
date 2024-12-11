@@ -19,16 +19,12 @@ using vec_s = std::vector<std::string>;
 using var_vecs = std::vector<var_vec>;
 using var_expr = std::variant<std::string, vec_s>;
 
-// Overload for printing variant types
-std::ostream& operator<<(std::ostream& os, const var_vec& vec);
-std::ostream& operator<<(std::ostream& os, const var_expr& expr);
-
-// Overload for arithmetic operations
-var_vec operator*(double h, const var_vec& v);
-var_vec operator+(const var_vec& v1, const var_vec& v2);
-var_vec operator-(const var_vec& v1, const var_vec& v2);
-var_vec operator/(const var_vec& v1, const double v2);
-var_vec operator/(const var_vec& v1, const var_vec& v2);
+struct ODESolution {
+    int size;
+    vec_d t_values;
+    var_vecs y_values;
+    int steps = 10; // Number of steps to print
+};
 
 struct ODETestCase {
     var_expr expr;
@@ -55,6 +51,18 @@ struct Func {
         }, func);
     }
 };
+
+// Overload for printing variant types
+std::ostream& operator<<(std::ostream& os, const var_vec& vec);
+std::ostream& operator<<(std::ostream& os, const var_expr& expr);
+std::ostream& operator<<(std::ostream& os, const ODESolution& solution);
+
+// Overload for arithmetic operations
+var_vec operator*(double h, const var_vec& v);
+var_vec operator+(const var_vec& v1, const var_vec& v2);
+var_vec operator-(const var_vec& v1, const var_vec& v2);
+var_vec operator/(const var_vec& v1, const double v2);
+var_vec operator/(const var_vec& v1, const var_vec& v2);
 
 template <typename Variant>
 std::ostream& print_variant(std::ostream& os, const Variant& var) {

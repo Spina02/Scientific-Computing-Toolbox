@@ -3,7 +3,7 @@ MODULE = Interpolation_Module
 # Compiler and flags
 CXX = g++
 CPPFLAGS = -Iinclude/$(MODULE) -I/opt/homebrew/opt/gsl/include -I/opt/homebrew/opt/boost/include
-CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Werror -Wno-nested-anon-types -g 
+CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Werror -Wno-nested-anon-types -g -fPIC
 LDFLAGS = -L/opt/homebrew/opt/gsl/lib -L/opt/homebrew/opt/boost/lib -lgsl -lgslcblas -lm -lboost_system -lboost_filesystem
 
 # Relative paths

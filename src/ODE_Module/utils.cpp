@@ -61,7 +61,7 @@ var_func parseExpression(const var_expr& ex) {
                     if (!y_ptrs->at(j)) {
                         y_ptrs->at(j) = std::make_shared<double>(0.0);
                     }
-                    parsers[i]->DefineVar("y" + std::to_string(j), y_ptrs->at(j).get());
+                    parsers[i]->DefineVar("y" + std::to_string(j+1), y_ptrs->at(j).get());
                 }
                 parsers[i]->SetExpr(exprs[i]);
             }
@@ -94,16 +94,26 @@ var_func parseExpression(const var_expr& ex) {
     }
 }
 
-void save_on_CSV(const std::string& filename, const std::vector<vec_d>& data, const std::vector<std::string>& headers) {
-
+void save_on_CSV(const std::string& filename, const ODESolution& solution) {
+    int n = solution.size;
     // create folder it does not exist
     std::filesystem::create_directories(std::filesystem::path(filename).parent_path());
     // open file
     std::ofstream file(filename);
-
-    if (!file.is_open()) {
+    // check if file is open
+    if (!file.is_open())
         throw std::runtime_error("Could not open file for writing.");
-    }
+
+    var_vecs results = solution.y_values;
+
+    vec_s headers = {"t"};
+    // add headers for additional components
+    if (std::holds_alternative<vec_d>(results[0]))
+        for (Eigen::Index i = 0; i < std::get<vec_d>(results[0]).size(); ++i)
+            headers.push_back("y" + std::to_string(i+1));
+    else
+        headers.push_back("y");
+
 
     // write headers
     for (size_t i = 0; i < headers.size(); ++i) {
@@ -113,13 +123,17 @@ void save_on_CSV(const std::string& filename, const std::vector<vec_d>& data, co
         }
     }
     file << std::endl;
-
     // write data
-    for (size_t i = 0; i < data.size(); ++i) {
-        for (Eigen::Index j = 0; j < data[i].size(); ++j) {
-            file << data[i][j];
-            if (j < data[i].size() - 1) {
-                file << ",";
+    for (Eigen::Index i = 0; i <= n; ++i) {
+        file << solution.t_values[i] << ",";
+        if (std::holds_alternative<double>(results[i]))
+            file << std::get<double>(results[i]);
+        else {
+            const auto& vec = std::get<vec_d>(results[i]);
+            for (Eigen::Index j = 0; j < vec.size(); ++j) {
+                file << vec[j];
+                if (j < vec.size() - 1)
+                    file << ",";
             }
         }
         file << std::endl;

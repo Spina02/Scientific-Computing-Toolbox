@@ -12,6 +12,17 @@ std::ostream& operator<<(std::ostream& os, const var_expr& expr) {
     return print_variant(os, expr);
 }
 
+std::ostream& operator<<(std::ostream& os, const ODESolution& solution) {
+    size_t n = solution.size;
+    os << "\nSolution trajectory:" << std::endl;
+    size_t step = std::max(1, static_cast<int>(n / solution.steps));
+    for (size_t i = 0; i < n; i += step) {
+        os << "t = " << solution.t_values[i] << ", y = " << solution.y_values[i] << std::endl;
+    }
+    os << "t = " << solution.t_values[n] << ", y = " << solution.y_values.back() << std::endl;
+    return os;
+}
+
 var_vec operator*(double h, const var_vec& v) {
     return apply_unary_operation(v, h, [](const auto& value, double scalar) {
         return value * scalar;

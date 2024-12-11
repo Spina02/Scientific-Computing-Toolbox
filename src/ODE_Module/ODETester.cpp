@@ -28,7 +28,7 @@ bool ODETester::test_expression(const var_expr& expr_variant, double t_val, cons
     return true;
 }
 
-bool ODETester::test_expression_parser() const {
+bool ODETester::run_parser_tests() const {
     std::vector<bool> res;
     int test_counter = 1;
 
@@ -95,62 +95,33 @@ bool ODETester::test_simple_ode(const ODETestCase& test_case, const std::string 
         return false;
     }
 
-    auto results = solver->Solve();
+    auto solution = solver->Solve();
+    const auto& results = solution.y_values;
     if (results.empty()) {
         std::cout << "  Test " << test_num << " failed: No results produced" << std::endl;
         return false;
     }
 
+    if (DEBUG)
+        std::cout << solution << std::endl;
+
+    const var_vec& final_value = results.back();
+
     if (DEBUG) {
-        std::cout << "\nSolution trajectory:" << std::endl;
-        double t_cur = t0;
-        int i = 0;
-        
         // Save current format flags
         auto old_flags = std::cout.flags();
         auto old_precision = std::cout.precision();
-        
-        for (var_vec result : results) {
-            if (i % static_cast<int>((tf-t0)/(h*10)) == 0) {
-                std::cout << std::fixed << std::setprecision(1);
-                std::cout << "t = " << t_cur << ", y = ";
-                // Set lower precision for trajectory
-                std::cout << std::fixed << std::setprecision(4);
-                if (auto* scalar_res = std::get_if<double>(&results[i])) {
-                    std::cout << *scalar_res;
-                } else if (auto* vector_res = std::get_if<vec_d>(&results[i])) {
-                    std::cout << vector_res->transpose();
-                }
-                std::cout << std::endl;
-            }
-            i++;
-            t_cur += h;
-        }
+        // High precision for final comparison
+        std::cout << std::scientific << std::setprecision(8);
+
+        std::cout << "\nComparing final values:" << std::endl;
+        std::cout << "Expected: " << expected_final << std::endl;
+        std::cout << "Got:      " << final_value << std::endl;
 
         // Restore original format
         std::cout.flags(old_flags);
         std::cout.precision(old_precision);
     }
-
-    const var_vec& final_value = results.back();
-
-    // Save current format flags
-    auto old_flags = std::cout.flags();
-    auto old_precision = std::cout.precision();
-
-    if (DEBUG) {
-        std::cout << "\nComparing final values:" << std::endl;
-        // High precision for final comparison
-        std::cout << std::scientific << std::setprecision(8);
-
-        // Expected
-        std::cout << "Expected: " << expected_final << std::endl;
-        std::cout << "Got:      " << final_value << std::endl;
-    }
-
-    // Restore original format
-    std::cout.flags(old_flags);
-    std::cout.precision(old_precision);
 
     // Check final value
     if (auto* scalar_result = std::get_if<double>(&final_value)) {
