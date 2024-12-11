@@ -76,9 +76,9 @@ clean:
 
 # Export library path when running the program
 run: $(MAIN_TARGET)
-	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH 
+	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(MAIN_TARGET)
 
-# Test (doing the run and then testing)
+# Test
 test: $(TEST_DIR)/$(MODULE)_test.cpp $(LIB_TARGET)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $(BIN_DIR)/$(MODULE)_test $(LDFLAGS)
 	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(BIN_DIR)/$(MODULE)_test
