@@ -34,6 +34,9 @@ run:
 run-statistics:
 	@$(MAKE) -C $(SRC_DIR)/Statistics_Module run
 
+test-statistics:
+	@$(MAKE) -C $(SRC_DIR)/Statistics_Module test
+
 run-ode:
 	@$(MAKE) -C $(SRC_DIR)/ODE_Module run
 
@@ -42,5 +45,6 @@ run-interpolation:
 
 test-interpolation:
 	@$(MAKE) -C $(SRC_DIR)/Interpolation_Module test
+
 
 .PHONY: all clean run statistics ode interpolation run-statistics run-ode run-interpolation
