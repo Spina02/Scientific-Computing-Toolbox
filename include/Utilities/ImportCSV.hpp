@@ -106,7 +106,6 @@ using OptionalDataValue = std::optional<DataValue>;
  */
 namespace ScientificToolbox {
 
-
 class ImportCSV : public ImportData{
 public: 
     void import(const std::string& filename) override{
