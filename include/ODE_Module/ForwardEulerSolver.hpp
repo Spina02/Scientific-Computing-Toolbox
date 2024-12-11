@@ -13,7 +13,7 @@ class ForwardEulerSolver : public ODESolver {
         virtual ~ForwardEulerSolver() = default;
 
         // Solve the ODE using Forward Euler method
-        virtual std::vector<var_vec> Solve() override;
+        virtual std::vector<var_vec> Solve() const override;
 };
 
 } // ScientificToolbox::ODE
