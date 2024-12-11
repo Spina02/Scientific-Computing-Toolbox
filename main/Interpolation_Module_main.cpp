@@ -5,7 +5,6 @@
 #include "../include/Interpolation_Module/Lagrange.hpp"
 #include "../include/Interpolation_Module/Newton.hpp"
 #include "../include/Utilities/ImportCSV.hpp"
-#include "../include/Utilities/ImportData.hpp"
 
 #include <iostream>
 #include <vector>
@@ -23,7 +22,7 @@ int main() {
 
 
     // Import data from CSV file 
-    std::string filename = "../../data/points_2_R2.csv";
+    std::string filename = "../../data/points_4_R2.csv";
     ScientificToolbox::ImportCSV importer;
     
     try {

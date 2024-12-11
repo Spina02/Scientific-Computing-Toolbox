@@ -161,6 +161,15 @@ public:
                 std::cerr << "Failed to parse line: " << line << std::endl;
                 throw std::runtime_error("Failed to parse numeric values from the CSV file. Check the file content, it should not contain characters or strings but only two column with x and y values respectively.");
             }
+
+            // printing the points
+            if (DEBUG) {
+                std::cout << "Points: ";
+                for (const auto& p : points) {
+                    std::cout << "(" << p.get_x() << ", " << p.get_y() << ") ";
+                }
+                std::cout << std::endl;
+            }
         }
 
         file.close();

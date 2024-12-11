@@ -40,4 +40,7 @@ run-ode:
 run-interpolation:
 	@$(MAKE) -C $(SRC_DIR)/Interpolation_Module run
 
+test-interpolation:
+	@$(MAKE) -C $(SRC_DIR)/Interpolation_Module test
+
 .PHONY: all clean run statistics ode interpolation run-statistics run-ode run-interpolation

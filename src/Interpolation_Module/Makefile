@@ -50,4 +50,9 @@ clean:
 run: $(MAIN_TARGET)
 	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(MAIN_TARGET)
 
+# Test
+test: $(TEST_DIR)/$(MODULE)_test.cpp $(LIB_TARGET)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $(BIN_DIR)/$(MODULE)_test $(LDFLAGS)
+	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(BIN_DIR)/$(MODULE)_test
+
 .PHONY: all clean run
