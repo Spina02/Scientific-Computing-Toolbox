@@ -88,5 +88,13 @@ clean:
 
 # Export library path when running the program
 run: $(MAIN_TARGET)
-	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(MAIN_TARGET) 
-.PHONY: all clean run check_deps
+	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(MAIN_TARGET)
+
+test: $(TEST_DIR)/$(MODULE)_test.cpp $(LIB_TARGET)
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $(BIN_DIR)/$(MODULE)_test $(LDFLAGS)
+	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(BIN_DIR)/$(MODULE)_test
+
+
+
+.PHONY: all clean run check_deps test
