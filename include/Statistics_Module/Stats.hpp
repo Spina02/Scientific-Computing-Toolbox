@@ -10,7 +10,7 @@
 #include <Eigen/Dense>
 
 /**
- * @namespace StatsModule::Statistics
+ * @namespace ScientificToolbox::Statistics
  * @brief Statistical anlysis module providing basic statistical functions
  * 
  * This namespace contains template functions for common statistical calculations:
@@ -19,58 +19,16 @@
  * - Frequency analysis
  * - Correlation analysis
  */
+namespace ScientificToolbox::Statistics{      //https://stackoverflow.com/questions/11358425/is-there-a-better-way-to-express-nested-namespaces-in-c-within-the-header
 
-/** mean
+
+/** mean \
  * @brief Calculates arithmetic mean of a numeric vector
  * @tparam T Numeric type (must be arithmetic)
  * @param data Input vector of numeric values
  * @return Double precision arithmetic mean
  * @throws static_assert if T is not an arithmetic type
  */
-
-/** median
- * @brief Calculates median of a numeric vector
- * @tparam T Numeric type (must be arithmetic)
- * @param data Input vector of numeric values
- * @return Double precision median value
- * @throws static_assert if T is not an arithmetic type
- * @throws std::domain_error if input vector is empty
- * @note sort function modifies input vector
- */
-
-/** variance
- * @brief Calculates sample variance of a numeric vector
- * @tparam T Numeric type (must be arithmetic)
- * @param data Input vector of numeric values
- * @return Double precision sample variance
- * @note Uses n-1 denominator (sample variance)
- */
-
-/** sd
- * @brief Calculates sample standard deviation of a numeric vector
- * @tparam T Numeric type (must be arithmetic)
- * @param data Input vector of numeric values
- * @return Double precision sample standard deviation
- * @note Computed as square root of sample variance
- */
-
-/** freqCount
- * @brief Counts frequency of each unique value in a vector
- * @tparam T Type of vector elements
- * @param data Input vector
- * @return Unordered map with elements as keys and their frequencies as values
- */
-
-/** correlationM
- * @brief Computes correlation matrix from data matrix
- * @param dataMatrix Input matrix where each column represents a variable and each row an observation
- * @return Correlation matrix (symmetric matrix of correlation coefficients)
- * @note Uses Eigen library for matrix operations
- */
-namespace ScientificToolbox::Statistics{      //https://stackoverflow.com/questions/11358425/is-there-a-better-way-to-express-nested-namespaces-in-c-within-the-header
-
-// mean
-
 template <typename T>
 double mean(const std::vector<T>& data) {
 
@@ -80,8 +38,15 @@ double mean(const std::vector<T>& data) {
 
 }
 
-//median
-
+/** median \
+ * @brief Calculates median of a numeric vector
+ * @tparam T Numeric type (must be arithmetic)
+ * @param data Input vector of numeric values
+ * @return Double precision median value
+ * @throws static_assert if T is not an arithmetic type
+ * @throws std::domain_error if input vector is empty
+ * @note sort function modifies input vector
+ */
 template <typename T>
 double median(std::vector<T> data) {
 
@@ -103,8 +68,13 @@ double median(std::vector<T> data) {
 
 }
 
-// sample variance
-
+/** variance \
+ * @brief Calculates sample variance of a numeric vector
+ * @tparam T Numeric type (must be arithmetic)
+ * @param data Input vector of numeric values
+ * @return Double precision sample variance
+ * @note Uses n-1 denominator (sample variance)
+ */
 template <typename T>
 double variance(const std::vector<T>& data) {
 
@@ -119,8 +89,13 @@ double variance(const std::vector<T>& data) {
 }
 
 
-// sample standard deviation
-
+/** sd \
+ * @brief Calculates sample standard deviation of a numeric vector
+ * @tparam T Numeric type (must be arithmetic)
+ * @param data Input vector of numeric values
+ * @return Double precision sample standard deviation
+ * @note Computed as square root of sample variance
+ */
 template <typename T>
 double sd( const std::vector<T>& data ){
 
@@ -128,8 +103,12 @@ double sd( const std::vector<T>& data ){
 }
 
 
-// frequency count
-
+/** freqCount \
+ * @brief Counts frequency of each unique value in a vector
+ * @tparam T Type of vector elements
+ * @param data Input vector
+ * @return Unordered map with elements as keys and their frequencies as values
+ */
 template <typename T>
 
 std::unordered_map<T, size_t> freqCount(const std::vector<T>& data) {
@@ -143,8 +122,12 @@ std::unordered_map<T, size_t> freqCount(const std::vector<T>& data) {
 }
 
 
-// correlation 
-
+/** correlationM \
+ * @brief Computes correlation matrix from data matrix
+ * @param dataMatrix Input matrix where each column represents a variable and each row an observation
+ * @return Correlation matrix (symmetric matrix of correlation coefficients)
+ * @note Uses Eigen library for matrix operations
+ */
 Eigen::MatrixXd correlationM( const Eigen::MatrixXd&  dataMatrix) {
 
     Eigen::MatrixXd centered = dataMatrix.rowwise() - dataMatrix.colwise().mean();  //https://stackoverflow.com/questions/15138634/eigen-is-there-an-inbuilt-way-to-calculate-sample-covariance

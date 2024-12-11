@@ -10,7 +10,11 @@
 
 using DataValue = std::variant<int, double, std::string>;
 using OptionalDataValue = std::optional<DataValue>;
-/**
+
+namespace ScientificToolbox::Utils{
+
+
+/** extractColumn \
  * @brief Extracts a column of specified type from a dataset structured as a vector of maps
  * 
  * @details This template function processes a dataset where each row is represented as an 
@@ -44,8 +48,6 @@ using OptionalDataValue = std::optional<DataValue>;
  *     // Extract a column of integers
  *     std::vector<int> integerColumn = extractColumn<int>(dataset, "quantity");
  */
-namespace ScientificToolbox::Utils{
-
 template <typename T>
 std::vector<T> extractColumn(const std::vector<std::unordered_map<std::string, OptionalDataValue>>& data,
                              const std::string& columnName) {
