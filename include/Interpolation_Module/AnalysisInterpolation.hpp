@@ -2,8 +2,6 @@
 #define ANALYSISINTERPOLATION_HPP
 
 #include "utilities_interpolation.hpp"
-#include "Interpolation.hpp"
-#include "LinearInterpolation.hpp"
 
 #include <vector>
 #include <functional>
@@ -15,9 +13,9 @@ namespace ScientificToolbox::Interpolation {
         AnalysisInterpolation(std::set<point<double>> points, std::function<double(double)> generator_function, std::vector<double> random_x);
         ~AnalysisInterpolation();
 
-        void AccuracyTest();
-        void EfficiencyTest();
-        void OrderConvergenceTest();
+        void AccuracyAnalysis();
+        void EfficiencyAnalysis();
+        void OrderConvergenceAnalysis();
 
     private:
         std::set<point<double>> points;

@@ -48,19 +48,6 @@ int main() {
         std::cout << "Insert a value for x: ";
         std::cin >> x;
         std::cout << "Interpolated value at x = " << x << ": " << newton(x) << std::endl;
-        
-        std::vector<double> newton_coefficients = newton.newton_coefficients();
-        std::cout << "Newton Coefficients: ";
-        for (size_t i = 0; i < newton_coefficients.size(); ++i) {
-            std::cout << newton_coefficients[i];
-            if (i > 0) {
-                std::cout << "x^" << i;
-            }
-            if (i < newton_coefficients.size() - 1) {
-                std::cout << " + ";
-            }
-        }
-        std::cout << std::endl;
 
         // Cubic Spline Interpolation Test
         SplineInterpolation<double> spline(points);

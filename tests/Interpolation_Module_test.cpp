@@ -18,24 +18,24 @@ double random_value_generator() {
 int main() {
     InterpolationTester tester;
     
-    std::vector<double> x_values_1 = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
+    std::vector<double> x_values = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
 
     // Function x^6
     std::function<double(double)> generator_function = [](double x) { return std::pow(x, 6); };
 
     // Generating y_true values
     std::vector<double> y_true;
-    for (const auto& x : x_values_1) {
+    for (const auto& x : x_values) {
         y_true.push_back(generator_function(x));
     }
 
     // Generating points
     std::set<point<double>> points;
-    for (size_t i = 0; i < x_values_1.size(); ++i) {
-        points.insert(point<double>(x_values_1[i], y_true[i]));
+    for (size_t i = 0; i < x_values.size(); ++i) {
+        points.insert(point<double>(x_values[i], y_true[i]));
     }
 
-    // Random x values unique
+    // Random unique x values
     std::vector<double> random_x;
     for (size_t i = 0; i < 100; ++i) {
         double random_x_value = random_value_generator();
@@ -45,9 +45,12 @@ int main() {
         random_x.push_back(random_x_value);
     }
 
-    // Linear Interpolation test
     AnalysisInterpolation analysis(points, generator_function, random_x);
-    analysis.AccuracyTest();
+    analysis.AccuracyAnalysis();
+    std::cout << std::endl;
+    analysis.EfficiencyAnalysis();
+    std::cout << std::endl;
+    analysis.OrderConvergenceAnalysis();
 
 
     return 0;
