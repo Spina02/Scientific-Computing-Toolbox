@@ -100,8 +100,7 @@ clean:
 
 # Export library path when running the program
 run: $(MAIN_TARGET)
-	# run with valgrind
-	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind.log ./$(MAIN_TARGET)
+	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(MAIN_TARGET)
 
 test: $(TEST_TARGET) $(LIB_TARGET)
 	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(TEST_TARGET)
