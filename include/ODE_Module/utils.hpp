@@ -7,7 +7,7 @@
 
 namespace ScientificToolbox::ODE {
 
-inline const bool DEBUG = true;
+inline const bool DEBUG = false;
 
 // Parse equation(s) from string(s)
 var_func parseExpression(const var_expr& expr);

@@ -51,6 +51,7 @@ OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 LIB_NAME = lib$(MODULE).so
 LIB_TARGET = $(LIB_DIR)/$(LIB_NAME)
 MAIN_TARGET = $(BIN_DIR)/$(MODULE)_main
+TEST_TARGET = $(BIN_DIR)/$(MODULE)_test
 
 # Default target
 all: $(LIB_TARGET) $(MAIN_TARGET)
@@ -70,6 +71,9 @@ $(MAIN_TARGET): $(MAIN_DIR)/$(MODULE)_main.cpp $(LIB_TARGET)
 	@mkdir -p $(BIN_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $@ $(LDFLAGS)
 
+$(TEST_TARGET): $(TEST_DIR)/$(MODULE)_test.cpp $(LIB_TARGET)
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $(BIN_DIR)/$(MODULE)_test $(LDFLAGS)
 # Clean up build artifacts
 clean:
 	rm -rf $(BUILD_DIR)
@@ -78,9 +82,7 @@ clean:
 run: $(MAIN_TARGET)
 	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(MAIN_TARGET)
 
-# Test
-test: $(TEST_DIR)/$(MODULE)_test.cpp $(LIB_TARGET)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $(BIN_DIR)/$(MODULE)_test $(LDFLAGS)
-	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(BIN_DIR)/$(MODULE)_test
+test: $(TEST_TARGET) $(LIB_TARGET)
+	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(TEST_TARGET)
 
-.PHONY: all clean run
+.PHONY: all clean run check_deps test

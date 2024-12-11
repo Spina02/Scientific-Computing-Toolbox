@@ -49,6 +49,7 @@ OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 LIB_NAME = lib$(MODULE).so
 LIB_TARGET = $(LIB_DIR)/$(LIB_NAME)
 MAIN_TARGET = $(BIN_DIR)/$(MODULE)_main
+TEST_TARGET = $(BIN_DIR)/$(MODULE)_test
 
 # Default target
 all: check_deps $(LIB_TARGET) $(MAIN_TARGET)
@@ -90,12 +91,19 @@ $(MAIN_TARGET): $(MAIN_DIR)/$(MODULE)_main.cpp $(LIB_TARGET)
 	@mkdir -p $(BIN_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $@ $(LDFLAGS)
 
+$(TEST_TARGET): $(TEST_DIR)/$(MODULE)_test.cpp $(LIB_TARGET)
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $(BIN_DIR)/$(MODULE)_test $(LDFLAGS)
 # Clean up build artifacts
 clean:
 	rm -rf $(BUILD_DIR)
 
 # Export library path when running the program
 run: $(MAIN_TARGET)
-	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(MAIN_TARGET)
+	# run with valgrind
+	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind.log ./$(MAIN_TARGET)
 
-.PHONY: all clean run check_deps
+test: $(TEST_TARGET) $(LIB_TARGET)
+	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(TEST_TARGET)
+
+.PHONY: all clean run check_deps test

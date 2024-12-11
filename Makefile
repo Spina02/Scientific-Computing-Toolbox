@@ -37,6 +37,9 @@ run-statistics:
 run-ode:
 	@$(MAKE) -C $(SRC_DIR)/ODE_Module run
 
+test-ode:
+	@$(MAKE) -C $(SRC_DIR)/ODE_Module test
+
 run-interpolation:
 	@$(MAKE) -C $(SRC_DIR)/Interpolation_Module run
 
