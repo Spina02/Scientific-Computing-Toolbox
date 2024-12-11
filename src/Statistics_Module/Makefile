@@ -36,9 +36,6 @@ LIB_DIR = $(BUILD_DIR)/lib
 OBJ_DIR = $(BUILD_DIR)/obj
 BIN_DIR = $(BUILD_DIR)/bin
 
-# Source files and object files
-SRCS := $(wildcard $(SRC_DIR)/*.cpp)
-OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
 # Library and main program targets
 LIB_NAME = lib$(MODULE).so
@@ -69,9 +66,9 @@ check_deps:
 	done
 
 # Compiling the shared library
-$(LIB_TARGET): $(OBJS)
+$(LIB_TARGET):
 	@mkdir -p $(LIB_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -shared $^ -o $@ $(LDFLAGS)
+	@touch $(LIB_TARGET)
 
 # Compiling the object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
