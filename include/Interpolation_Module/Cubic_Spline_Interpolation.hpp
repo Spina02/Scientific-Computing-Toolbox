@@ -10,6 +10,51 @@
 #include <iostream>
 #include <stdexcept>
 
+/**
+ * namespace ScientificToolbox::Interpolation
+ * @brief Interpolation module providing basic interpolation functions
+ * 
+ * This namespace contains template classes for common interpolation methods:
+ * - Linear interpolation
+ * - Polynomial interpolation
+ * - Spline interpolation
+ */
+
+/** Spline Interpolation class
+ * @brief Spline interpolation class
+ * 
+ * This class provides a spline interpolation method using the GNU Scientific Library (GSL).
+ * 
+ * @tparam T Data type
+ * 
+ */
+
+/** Constructor
+ * @brief Constructor for the SplineInterpolation class
+ * 
+ * This constructor initializes the spline interpolation method using the data provided.
+ * 
+ * @param data Set of points to interpolate
+ */
+
+/** Destructor
+ * @brief Destructor for the SplineInterpolation class
+ * 
+ * This destructor frees the memory allocated for the spline interpolation method.
+ * 
+ * @param data Set of points to interpolate
+ * 
+ */
+
+/** Interpolation function
+ * @brief Interpolation function for the SplineInterpolation class
+ * 
+ * This function interpolates a value at a given point using the spline interpolation method.
+ * 
+ * @param x_query Point to interpolate
+ * @return Interpolated value at the given point
+ */
+
 namespace ScientificToolbox::Interpolation {
 
     template <typename T>

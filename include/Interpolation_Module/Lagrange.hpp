@@ -18,26 +18,12 @@
  */
 
 /** Lagrange class
- * @brief Lagrange polynomial interpolation
+ * @brief Lagrange interpolation class
  * 
- * This class implements Lagrange polynomial interpolation for a given set of points.
- * The Lagrange polynomial is a polynomial that passes through all the given points.
+ * This class provides a Lagrange interpolation method.
+ * The Lagrange interpolation method is a polynomial interpolation method that uses a set of points to interpolate a value.
  * 
- * The class inherits from PolynomialInterpolation and implements the interpolation function.
- * The Lagrange polynomial is computed using the Lagrange basis polynomials.
- * 
- * @tparam T Data type for x and y values
- * 
- * @see PolynomialInterpolation
- */
-
-/** compute_lagrange_coefficients method
- * @brief Compute the Lagrange polynomial coefficients
- * 
- * This method computes the coefficients of the Lagrange polynomial that interpolates the given points.
- * The coefficients are computed using the Lagrange basis polynomials.
- * 
- * @return std::vector<T> Coefficients of the Lagrange polynomial
+ * @tparam T Data type
  * 
  */
 

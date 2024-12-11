@@ -22,55 +22,13 @@
 
 /** Interpolation class
  * @brief Abstract base class for interpolation
- * @tparam T Data type for interpolation
  * 
- * This class provides a common interface for interpolation methods.
- * It stores a set of data points and provides a virtual function for interpolation.
- * The class also provides a method to convert the data to a pair of std::vector<T>s.
+ * This class is an abstract base class for interpolation. It contains a set of points
+ * and vectors for x and y values. The class provides a pure virtual function for
+ * interpolation and an overloaded operator() for calling the interpolation function.
  * 
- * The class is templated on the data type T and requires a point class with get_x() and get_y() methods.
- * The class also provides an overloaded operator() for interpolation.
+ * @tparam T Data type
  * 
- */
-
-/** std::set<point<T>>
- * @brief Alias for a set of points
- * 
- * This alias is used to define the data structure for interpolation.
- * It is a set of points with a custom comparison operator.
- * 
- */
-
-/** Constructor
- * @brief Constructs an interpolation object with a set of data points
- * @param data Set of data points
- * @throws std::invalid_argument if data is empty
- */
-
-/** Destructor
- * @brief Virtual destructor for interpolation class
- */
-
-/** tostd::vector<T>s
- * @brief Converts data points to a pair of std::vector<T>s
- * @return Pair of std::vector<T>s (x, y) representing the data points
- */
-
-/** interpolate
- * @brief Pure virtual function for interpolation
- * @param x Interpolation point
- * @return Interpolated value at point x
- */
-
-/** operator()
- * @brief Overloaded operator for interpolation
- * @param x Interpolation point
- * @return Interpolated value at point x
- */
-
-/** getData
- * @brief Getter for data points
- * @return Reference to the data points
  */
 
 namespace ScientificToolbox::Interpolation {

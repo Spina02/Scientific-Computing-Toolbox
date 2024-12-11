@@ -27,15 +27,6 @@
  * 
  */
 
-/** abline class
- * @brief Class for linear interpolation
- * @tparam T Type of x and y coordinates
- * 
- * This class represents a line connecting two points.
- * It provides methods to evaluate the line at a given x coordinate.
- * 
- */
-
 /** interval class
  * @brief Class for storing interval bounds
  * @tparam T Type of interval bounds

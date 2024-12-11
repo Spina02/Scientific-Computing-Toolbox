@@ -35,12 +35,12 @@
  */
 
 /** Constructor
- * @brief Constructor for the LinearInterpolation class
+ * @brief Constructor for linear interpolation
  * 
- * This constructor computes the interpolated functions at each interval.
- * It takes a set of data points and computes the linear interpolation between each pair of points.
+ * This constructor initializes the linear interpolation object with a set of points.
+ * It also initializes the GSL interpolation accelerator and spline.
  * 
- * @param data Set of data points
+ * @param data Set of points to interpolate
  * 
  */
 
