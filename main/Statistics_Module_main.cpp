@@ -1,6 +1,4 @@
-#include "../include/Utilities/ImportCSV.hpp"
-#include "../include/Statistics_Module/Utils.hpp"
-#include "../include/Statistics_Module/Stats.hpp"
+#include "../include/Statistics.hpp"
 
 #include <iostream>
 #include <filesystem>
@@ -44,11 +42,7 @@ using namespace ScientificToolbox;
  * @throws std::runtime_error If target column doesn't exist or isn't numeric
  * @throws Various exceptions from file operations and data processing
  */
-// int main(int argc, char** argv) {
 
-    // std::string inputFile = "../../data/Food_and_Nutrition__.csv";
-    // std::string outputFile = "../../output/Statistics_output.txt";
-    // std::string targetColumn = "Weight"; 
 
     
 
@@ -82,7 +76,7 @@ int main(int argc, char** argv) {
 
     try {
 
-        ScientificToolbox::ImportCSV importer;
+        ImportCSV importer;
         importer.import(inputFile);
         auto data = importer.getData();
 
@@ -96,7 +90,7 @@ int main(int argc, char** argv) {
                 std::holds_alternative<int>(value.value())) {
 
                 numericCols.push_back(key);
-                numericData.push_back(ScientificToolbox::Utils::extractColumn<double>(data, key));
+                numericData.push_back(Utils::extractColumn<double>(data, key));
             }
         }
 
@@ -111,15 +105,15 @@ int main(int argc, char** argv) {
                 throw std::runtime_error("Column '" + targetColumn + "' does not exist or is not numeric");
             }
 
-            auto columnData = ScientificToolbox::Utils::extractColumn<double>(data, targetColumn);
+            auto columnData = Utils::extractColumn<double>(data, targetColumn);
 
             outFile << "Statistics for column: " << targetColumn << "\n";
-            outFile << "Mean: " << ScientificToolbox::Statistics::mean(columnData) << "\n";
-            outFile << "Median: " << ScientificToolbox::Statistics::median(columnData) << "\n";
-            outFile << "Variance: " << ScientificToolbox::Statistics::variance(columnData) << "\n";
-            outFile << "Standard Deviation: " << ScientificToolbox::Statistics::sd(columnData) << "\n";
+            outFile << "Mean: " << Statistics::mean(columnData) << "\n";
+            outFile << "Median: " << Statistics::median(columnData) << "\n";
+            outFile << "Variance: " <<Statistics::variance(columnData) << "\n";
+            outFile << "Standard Deviation: " << Statistics::sd(columnData) << "\n";
 
-            auto freqCount = ScientificToolbox::Statistics::freqCount(columnData);
+            auto freqCount = Statistics::freqCount(columnData);
         
             outFile << "Frequency Count: \n";
             for (const auto& [key, value] : freqCount) {
@@ -132,13 +126,13 @@ int main(int argc, char** argv) {
 
         Eigen::MatrixXd dataMat(data.size(), numericCols.size());
         for (size_t i = 0; i < numericCols.size(); ++i) {
-            std::vector<double> columnData = ScientificToolbox::Utils::extractColumn<double>(data, numericCols[i]);
+            std::vector<double> columnData = Utils::extractColumn<double>(data, numericCols[i]);
             for (size_t j = 0; j < data.size(); ++j) {
                 dataMat(j, i) = columnData[j];
             }
         }
 
-        Eigen::MatrixXd correlationMat = ScientificToolbox::Statistics::correlationM(dataMat);
+        Eigen::MatrixXd correlationMat = Statistics::correlationM(dataMat);
 
         outFile << "Strong Correlations (|correlation| > 0.7): \n";
         for (int i = 0; i < correlationMat.rows(); i++) {
