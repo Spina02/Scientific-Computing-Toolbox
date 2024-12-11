@@ -27,15 +27,6 @@
  * 
  */
 
-/** abline class
- * @brief Class for linear interpolation
- * @tparam T Type of x and y coordinates
- * 
- * This class represents a line connecting two points.
- * It provides methods to evaluate the line at a given x coordinate.
- * 
- */
-
 /** interval class
  * @brief Class for storing interval bounds
  * @tparam T Type of interval bounds
@@ -72,34 +63,6 @@ namespace ScientificToolbox::Interpolation {
     private:
         T x;
         T y;
-    };
-
-    // abline class
-    template <typename T>
-    class abline {
-    public:
-        abline(const point<T> &p1, const point<T> &p2) {
-            T dx = p2.get_x() - p1.get_x();
-            if (dx == 0) {
-                throw std::invalid_argument("Cannot create abline: duplicate x values.");
-            }
-            slope = (p2.get_y() - p1.get_y()) / dx;
-            intercept = p1.get_y() - slope * p1.get_x();
-        }
-
-        ~abline() = default;
-
-        std::pair<T, T> get_abline() const {
-            return std::make_pair(slope, intercept);
-        }
-
-        T evaluate(T x) const {
-            return slope * x + intercept;
-        }
-
-    private:
-        T slope;
-        T intercept;
     };
 
     // interval class

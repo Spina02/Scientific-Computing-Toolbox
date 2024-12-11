@@ -4,6 +4,9 @@
 #include "Interpolation.hpp"
 #include "utilities_interpolation.hpp"
 
+#include <gsl/gsl_interp.h>
+#include <gsl/gsl_spline.h>
+
 #include <set>
 #include <vector>
 #include <algorithm>
@@ -32,12 +35,12 @@
  */
 
 /** Constructor
- * @brief Constructor for the LinearInterpolation class
+ * @brief Constructor for linear interpolation
  * 
- * This constructor computes the interpolated functions at each interval.
- * It takes a set of data points and computes the linear interpolation between each pair of points.
+ * This constructor initializes the linear interpolation object with a set of points.
+ * It also initializes the GSL interpolation accelerator and spline.
  * 
- * @param data Set of data points
+ * @param data Set of points to interpolate
  * 
  */
 
@@ -71,48 +74,28 @@ namespace ScientificToolbox::Interpolation {
     template <typename T>
     class LinearInterpolation : public Interpolation<T> {
     public:
-        // Alias for the set of data points
-        using point_set = typename Interpolation<T>::point_set;  // Simplified `using` declaration
-
-        // Constructor - computes the interpolated functions
-        LinearInterpolation(const point_set& data) : Interpolation<T>(data) {
-            auto current_it = data.begin(); // Iterator to the first element
-            auto previous_it = current_it;  // Iterator to the previous element
-            ++current_it;                   // Iterator to the next element
-
-            // Loop through the data points
-            while (current_it != data.end()) {
-                interval<T> intv(previous_it->get_x(), current_it->get_x()); // Create an interval
-                abline<T> ab(*previous_it, *current_it);                      // Create a line
-                interpolated_functions.push_back(std::make_pair(intv, ab));   // Store the interpolated function
-
-                previous_it = current_it; // Move the previous iterator
-                ++current_it;             // Move the current iterator
-            }
+        // Constructor that accepts a set of points
+        explicit LinearInterpolation(const std::set<point<T>>& data) : Interpolation<T>(data) {
+            // Create the spline
+            acc = gsl_interp_accel_alloc();
+            spline = gsl_spline_alloc(gsl_interp_linear, this->x_.size());
         }
 
-        // Implement the interpolate method
-        T interpolate(T x) const override {
-            // Find the interval containing x
-            auto it = std::find_if(interpolated_functions.begin(), interpolated_functions.end(),
-                [x](const std::pair<interval<T>, abline<T>>& p) { return p.first.contains(x); });
-
-            // Check if the value is outside the interpolation range
-            if (it == interpolated_functions.end()) {
-                throw std::out_of_range("Value " + std::to_string(x) + " is outside the interpolation range.");
-            }
-
-            // Evaluate the interpolated function
-            return it->second.evaluate(x);
+        // Destructor
+        ~LinearInterpolation() {
+            gsl_spline_free(spline);
+            gsl_interp_accel_free(acc);
         }
 
-        // Overload operator()
-        T operator()(T x) const override {
-            return interpolate(x); // Call the interpolate method and return the result
+        // Interpolation function
+        T interpolate(T x_query) const override {
+            gsl_spline_init(spline, this->x_.data(), this->y_.data(), this->x_.size());
+            return gsl_spline_eval(spline, x_query, acc);
         }
-
-    private:
-        std::vector<std::pair<interval<T>, abline<T>>> interpolated_functions; // Interpolated functions at each interval
+    
+    protected:
+        gsl_interp_accel* acc;  // GSL interpolation accelerator
+        gsl_spline* spline;     // GSL interpolation spline
     };
 
 }
