@@ -13,7 +13,7 @@ class RK4Solver : public ODESolver{
         virtual ~RK4Solver() = default;
         
         // Solve the ODE using RK4 method
-        virtual std::vector<var_vec> Solve() override;
+        virtual std::vector<var_vec> Solve() const override;
 };
 
 } // ScientificToolbox::ODE

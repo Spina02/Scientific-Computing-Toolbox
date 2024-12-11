@@ -13,7 +13,7 @@ class ExplicitMidpointSolver : public ODESolver {
         virtual ~ExplicitMidpointSolver() = default;
 
         // Solve the ODE using Explicit Midpoint method
-        virtual std::vector<var_vec> Solve() override;
+        virtual std::vector<var_vec> Solve() const override;
 };
 
 } // ScientificToolbox::ODE

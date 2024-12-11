@@ -19,25 +19,16 @@ using vec_s = std::vector<std::string>;
 using var_vecs = std::vector<var_vec>;
 using var_expr = std::variant<std::string, vec_s>;
 
-struct ScalarODETestCase {
-    std::string expr;
-    double t0;
-    double tf;
-    double h;
-    double y0;
-    double expected_final;
-    double expected_derivative;
-};
+// Overload for printing variant types
+std::ostream& operator<<(std::ostream& os, const var_vec& vec);
+std::ostream& operator<<(std::ostream& os, const var_expr& expr);
 
-struct VectorODETestCase {
-    vec_s exprs;
-    double t0;
-    double tf;
-    double h;
-    vec_d y0;
-    vec_d expected_final;
-    vec_d expected_derivative;
-};
+// Overload for arithmetic operations
+var_vec operator*(double h, const var_vec& v);
+var_vec operator+(const var_vec& v1, const var_vec& v2);
+var_vec operator-(const var_vec& v1, const var_vec& v2);
+var_vec operator/(const var_vec& v1, const double v2);
+var_vec operator/(const var_vec& v1, const var_vec& v2);
 
 struct ODETestCase {
     var_expr expr;
@@ -115,8 +106,6 @@ var_vec apply_unary_operation(const var_vec& v, double scalar, Func op) {
         return op(std::get<Eigen::VectorXd>(v), scalar);
     }
 }
-
-using test_case = std::variant<ScalarODETestCase, VectorODETestCase>;
 
 } // namespace ScientificToolbox::ODE
 

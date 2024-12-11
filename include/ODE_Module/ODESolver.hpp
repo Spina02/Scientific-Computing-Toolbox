@@ -22,8 +22,9 @@ namespace ScientificToolbox::ODE {
 
         virtual ~ODESolver() = default;
 
-        virtual std::vector<var_vec> Solve() = 0; 
-    };
+        virtual std::vector<var_vec> Solve() const = 0; 
+
+        };
 }
 
 #endif // ODESOLVER_HPP

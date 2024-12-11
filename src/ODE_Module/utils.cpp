@@ -2,58 +2,99 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <muParser.h>
+#include <memory>
 
 namespace ScientificToolbox::ODE {
 
-std::vector<ScalarODETestCase> scalar_cases;
-std::vector<VectorODETestCase> vector_cases;
 std::vector<ODETestCase> cases;
 
-std::ostream& operator<<(std::ostream& os, const var_vec& vec) {
-    return print_variant(os, vec);
-}
+var_func parseExpression(const var_expr& ex) {
+    try {
+        try {
+            std::string expr = std::get<std::string>(ex);
+            if (expr.empty()) {
+                throw std::runtime_error("The expression is empty.");
+            }
+            // shared pointer for `t` and `y`
+            auto parser = std::make_shared<mu::Parser>();
+            auto t_ptr = std::make_shared<double>(0.0);
+            auto y_ptr = std::make_shared<double>(0.0);
 
-std::ostream& operator<<(std::ostream& os, const var_expr& expr) {
-    return print_variant(os, expr);
-}
+            // initialize parser
+            parser->DefineVar("t", t_ptr.get());
+            parser->DefineVar("y", y_ptr.get());
+            parser->SetExpr(expr);
 
-var_vec operator*(double h, const var_vec& v) {
-    return apply_unary_operation(v, h, [](const auto& value, double scalar) {
-        return value * scalar;
-    });
-}
+            // Lambda function that evaluates the expression
+            return [parser, t_ptr, y_ptr](double t, double y) -> double {
+                *t_ptr = t;
+                *y_ptr = y;
+                return parser->Eval();
+            };
+        } catch (...) {
+            vec_s exprs = std::get<vec_s>(ex);
+                auto t_ptr = std::make_shared<double>(0.0);
+            auto y_ptrs = std::make_shared<std::vector<std::shared_ptr<double>>>();
+            y_ptrs->resize(exprs.size());
 
-var_vec operator+(const var_vec& v1, const var_vec& v2) {
-    return apply_binary_operation(v1, v2, [](const auto& a, const auto& b) {
-        return a + b;
-    });
-}
+            std::vector<std::shared_ptr<mu::Parser>> parsers(exprs.size());
 
-var_vec operator-(const var_vec& v1, const var_vec& v2) {
-    return apply_binary_operation(v1, v2, [](const auto& a, const auto& b) {
-        return a - b;
-    });
-}
+            for (size_t i = 0; i < exprs.size(); ++i) {
+                if (exprs[i].empty()) {
+                    throw std::runtime_error("Expression " + std::to_string(i) + " is empty.");
+                }
 
-var_vec operator/(const var_vec& v1, const var_vec& v2) {
-    return apply_binary_operation(v1, v2, [](const auto& a, const auto& b) {
-        if constexpr (std::is_same_v<std::decay_t<decltype(a)>, Eigen::VectorXd>) {
-            return a.cwiseQuotient(b);
-        } else {
-            return a / b;
+                parsers[i] = std::make_shared<mu::Parser>();
+                parsers[i]->DefineVar("t", t_ptr.get());
+
+                // For single component systems, allow using just 'y'
+                if (exprs.size() == 1) {
+                    if (!y_ptrs->at(0)) {
+                        y_ptrs->at(0) = std::make_shared<double>(0.0);
+                    }
+                    parsers[i]->DefineVar("y", y_ptrs->at(0).get());
+                }
+
+                // Always define y0,y1,... style variables
+                for (size_t j = 0; j < exprs.size(); ++j) {
+                    if (!y_ptrs->at(j)) {
+                        y_ptrs->at(j) = std::make_shared<double>(0.0);
+                    }
+                    parsers[i]->DefineVar("y" + std::to_string(j), y_ptrs->at(j).get());
+                }
+                parsers[i]->SetExpr(exprs[i]);
+            }
+
+            // Lambda function that evaluates the expressions
+            return [parsers, t_ptr, y_ptrs](double t, const vec_d &y) -> vec_d {
+                if (static_cast<size_t>(y.size()) != y_ptrs->size()) {
+                    throw std::runtime_error("Mismatch between number of expressions and size of y vector.");
+                }
+
+                // Update the value of `t`
+                *t_ptr = t;
+
+                // Update the value of each `y`
+                for (Eigen::Index i = 0; i < y.size(); ++i) {
+                    *(y_ptrs->at(i)) = y[i];
+                }
+
+                // Evaluate each expression
+                vec_d result(parsers.size());
+                for (size_t i = 0; i < parsers.size(); ++i) {
+                    result(i) = parsers[i]->Eval();
+                }
+
+                return result;
+            };
         }
-    });
-}
-
-var_vec operator/(const var_vec& v1, const double v2) {
-    if (std::holds_alternative<double>(v1)) {
-        return std::get<double>(v1) / v2;
-    } else {
-        return std::get<Eigen::VectorXd>(v1) / v2;
+    } catch (const mu::Parser::exception_type& e) {
+        throw std::runtime_error("Error parsing vector expression: " + std::string(e.GetMsg()));
     }
 }
 
-void save_on_CSV(const std::string& filename, const std::vector<std::vector<double>>& data, const std::vector<std::string>& headers) {
+void save_on_CSV(const std::string& filename, const std::vector<vec_d>& data, const std::vector<std::string>& headers) {
 
     // create folder it does not exist
     std::filesystem::create_directories(std::filesystem::path(filename).parent_path());
@@ -75,7 +116,7 @@ void save_on_CSV(const std::string& filename, const std::vector<std::vector<doub
 
     // write data
     for (size_t i = 0; i < data.size(); ++i) {
-        for (size_t j = 0; j < data[i].size(); ++j) {
+        for (Eigen::Index j = 0; j < data[i].size(); ++j) {
             file << data[i][j];
             if (j < data[i].size() - 1) {
                 file << ",";
@@ -95,39 +136,43 @@ void load_tests_from_csv(const std::string& filename) {
         std::cout << "Attempting to load tests from: " << filename << std::endl;
 
         // Clear existing test cases
-        scalar_cases.clear();
-        vector_cases.clear();
+        cases.clear();
+        cases.clear();
         
         // Check if file exists
         std::ifstream file(filename);
         if (!file.good()) {
             std::cout << "Warning: Test file " << filename << " not found. Using default tests." << std::endl;
-            // Add default test cases
-            scalar_cases.push_back({
-                "y",           // dy/dt = y
-                0.0,           // t0
-                1.0,           // tf
-                0.001,         // h
-                1.0,           // y0
-                std::exp(1.0), // Expected: e^t
-                1.0            // Expected derivative at t0
-            });
+            
+            // Add default scalar test case
+            ODETestCase scalar_test;
+            scalar_test.expr = "y"; // dy/dt = y
+            scalar_test.t0 = 0.0;
+            scalar_test.tf = 1.0;
+            scalar_test.h = 0.001;
+            scalar_test.y0 = 1.0;
+            scalar_test.expected_final = std::exp(1.0); // Expected: e^t
+            scalar_test.expected_derivative = 1.0; // Expected derivative at t0
 
-            // Add a simple vector test case
-            vec_d y0(2), ef(2), ed(2);
+            // Add default vector test case
+            ODETestCase vector_test;
+            vec_s exprs = {"y0", "y1"};
+            vec_d y0(2), ex(2), exd(2);
             y0 << 1.0, 1.0;
-            ef << std::exp(1.0), std::exp(1.0);
-            ed << 1.0, 1.0;
+            ex << std::exp(1.0), std::exp(1.0);
+            exd << 1.0, 1.0;
+            vector_test.expr = exprs; // dy0/dt = y0, dy1/dt = y1
+            vector_test.t0 = 0.0;
+            vector_test.tf = 1.0;
+            vector_test.h = 0.001;
+            vector_test.y0 = y0;
+            vector_test.expected_final = ex; // Expected: [e^t, e^t]
+            vector_test.expected_derivative = exd; // Expected derivative at t0
 
-            vector_cases.push_back({
-                {"y0", "y1"},  // dy0/dt = y0, dy1/dt = y1
-                0.0,           // t0
-                1.0,           // tf
-                0.001,         // h
-                y0,            // y0
-                ef,            // expected_final
-                ed             // expected_derivative
-            });
+            // Add default test cases
+            cases.push_back(scalar_test);
+            cases.push_back(vector_test);
+
             return;
         }
         file.close();
@@ -178,7 +223,7 @@ var_expr parse_var_expr(const std::string& str) {
     return exprs;
 }
 
-var_vec parse_var_vec(const std::variant<std::string, double> value) { //! here the error
+var_vec parse_var_vec(const std::variant<std::string, double> value) {
     // rty to return a double
     if (std::holds_alternative<double>(value)) {
         return std::get<double>(value);
@@ -226,8 +271,7 @@ void parse_test_case(const std::unordered_map<std::string, OptionalDataValue>& r
             test.expected_final = parse_var_vec(std::get<double>(row.at("expected_final").value()));
             test.expected_derivative = parse_var_vec(std::get<double>(row.at("expected_derivative").value()));
         } catch (...) {
-            test.y0 = parse_var_vec(std::get<std::string>(row.at("y0").value())); //! here the error
-            std::cout << "\n  this does not appear on output  \n" << std::endl;
+            test.y0 = parse_var_vec(std::get<std::string>(row.at("y0").value()));
             test.expected_final = parse_var_vec(std::get<std::string>(row.at("expected_final").value()));
             test.expected_derivative = parse_var_vec(std::get<std::string>(row.at("expected_derivative").value()));
         }
@@ -239,113 +283,4 @@ void parse_test_case(const std::unordered_map<std::string, OptionalDataValue>& r
     }
 }
 
-/*
-void parse_test_case(const std::unordered_map<std::string, OptionalDataValue>& row) {
-    try {
-        if (!row.count("type") || !row.at("type").has_value()) {
-            std::cerr << "Warning: Skipping row without type" << std::endl;
-            return;
-        }
-
-        std::string type = std::get<std::string>(row.at("type").value());
-
-        const std::vector<std::string> required_fields = {
-            "expr", "t0", "tf", "h", "y0", "expected_final", "expected_derivative"
-        };
-
-        // Check required fields
-        for (const auto& field : required_fields) {
-            if (!row.count(field) || !row.at(field).has_value()) {
-                std::cerr << "Warning: Skipping row missing required field: " << field << std::endl;
-                return;
-            }
-        }
-
-        if (type == "scalar") {
-            ScalarODETestCase test;
-            test.expr = std::get<std::string>(row.at("expr").value());
-            test.t0 = std::get<double>(row.at("t0").value());
-            test.tf = std::get<double>(row.at("tf").value());
-            test.h = std::get<double>(row.at("h").value());
-            test.y0 = std::get<double>(row.at("y0").value());
-            test.expected_final = std::get<double>(row.at("expected_final").value());
-            test.expected_derivative = std::get<double>(row.at("expected_derivative").value());
-            scalar_cases.push_back(test);
-        } 
-        else if (type == "vector") {
-            VectorODETestCase test;
-            
-            // Parse comma-separated expressions
-            std::string expr_str = std::get<std::string>(row.at("expr").value());
-            std::stringstream ss(expr_str);
-            std::string expr;
-            while (std::getline(ss, expr, ',')) {
-                test.exprs.push_back(expr);
-            }
-
-            if (test.exprs.empty()) {
-                std::cerr << "Warning: Skipping vector test case with no expressions" << std::endl;
-                return;
-            }
-
-            test.t0 = std::get<double>(row.at("t0").value());
-            test.tf = std::get<double>(row.at("tf").value());
-            test.h = std::get<double>(row.at("h").value());
-
-            // Parse y0 vector
-            vec_d y0(test.exprs.size());
-            std::string y0_str = std::get<std::string>(row.at("y0").value());
-            std::stringstream ss_y0(y0_str);
-            std::string val;
-            size_t i = 0;
-            while (std::getline(ss_y0, val, ',') && i < test.exprs.size()) {
-                y0(i++) = std::stod(val);
-            }
-            test.y0 = y0;
-
-            if (i != test.exprs.size()) {
-                std::cerr << "Warning: Mismatch between number of expressions and y0 values" << std::endl;
-                return;
-            }
-
-            // Parse expected_final vector
-            vec_d expected_final(test.exprs.size());
-            std::string expected_final_str = std::get<std::string>(row.at("expected_final").value());
-            std::stringstream ss_expected_final(expected_final_str);
-            i = 0;
-            while (std::getline(ss_expected_final, val, ',') && i < test.exprs.size()) {
-                expected_final(i++) = std::stod(val);
-            }
-            test.expected_final = expected_final;
-
-            if (i != test.exprs.size()) {
-                std::cerr << "Warning: Mismatch between number of expressions and expected_final values" << std::endl;
-                return;
-            }
-
-            // Parse expected_derivative vector
-            vec_d expected_derivative(test.exprs.size());
-            std::string expected_derivative_str = std::get<std::string>(row.at("expected_derivative").value());
-            std::stringstream ss_expected_derivative(expected_derivative_str);
-            i = 0;
-            while (std::getline(ss_expected_derivative, val, ',') && i < test.exprs.size()) {
-                expected_derivative(i++) = std::stod(val);
-            }
-            test.expected_derivative = expected_derivative;
-
-            if (i != test.exprs.size()) {
-                std::cerr << "Warning: Mismatch between number of expressions and expected_derivative values" << std::endl;
-                return;
-            }
-
-            vector_cases.push_back(test);
-        }
-        else {
-            std::cerr << "Warning: Unknown test type: " << type << std::endl;
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "Error parsing test case: " << e.what() << std::endl;
-    }
-}
-*/
 }

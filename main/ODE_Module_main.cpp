@@ -14,7 +14,7 @@ int main() {
     all_passed &= tester.test_expression_parser();
     
     // Test Forward Euler Solver
-    all_passed &= tester.run_tests();
+    all_passed &= tester.run_ode_tests();
 
     if (all_passed) {
         std::cout << std::endl << std::endl << "All tests passed!" << std::endl;
