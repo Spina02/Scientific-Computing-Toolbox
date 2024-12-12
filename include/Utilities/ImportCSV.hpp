@@ -18,6 +18,8 @@
 #include <iostream>
 #include <charconv>
 
+
+const inline bool DEBUG = false;
 using DataValue = std::variant<int, double, std::string>;
 using OptionalDataValue = std::optional<DataValue>;
 
