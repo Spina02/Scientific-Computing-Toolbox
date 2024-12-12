@@ -17,10 +17,10 @@ int main(int argc, char** argv) {
 
         // Parse command line arguments
         if (argc > 1) {
-            inputFile = argv[1];
+            inputFile = "../../" + std::string(argv[1]);;
         }
         if (argc > 2) {
-            outputFile = argv[2];
+            outputFile = "../../" + std::string(argv[2]);;
         }
 
         std::cout << "ODE Module Demo\n" << std::endl;

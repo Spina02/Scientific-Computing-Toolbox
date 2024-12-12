@@ -41,7 +41,7 @@ int main() {
 
     std::cout << "\nANALYSIS SECTION" << std::endl;
     
-    std::vector<double> x_values = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
+    std::vector<double> x_values = {1.0, 2.0, 3.0};
 
     // printing x values
     std::cout << "X values: ";
@@ -50,14 +50,20 @@ int main() {
     }
     std::cout << std::endl;
 
-    // Function x^6
-    std::function<double(double)> generator_function = [](double x) { return std::pow(x, 6); };
-    std::cout << "Generator function: y=x^6" << std::endl;
+    // Function x^2
+    std::function<double(double)> generator_function = [](double x) { return std::pow(x, 2); };
+    std::cout << "Generator function: y=x^2" << std::endl;
 
     // Generating y_true values
     std::vector<double> y_true;
     for (const auto& x : x_values) {
         y_true.push_back(generator_function(x));
+    }
+
+    // printing y_true values
+    std::cout << "Y values: ";
+    for (const auto& y : y_true) {
+        std::cout << y << " ";
     }
 
     // Generating points
@@ -66,15 +72,7 @@ int main() {
         points.insert(point<double>(x_values[i], y_true[i]));
     }
 
-    // Random unique x values
-    std::vector<double> random_x;
-    for (size_t i = 0; i < 100; ++i) {
-        double random_x_value = random_value_generator();
-        while (std::find(random_x.begin(), random_x.end(), random_x_value) != random_x.end()) {
-            random_x_value = random_value_generator();
-        }
-        random_x.push_back(random_x_value);
-    }
+    std::vector<double> random_x{1.25, 1.75, 2.25, 2.75};
 
     AnalysisInterpolation analysis(points, generator_function, random_x);
     analysis.AccuracyAnalysis();
