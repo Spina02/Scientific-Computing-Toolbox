@@ -20,23 +20,13 @@ int main(int argc, char** argv) {
         outputFile = argv[2];
     }
     if (argc > 3) {
+        targetColumns.clear();
+        for (int i = 3; i < argc; i++) {
+            targetColumns.push_back(argv[i]);
+        }
+    }
     
     std::string targetsArg = argv[3];
-    
-    // Checking for spaces between commas
-    for (size_t i = 0; i < targetsArg.length() - 1; i++) {
-        if (targetsArg[i] == ',' && targetsArg[i + 1] == ' ') {
-            throw std::runtime_error("Invalid format: No spaces allowed between commas in target columns list");
-        }
-    }
-    
-    std::stringstream ss(targetsArg);
-    std::string column;
-    targetColumns.clear();
-    while (std::getline(ss, column, ',')) {
-        targetColumns.push_back(column);
-        }
-    }
 
     if (argc == 1) {
         std::cout << "\nStatistics Module Usage:\n";
