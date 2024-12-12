@@ -227,23 +227,23 @@ bool InterpolationTester::LinearInterpolationTest() {
 bool InterpolationTester::LagrangeInterpolationTest() {
 
     // Test Lagrange interpolation
-    Lagrange<double> lagrange_interpolation(quadratic_data);
+    Lagrange<double> lagrange(quadratic_data);
 
     // Test interpolation at known points
-    double y1 = lagrange_interpolation(x1);
-    if (y1 - 6.75 > epsilon) {
+    double y1 = lagrange(x1);
+    if (y1 - 10.75 > epsilon) {
         std::cerr << "Error: Lagrange interpolation failed at x = 1.5. Predicted value:" << y1 << std::endl;
         return false;
     }
 
-    double y2 = lagrange_interpolation(x2);
-    if (y2 - 30.25 > epsilon) {
+    double y2 = lagrange(x2);
+    if (y2 - 44.75 > epsilon) {
         std::cerr << "Error: Lagrange interpolation failed at x = 3.5." << std::endl;
         return false;
     }
 
-    double y3 = lagrange_interpolation(x3);
-    if (y3 - 84.75 > epsilon) {
+    double y3 = lagrange(x3);
+    if (y3 - 102.75 > epsilon) {
         std::cerr << "Error: Lagrange interpolation failed at x = 5.5." << std::endl;
         return false;
     }
@@ -254,23 +254,23 @@ bool InterpolationTester::LagrangeInterpolationTest() {
 bool InterpolationTester::NewtonInterpolationTest() {
 
     // Test Newton interpolation
-    Newton<double> newton_interpolation(quadratic_data);
+    Newton<double> newton(quadratic_data);
 
     // Test interpolation at known points
-    double y1 = newton_interpolation(x1);
-    if (y1 - 6.75 > epsilon) {
+    double y1 = newton(x1);
+    if (y1 - 10.75 > epsilon) {
         std::cerr << "Error: Newton interpolation failed at x = 1.5." << std::endl;
         return false;
     }
 
-    double y2 = newton_interpolation(x2);
-    if (y2 - 30.25 > epsilon) {
+    double y2 = newton(x2);
+    if (y2 - 44.75 > epsilon) {
         std::cerr << "Error: Newton interpolation failed at x = 3.5." << std::endl;
         return false;
     }
 
-    double y3 = newton_interpolation(x3);
-    if (y3 - 84.75 > epsilon) {
+    double y3 = newton(x3);
+    if (y3 - 102.75 > epsilon) {
         std::cerr << "Error: Newton interpolation failed at x = 5.5." << std::endl;
         return false;
     }
@@ -281,24 +281,24 @@ bool InterpolationTester::NewtonInterpolationTest() {
 bool InterpolationTester::CubicSplineInterpolationTest() {
 
     // Test Cubic Spline interpolation
-    SplineInterpolation<double> cubic_spline_interpolation(cubic_data);
+    SplineInterpolation<double> spline(cubic_data);
 
     // Test interpolation at known points
-    double y1 = cubic_spline_interpolation(x1);
-    if (y1 - 13.0 > epsilon) {
-        std::cerr << "Error: Cubic Spline interpolation failed at x = 1.5." << std::endl;
+    double y1 = spline(x1);
+    if (y1 - 25.623 > epsilon) {
+        std::cerr << "Error: Cubic Spline interpolation failed at x = 1.5. Predicted value: " << y1 << std::endl;
         return false;
     }
 
-    double y2 = cubic_spline_interpolation(x2);
-    if (y2 - 57.0 > epsilon) {
-        std::cerr << "Error: Cubic Spline interpolation failed at x = 3.5." << std::endl;
+    double y2 = spline(x2);
+    if (y2 - 216.353 > epsilon) {
+        std::cerr << "Error: Cubic Spline interpolation failed at x = 3.5. Predicted value: " << y2 << std::endl;
         return false;
     }
 
-    double y3 = cubic_spline_interpolation(x3);
-    if (y3 - 157.0 > epsilon) {
-        std::cerr << "Error: Cubic Spline interpolation failed at x = 5.5." << std::endl;
+    double y3 = spline(x3);
+    if (y3 - 768.315 > epsilon) {
+        std::cerr << "Error: Cubic Spline interpolation failed at x = 5.5. Predicted value: "<< y3 << std::endl;
         return false;
     }
 

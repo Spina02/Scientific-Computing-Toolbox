@@ -54,6 +54,17 @@ int main() {
         std::cin >> x;
         std::cout << "Interpolated value at x = " << x << ": " << newton(x) << std::endl;
 
+        // printing polynomial in form of a0 + a1*x + a2*x^2 + ... with method newton_coefficients
+        std::cout << "Polynomial: ";
+        std::vector<double> coefficients = newton.newton_coefficients();
+        for (size_t i = 0; i < coefficients.size(); ++i) {
+            std::cout << coefficients[i] << "*x^" << i;
+            if (i < coefficients.size() - 1) {
+                std::cout << " + ";
+            }
+        }
+        std::cout << std::endl;
+
         // Cubic Spline Interpolation Test
         SplineInterpolation<double> spline(points);
         std::cout << "\nCubic Spline Interpolation:" << std::endl;

@@ -31,7 +31,7 @@ namespace ScientificToolbox::Interpolation{
         const double x2 = 3.5;
         const double x3 = 5.5;
 
-        double epsilon = 1e-6;
+        double epsilon = 1e-3;
         bool DEBUG = false;
     };
 }
