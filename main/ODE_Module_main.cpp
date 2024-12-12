@@ -91,8 +91,8 @@ int main(int argc, char** argv) {
         // Solve using Forward Euler
         std::cout << " Forward Euler Method" << std::endl << std::endl;
         auto euler = ForwardEulerSolver(scalar_f, t0, y0, tf, h);
-        //auto euler_solution = euler.Solve(); // solve without measuring execution time
-        auto euler_solution = solve_and_measure_execution_time(euler);
+        auto euler_solution = euler.Solve(); // solve without measuring execution time
+        //auto euler_solution = solve_and_measure_execution_time(euler); // solve and measure execution time
         // Print the trajectory using 2 steps
         euler_solution.steps = 2;
         std::cout << euler_solution << std::endl;
@@ -100,8 +100,8 @@ int main(int argc, char** argv) {
         // Solve using Explicit Midpoint
         std::cout << " Explicit Midpoint Method" << std::endl << std::endl;
         auto midpoint = ExplicitMidpointSolver(scalar_f, t0, y0, tf, h);
-        //auto midpoint_solution = midpoint.Solve(); // solve without measuring execution time
-        auto midpoint_solution = solve_and_measure_execution_time(midpoint);
+        auto midpoint_solution = midpoint.Solve(); // solve without measuring execution time
+        //auto midpoint_solution = solve_and_measure_execution_time(midpoint); // solve and measure execution time
         // Print the trajectory using 4 steps
         midpoint_solution.steps = 4;
         std::cout << midpoint_solution << std::endl;
@@ -109,8 +109,8 @@ int main(int argc, char** argv) {
         // Solve using RK4
         std::cout << " Runge-Kutta 4th Order Method" << std::endl << std::endl;
         auto rk4 = RK4Solver(scalar_f, t0, y0, tf, h);
-        // auto rk4_solution = rk4.Solve(); // solve without measuring execution time
-        auto rk4_solution = solve_and_measure_execution_time(rk4);
+        auto rk4_solution = rk4.Solve(); // solve without measuring execution time
+        //auto rk4_solution = solve_and_measure_execution_time(rk4); // solve and measure execution time
         // Print the trajectory using 6 steps
         rk4_solution.steps = 6;
         std::cout << rk4_solution << std::endl;

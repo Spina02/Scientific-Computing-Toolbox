@@ -146,7 +146,7 @@ bool ODETester::test_simple_ode(const ODETestCase& test_case, const std::string 
 
     const var_vec& final_value = results.back();
 
-    double error = compute_error(final_value, expected_final, sensitivity);
+    double error = compute_error(final_value, expected_final);
 
     if (DEBUG) {
         // Save current format flags

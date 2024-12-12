@@ -21,7 +21,7 @@ ODESolution RK4Solver::Solve() const {
     solution.t_values(solution.t_values.size() - 1) = t0;
 
     try {
-        while (t < tf) {
+        for(int i = 0; i < n; ++i) {
             
             var_vec y_next = y;  // Create new variable for next step
             

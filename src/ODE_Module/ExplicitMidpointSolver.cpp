@@ -21,7 +21,7 @@ ODESolution ExplicitMidpointSolver::Solve() const {
 
 
     try {
-        while (t <= tf) {
+        for(int i = 0; i < n; ++i) {
             var_vec y_next = y;  // Create new variable for next step
 
             var_vec k_1 = f(t, y);
