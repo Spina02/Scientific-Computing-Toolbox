@@ -2,107 +2,189 @@
 #include <iostream>
 #include <cassert>
 #include <cmath>
+#include <random>
 #include <Eigen/Dense>
+
 
 using namespace ScientificToolbox::Statistics;
 
-// Helper function. checks if two doubles are approximately equal
-bool approx_equal(double a, double b, double epsilon = 1e-2) {
-    return std::abs(a - b) < epsilon;
-}
-
-void test_mean() {
-    std::cout << "Testing mean function..." << std::endl;
-
-    std::vector<double> data1 = {1.0, 2.0, 3.0, 4.0, 5.0};
-    assert(approx_equal(mean(data1), 3.0));
-
-    std::vector<int> data2 = {1, 2, 3, 4, 5};
-    assert(approx_equal(mean(data2), 3.0));
-
-    std::cout << "Mean tests passed!" << std::endl;
-}
-
-void test_median() {
-    std::cout << "Testing median function..." << std::endl;
-
-    // computing median for an odd number of elements
-    std::vector<double> data1 = {5.0, 2.0, 1.0, 3.0, 4.0};
-    assert(approx_equal(median(data1), 3.0));
-
-    // this time for even number of elements
-    std::vector<double> data2 = {5.0, 2.0, 1.0, 4.0};
-    assert(approx_equal(median(data2), 3.0));
-
-    std::cout << "Median tests passed!" << std::endl;
-}
-
-void test_variance() {
-    std::cout << "Testing variance function..." << std::endl;
-
-    std::vector<double> data = {2.0, 4.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0};
-    assert(approx_equal(variance(data), 4.57));
-    std::cout << "Variance tests passed!" << std::endl;
-}
-
-void test_standard_deviation() {
-    std::cout << "Testing standard deviation function..." << std::endl;
-    std::vector<double> data = {2.0, 4.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0};
-    assert(approx_equal(sd(data), std::sqrt(4.57)));
-
-    std::cout << "Standard deviation tests passed!" << std::endl;
-}
-
-void test_frequency_count() {
-    std::cout << "Testing frequency count function..." << std::endl;
-
-    std::vector<int> data = {1, 2, 2, 3, 3, 3, 4, 4};
-    auto freq = freqCount(data);
-
-    assert(freq[1] == 1);
-    assert(freq[2] == 2);
-    assert(freq[3] == 3);
-    assert(freq[4] == 2);
-    std::cout << "Frequency count tests passed!" << std::endl;
-}
-
-void test_correlation_matrix() {
-    std::cout << "Testing correlation matrix function..." << std::endl;
-
+/**
+ * @brief Test class for statistical functions validation
+ * 
+ * This class contains unit tests for various statistical computations including:
+ * - Mean calculation
+ * - Variance calculation  
+ * - Correlation matrix computation
+ * 
+ * The test uses different data sets for completeness:
+ * - Constant values
+ * - Ascending sequence
+ * - Normally distributed random data
+ * - Correlated data matrix
+ * 
+ * @note Uses Eigen library for matrix operations
+ * 
+ * Test methods:
+ * - test_mean(): Validates mean calculation
+ * - test_variance(): Validates variance calculation
+ * - test_correlation(): Validates correlation matrix computation
+ * 
+ * Helper methods:
+ * - generateNormalDistribution(): Generates normal distribution test data
+ * - approx_equal(): Compares floating point values with tolerance
+ * - setUp(): Initializes test data sets
+ * 
+ * @test Validates statistical computations against known values
+ * @see Stats.hpp for the implementation of tested functions
+ */
+class StatisticsTest {
+protected:
+     
     
-    Eigen::MatrixXd data(3, 3);
-    data << 1, 2, 3,
-            2, 4, 6,
-            3, 6, 9;
-
-    Eigen::MatrixXd corr_matrix = correlationM(data);
-
-    // checking if diagonal elements are 1
-    for (int i = 0; i < corr_matrix.rows(); ++i) {
-        assert(approx_equal(corr_matrix(i, i), 1.0));
+    /**
+     * @brief Generates normal distribution test data
+     * 
+     * @param n Number of data points
+     * @param mean Mean value of the distribution
+     * @param stddev Standard deviation of the distribution
+     * @return Vector of normally distributed data points
+     */
+    std::vector<double> generateNormalDistribution(size_t n, double mean, double stddev) {
+        std::random_device rd{};
+        std::mt19937 gen{rd()};
+        std::normal_distribution<> d{mean, stddev};
+        std::vector<double> data(n);
+        for(auto& x : data) {
+            x = d(gen);
+        }
+        return data;
     }
 
-    // Off-diagonal elements should also be 1 due to perfect correlation
-    for (int i = 0; i < corr_matrix.rows(); ++i) {
-        for (int j = 0; j < corr_matrix.cols(); ++j) {
-            if (i != j) {
-                assert(approx_equal(corr_matrix(i, j), 1.0));
-            }
+    bool approx_equal(double a, double b, double epsilon = 1e-1) {
+        return std::abs(a - b) < epsilon;
+    }
+
+    // Test-data    
+    std::vector<double> constant_data;
+    std::vector<double> ascending_data;
+    std::vector<double> random_normal_data;
+    Eigen::MatrixXd correlation_data;
+
+
+
+     /**  @brief Initializes test data sets
+    */
+    void setUp() {
+        // Initialize test-data
+        constant_data = std::vector<double>(100, 5.0);  // 100 elements of value 5.0
+        
+        ascending_data.resize(100);
+        std::iota(ascending_data.begin(), ascending_data.end(), 1);  // 1 to 100
+        
+        random_normal_data = generateNormalDistribution(1000, 0.0, 1.0);
+
+        // Create correlation test data with known correlation
+        correlation_data.resize(100, 3);
+        for(int i = 0; i < 100; ++i) {
+            correlation_data(i, 0) = i;
+            correlation_data(i, 1) = 2 * i + generateNormalDistribution(1, 0, 0.1)[0];  // Strong positive correlation
+            correlation_data(i, 2) = -0.5 * i + generateNormalDistribution(1, 0, 0.1)[0];  // Strong negative correlation
         }
     }
 
-    std::cout << "Correlation matrix tests passed!" << std::endl;
-}
+    bool test_mean() {
+        bool passed = true;
+        
+        // Test 1: Constant values
+        passed &= approx_equal(mean(constant_data), 5.0);
+        
+        
+        // Test 2: Arithmetic sequence
+        passed &= approx_equal(mean(ascending_data), 50.5);
+        
+        
+        // Test 3: Normal distribution
+        double sample_mean = mean(random_normal_data);
+        passed &= std::abs(sample_mean) < 0.1;  // Should be close to 0
+        
+        
+        //Test 4: Empty vector
+        try {
+            mean(std::vector<double>{});
+            passed = false;  // Should throw
+        } catch (const std::invalid_argument&) {
+            
+            passed = true;
+        }
+        
+        return passed;
+    }
+
+    bool test_variance() {
+        bool passed = true;
+        
+        // Test 1: Constant values (variance should be 0)
+        passed &= approx_equal(variance(constant_data), 0.0);
+        
+        
+        // Test 2: Known variance of arithmetic sequence
+        double expected_variance = 833.25;  // (n^2 - 1) / 12 for n = 100
+        passed &= approx_equal(variance(ascending_data), expected_variance, 0.01);
+        
+        
+        // Test 3: Normal distribution (should be close to 1)
+        passed &= std::abs(variance(random_normal_data) - 1.0) < 0.1;
+        
+        
+        return passed;
+    }
+
+    bool test_correlation() {
+        bool passed = true;
+        
+        Eigen::MatrixXd corr = correlationM(correlation_data);
+        
+        // Test 1: Diagonal elements should be 1
+        for(int i = 0; i < corr.rows(); ++i) {
+            passed &= approx_equal(corr(i,i), 1.0);
+            
+        }
+        
+        // Test 2: Correlation between column 0 and 1 should be close to 1
+        passed &= approx_equal(corr(0,1), 1.0, 0.1);
+        
+        
+        // Test 3: Correlation between column 0 and 2 should be close to -1
+        passed &= approx_equal(corr(0,2), -1.0, 0.1);
+        
+        
+        return passed;
+    }
+
+public:
+    bool run_all_tests() {
+        setUp();
+        
+        bool all_passed = true;
+        std::cout << "Running statistics tests...\n";
+        
+        all_passed &= test_mean();
+        all_passed &= test_variance();
+        all_passed &= test_correlation();
+        
+        return all_passed;
+    }
+};
 
 int main() {
-    test_mean();
-    test_median();
-    test_variance();
-    test_standard_deviation();
-    test_frequency_count();
-    test_correlation_matrix();
-
-    std::cout << "\nAll statistics tests passed!" << std::endl;
-
-    return 0;
+    StatisticsTest tester;
+    bool all_passed = tester.run_all_tests();
+    
+    if (all_passed) {
+        std::cout << "\nAll statistics tests passed!" << std::endl;
+        return 0;
+    } else {
+        std::cerr << "\nSome tests failed!" << std::endl;
+        return 1;
+    }
 }

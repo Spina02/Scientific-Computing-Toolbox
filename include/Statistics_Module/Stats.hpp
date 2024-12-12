@@ -35,6 +35,9 @@ template <typename T>
 double mean(const std::vector<T>& data) {
 
     static_assert(std::is_arithmetic<T>::value, "Must insert numeric type.");
+    if (data.empty()) {
+        throw std::invalid_argument("mean of an empty vector is undefined");
+    }
     double sum = std::accumulate(data.begin(), data.end(), 0.0);
     return sum / data.size();
 
@@ -71,11 +74,11 @@ double median(std::vector<T> data) {
 }
 
 /** ### variance
- * @brief Calculates sample variance of a numeric vector
+ * @brief Calculates  variance of a numeric vector
  * @tparam T Numeric type (must be arithmetic)
  * @param data Input vector of numeric values
- * @return Double precision sample variance
- * @note Uses n-1 denominator (sample variance)
+ * @return Double precision  variance
+ * @note Uses n denominator (variance)
  */
 template <typename T>
 double variance(const std::vector<T>& data) {
@@ -87,16 +90,16 @@ double variance(const std::vector<T>& data) {
         accum += (val - m) * (val-m);
 
     }
-    return accum / (data.size() - 1);
+    return accum / (data.size());
 }
 
 
 /** ### sd
- * @brief Calculates sample standard deviation of a numeric vector
+ * @brief Calculates  standard deviation of a numeric vector
  * @tparam T Numeric type (must be arithmetic)
  * @param data Input vector of numeric values
- * @return Double precision sample standard deviation
- * @note Computed as square root of sample variance
+ * @return Double precision  standard deviation
+ * @note Computed as square root of  variance
  */
 template <typename T>
 double sd( const std::vector<T>& data ){
