@@ -166,7 +166,7 @@ public:
         setUp();
         
         bool all_passed = true;
-        std::cout << "Running statistics tests...\n";
+        std::cout << "\n\n\n Running statistics tests \n";
         
         all_passed &= test_mean();
         all_passed &= test_variance();
