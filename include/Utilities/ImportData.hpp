@@ -48,6 +48,12 @@ public:
 
     virtual void import(const std::string& filename) = 0;
 
+    /**
+     * @brief Retrieves the stored data from the object
+     * 
+     * @return A const reference to a vector of unordered maps, where each map contains
+     *         string keys paired with OptionalDataValue objects representing the imported data
+     */
     const std::vector<std::unordered_map<std::string, OptionalDataValue>>& getData() const{
         return data_;
     }
