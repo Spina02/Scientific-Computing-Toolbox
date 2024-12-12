@@ -42,10 +42,6 @@ using namespace ScientificToolbox;
  * @throws std::runtime_error If target column doesn't exist or isn't numeric
  * @throws Various exceptions from file operations and data processing
  */
-
-
-    
-
 int main(int argc, char** argv) {
     // Default values
     std::string inputFile = "../../data/Food_and_Nutrition__.csv";
@@ -86,9 +82,13 @@ int main(int argc, char** argv) {
 
         for (const auto& [key, value] : data[0]) {
 
+
+                // holds_alternative is used to chetck the type stored in std::v\variant
             if (std::holds_alternative<double>(value.value()) ||
                 std::holds_alternative<int>(value.value())) {
 
+
+                // if value is numeric then column name is added to numericCols and its data is added to numericData
                 numericCols.push_back(key);
                 numericData.push_back(Utils::extractColumn<double>(data, key));
             }
@@ -132,16 +132,12 @@ int main(int argc, char** argv) {
             }
         }
 
-        Eigen::MatrixXd correlationMat = Statistics::correlationM(dataMat);
+        
 
-        outFile << "Strong Correlations (|correlation| > 0.7): \n";
-        for (int i = 0; i < correlationMat.rows(); i++) {
-            for (int j = 0; j < correlationMat.cols(); j++) {
-                if (i != j && std::abs(correlationMat(i,j)) > 0.7) {
-                     outFile << numericCols[i] << " - " << numericCols[j]  << ": " << correlationMat(i,j) << "\n";
-                    }
-                }
-        }
+
+        Eigen::MatrixXd correlationMat = Statistics::correlationM(dataMat);
+        Statistics::reportStrongCorr(correlationMat, numericCols, 0.7, outFile);
+
 
         
 

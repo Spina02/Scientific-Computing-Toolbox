@@ -6,6 +6,25 @@
 #include <vector>
 #include <random>
 
+/** random_value_generator function
+ * @brief Function to generate random values
+ * 
+ * This function generates random values between 1.0 and 10.0.
+ * 
+ */
+
+/** main function
+ * @brief Main function for the Interpolation module test
+ * 
+ * This function tests the Interpolation module by running the tests and analyzing the interpolation methods
+ * 
+ * For analysis, it uses 10 x values and a generator function y=x^6 to generate the y values, and then generates
+ * 100 random x values to test the interpolation methods.
+ * 
+ * @return 0
+ *  
+ */
+
 using namespace ScientificToolbox::Interpolation;
 
 double random_value_generator() {

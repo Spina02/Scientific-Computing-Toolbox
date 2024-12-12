@@ -31,6 +31,37 @@
  * 
  */
 
+/** Constructor
+ * @brief Constructor for Interpolation class
+ * 
+ * The constructor takes a set of points as input and initializes the data set and
+ * vectors for x and y values. If the data set is empty, an exception is thrown.
+ * 
+ * @param data Set of points
+ * 
+ */
+
+/** Interpolation function
+ * @brief Pure virtual interpolation function
+ * 
+ * This function is a pure virtual function that must be implemented by derived classes.
+ * It takes a value x as input and returns the interpolated value at x.
+ * 
+ * @param x Value to interpolate
+ * @return Interpolated value at x
+ * 
+ */
+
+/** Operator()
+ * @brief Overloaded operator() for interpolation
+ * 
+ * This function is an overloaded operator() that calls the interpolate function.
+ * 
+ * @param x Value to interpolate
+ * @return Interpolated value at x
+ * 
+ */
+
 namespace ScientificToolbox::Interpolation {
 
     // Abstract base class for interpolation

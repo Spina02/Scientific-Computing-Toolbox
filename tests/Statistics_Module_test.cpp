@@ -69,7 +69,7 @@ void test_frequency_count() {
 void test_correlation_matrix() {
     std::cout << "Testing correlation matrix function..." << std::endl;
 
-    // Creating a simple matrix that has perfect correlation
+    
     Eigen::MatrixXd data(3, 3);
     data << 1, 2, 3,
             2, 4, 6,

@@ -4,7 +4,7 @@ MODULE = Interpolation_Module
 CXX = g++
 CPPFLAGS = -Iinclude/$(MODULE) -I/opt/homebrew/opt/gsl/include -I/opt/homebrew/Cellar/gsl/2.8/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 
 CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Werror -Wno-nested-anon-types -g -fPIC
-LDFLAGS = -L/opt/homebrew/opt/gsl/lib -lgsl -lgslcblas 
+LDFLAGS = -L/opt/homebrew/opt/gsl/lib
 
 DEPS = gsl eigen3
 
@@ -69,11 +69,6 @@ $(OBJ_DIR)/%.o: $(TEST_DIR)/%.cpp
 	@mkdir -p $(OBJ_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-# Compiling the test program
-$(TEST_TARGET): $(TEST_OBJS) $(OBJS)
-	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
-
 # Compiling the main program for testing
 $(MAIN_TARGET): $(MAIN_DIR)/$(MODULE)_main.cpp $(LIB_TARGET)
 	@mkdir -p $(BIN_DIR)
@@ -81,7 +76,8 @@ $(MAIN_TARGET): $(MAIN_DIR)/$(MODULE)_main.cpp $(LIB_TARGET)
 
 $(TEST_TARGET): $(TEST_DIR)/$(MODULE)_test.cpp $(LIB_TARGET)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -L$(LIB_DIR) -l$(MODULE)  -o $(TEST_TARGET) $(LDFLAGS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -L$(LIB_DIR) -l$(MODULE)  -o $(BIN_DIR)/$(MODULE)_test $(LDFLAGS)
+
 # Clean up build artifacts
 clean:
 	rm -rf $(BUILD_DIR)

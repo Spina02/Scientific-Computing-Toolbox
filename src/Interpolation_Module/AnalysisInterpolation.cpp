@@ -12,6 +12,53 @@
 #include <cmath>
 #include <chrono>
 
+/** AnalysisInterpolation class
+ * @brief Class for analyzing interpolation methods
+ * 
+ * This class provides methods for analyzing the accuracy, efficiency, and order convergence of interpolation methods.
+ * It takes a set of points, a generator function, and random x values as input.
+ * 
+ */
+
+/** Constructor
+ * @brief Constructor for the AnalysisInterpolation class
+ * 
+ * This constructor initializes the analysis of the interpolation method using the data provided.
+ * 
+ */
+
+/** Method for calculating the Mean Absolute Error (MAE)
+ * @brief Method for calculating the Mean Absolute Error (MAE)
+ * 
+ * This method calculates the Mean Absolute Error (MAE) between two vectors of values.
+ * 
+ * @param y_true True values
+ * @param y_pred Predicted values
+ * @return Mean Absolute Error (MAE)
+ * 
+ */
+
+/** Accuracy Analysis function
+ * @brief Accuracy Analysis function for the AnalysisInterpolation class
+ * 
+ * This function performs an accuracy analysis of the interpolation method.
+ * 
+ */
+
+/** Efficiency Analysis function
+ * @brief Efficiency Analysis function for the AnalysisInterpolation class
+ * 
+ * This function performs an efficiency analysis of the interpolation method.
+ * 
+ */
+
+/** Order Convergence Analysis function
+ * @brief Order Convergence Analysis function for the AnalysisInterpolation class
+ * 
+ * This function performs an order convergence analysis of the interpolation method.
+ * 
+ */
+
 using namespace ScientificToolbox::Interpolation;
 
 // Define the constructor properly here
@@ -137,15 +184,15 @@ void AnalysisInterpolation::EfficiencyAnalysis() {
 void AnalysisInterpolation::OrderConvergenceAnalysis() {
     std::cout << "Starting Order Convergence Analysis..." << std::endl;
 
-    // Known function for Analysising
+    // Known function for analysis
     auto Analysis_function = [](double x) { return std::sin(x); };
 
-    // Number of Analysis points
+    // Number of analysis points
     size_t num_Analysis_points = 100;
     std::vector<double> Analysis_points(num_Analysis_points);
     std::vector<double> Analysis_values(num_Analysis_points);
 
-    // Generate Analysis points and values
+    // Generate analysis points and values
     double x_min = 0.0;
     double x_max = 2.0 * M_PI;
     double step = (x_max - x_min) / (num_Analysis_points - 1);
@@ -157,10 +204,14 @@ void AnalysisInterpolation::OrderConvergenceAnalysis() {
     // Number of interpolation points
     std::vector<size_t> num_points = {10, 20, 40, 80, 160};
 
-    // Perform the Analysis for each number of interpolation points
+    // Store errors for each method
+    std::vector<double> linear_errors, lagrange_errors, newton_errors, spline_errors;
+    std::vector<double> step_sizes;
+
     for (size_t n : num_points) {
         std::set<point<double>> points;
         double h = (x_max - x_min) / (n - 1);
+        step_sizes.push_back(h);
         for (size_t i = 0; i < n; ++i) {
             double x = x_min + i * h;
             points.insert(point<double>(x, Analysis_function(x)));
@@ -173,8 +224,7 @@ void AnalysisInterpolation::OrderConvergenceAnalysis() {
             double error = std::abs(linear.interpolate(Analysis_points[i]) - Analysis_values[i]);
             linear_error += error * error;
         }
-        linear_error = std::sqrt(linear_error / num_Analysis_points);
-        std::cout << "Linear Interpolation (n = " << n << "): Error = " << linear_error << std::endl;
+        linear_errors.push_back(std::sqrt(linear_error / num_Analysis_points));
 
         // Lagrange Interpolation
         Lagrange<double> lagrange(points);
@@ -183,8 +233,7 @@ void AnalysisInterpolation::OrderConvergenceAnalysis() {
             double error = std::abs(lagrange.interpolate(Analysis_points[i]) - Analysis_values[i]);
             lagrange_error += error * error;
         }
-        lagrange_error = std::sqrt(lagrange_error / num_Analysis_points);
-        std::cout << "Lagrange Interpolation (n = " << n << "): Error = " << lagrange_error << std::endl;
+        lagrange_errors.push_back(std::sqrt(lagrange_error / num_Analysis_points));
 
         // Newton Interpolation
         Newton<double> newton(points);
@@ -193,8 +242,7 @@ void AnalysisInterpolation::OrderConvergenceAnalysis() {
             double error = std::abs(newton.interpolate(Analysis_points[i]) - Analysis_values[i]);
             newton_error += error * error;
         }
-        newton_error = std::sqrt(newton_error / num_Analysis_points);
-        std::cout << "Newton Interpolation (n = " << n << "): Error = " << newton_error << std::endl;
+        newton_errors.push_back(std::sqrt(newton_error / num_Analysis_points));
 
         // Cubic Spline Interpolation
         SplineInterpolation<double> spline(points);
@@ -203,8 +251,32 @@ void AnalysisInterpolation::OrderConvergenceAnalysis() {
             double error = std::abs(spline.interpolate(Analysis_points[i]) - Analysis_values[i]);
             spline_error += error * error;
         }
-        spline_error = std::sqrt(spline_error / num_Analysis_points);
-        std::cout << "Cubic Spline Interpolation (n = " << n << "): Error = " << spline_error << std::endl;
+        spline_errors.push_back(std::sqrt(spline_error / num_Analysis_points));
+    }
+
+    // Compute and display the order of convergence for each method
+    auto compute_order = [](const std::vector<double>& errors, const std::vector<double>& steps) {
+        std::vector<double> orders;
+        for (size_t i = 1; i < errors.size(); ++i) {
+            double p = std::log(errors[i] / errors[i - 1]) / std::log(steps[i] / steps[i - 1]);
+            orders.push_back(p);
+        }
+        return orders;
+    };
+
+    std::vector<double> linear_orders = compute_order(linear_errors, step_sizes);
+    std::vector<double> lagrange_orders = compute_order(lagrange_errors, step_sizes);
+    std::vector<double> newton_orders = compute_order(newton_errors, step_sizes);
+    std::vector<double> spline_orders = compute_order(spline_errors, step_sizes);
+
+    // Print results
+    std::cout << "Convergence Orders:\n";
+    for (size_t i = 1; i < num_points.size(); ++i) {
+        std::cout << "n = " << num_points[i] << "\n";
+        std::cout << "  Linear Order: " << linear_orders[i - 1] << "\n";
+        std::cout << "  Lagrange Order: " << lagrange_orders[i - 1] << "\n";
+        std::cout << "  Newton Order: " << newton_orders[i - 1] << "\n";
+        std::cout << "  Spline Order: " << spline_orders[i - 1] << "\n";
     }
 
     std::cout << "Order Convergence Analysis completed successfully." << std::endl;
