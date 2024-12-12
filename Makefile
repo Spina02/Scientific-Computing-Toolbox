@@ -24,7 +24,8 @@ run clean test:
 			statistics) module="Statistics_Module" ;; \
 			interpolation) module="Interpolation_Module" ;; \
 		esac; \
-		$(MAKE) -C $(SRC_DIR)/$$module $@ -s; \
+		args="$(wordlist 3,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))"; \
+		$(MAKE) -C $(SRC_DIR)/$$module $@ ARGS="$$args" -s; \
 	else \
 		for module in $(MODULES); do \
 			$(MAKE) -C $(SRC_DIR)/$$module $@ -s; \
@@ -33,6 +34,10 @@ run clean test:
 
 # Targets for individual modules
 ode statistics interpolation:
+	@:
+
+# Allow arbitrary targets (for arguments)
+%:
 	@:
 
 .PHONY: all clean run test $(MODULES) ode statistics interpolation

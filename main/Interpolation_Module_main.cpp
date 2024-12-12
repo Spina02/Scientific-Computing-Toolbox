@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
     double x = 1.5;
 
     if (argc > 1) {
-        filename = argv[1];
+        filename = "../../" + std::string(argv[1]);
     }
     if (argc > 2) {
         x = std::stod(argv[2]);
