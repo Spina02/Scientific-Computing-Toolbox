@@ -8,8 +8,7 @@ OBJ_DIR = build
 INC_DIR = include
 
 # Modules and directories
-MODULES = $(filter-out Utilities, $(shell ls src/))
-MODULE_DIRS = $(addprefix $(SRC_DIR)/, $(MODULES))
+MODULES = Interpolation_Module ODE_Module Statistics_Module
 
 all: $(MODULES)
 
@@ -17,52 +16,23 @@ all: $(MODULES)
 $(MODULES):
 	@$(MAKE) -C $(SRC_DIR)/$@
 
-statistics: Statistics_Module
-ode: ODE_Module
-interpolation: Interpolation_Module
+# Rules for multiple targets
+run clean test:
+	@if [ -n "$(MAKECMDGOALS)" ] && [ "$(word 2,$(MAKECMDGOALS))" != "" ]; then \
+		case "$(word 2,$(MAKECMDGOALS))" in \
+			ode) module="ODE_Module" ;; \
+			statistics) module="Statistics_Module" ;; \
+			interpolation) module="Interpolation_Module" ;; \
+		esac; \
+		$(MAKE) -C $(SRC_DIR)/$$module $@ -s; \
+	else \
+		for module in $(MODULES); do \
+			$(MAKE) -C $(SRC_DIR)/$$module $@ -s; \
+		done; \
+	fi
 
-clean:
-	@for module in $(MODULES); do \
-		$(MAKE) -C $(SRC_DIR)/$$module clean; \
-	done
+# Targets for individual modules
+ode statistics interpolation:
+	@:
 
-run:
-	@for module in $(MODULES); do \
-		$(MAKE) -C $(SRC_DIR)/$$module run; \
-	done
-
-test: 
-	@for module in $(MODULES); do \
-		$(MAKE) -C $(SRC_DIR)/$$module test; \
-	done
-
-
-run-statistics:
-	@$(MAKE) -C $(SRC_DIR)/Statistics_Module run
-
-test-statistics:
-	@$(MAKE) -C $(SRC_DIR)/Statistics_Module test
-
-clean-statistics:
-	@$(MAKE) -C $(SRC_DIR)/Statistics_Module clean
-
-run-ode:
-	@$(MAKE) -C $(SRC_DIR)/ODE_Module run
-
-test-ode:
-	@$(MAKE) -C $(SRC_DIR)/ODE_Module test
-
-clean-ode:
-	@$(MAKE) -C $(SRC_DIR)/ODE_Module clean
-
-run-interpolation:
-	@$(MAKE) -C $(SRC_DIR)/Interpolation_Module run
-
-test-interpolation:
-	@$(MAKE) -C $(SRC_DIR)/Interpolation_Module test
-
-clean-interpolation:
-	@$(MAKE) -C $(SRC_DIR)/Interpolation_Module clean
-
-
-.PHONY: all clean run test statistics ode interpolation run-statistics run-ode run-interpolation test-statistics test-ode test-interpolation clean-statistics clean-ode clean-interpolation
+.PHONY: all clean run test $(MODULES) ode statistics interpolation

@@ -24,39 +24,42 @@ int main() {
         std::cout << "Scalar ODE: " << scalar_expr << std::endl;
         std::cout << "Initial condition: y(0) = " << y0 << std::endl;
         std::cout << "Time interval: [" << t0 << ", " << tf << "]" << std::endl;
+        
+        /*
+         * NOTE: you can modify the number of steps to print changing
+         *       the value of ODESolution.steps [default = 10]) 
+         */
 
-        // Solve using Forward Euler, Explicit Midpoint, and RK4
+        // Solve using Forward Euler
+        std::cout << "Forward Euler Method" << std::endl;
         auto euler = ForwardEulerSolver(scalar_f, t0, y0, tf, h);
         //auto euler_solution = euler.Solve(); // solve without measuring execution time
         auto euler_solution = solve_and_measure_execution_time(euler);
+        euler_solution.steps = 1;
+        std::cout << euler_solution << std::endl;
 
         // Solve using Explicit Midpoint
+        std::cout << "Explicit Midpoint Method" << std::endl;
         auto midpoint = ExplicitMidpointSolver(scalar_f, t0, y0, tf, h);
         //auto midpoint_solution = midpoint.Solve(); // solve without measuring execution time
         auto midpoint_solution = solve_and_measure_execution_time(midpoint);
+        midpoint_solution.steps = 3;
+        std::cout << midpoint_solution << std::endl;
 
         // Solve using RK4
+        std::cout << "Runge-Kutta 4th Order Method" << std::endl;
         auto rk4 = RK4Solver(scalar_f, t0, y0, tf, h);
         // auto rk4_solution = rk4.Solve(); // solve without measuring execution time
         auto rk4_solution = solve_and_measure_execution_time(rk4);
-
-        // Print results
-        // (you can modify the number of steps to print changing the value of ODESolution.steps [default = 10])
-        std::cout << "Forward Euler Solution:" << std::endl;
-        euler_solution.steps = 5; //
-        std::cout << euler_solution << std::endl;
-        std::cout << "Explicit Midpoint Solution:" << std::endl;
-        std::cout << midpoint_solution << std::endl;
-        std::cout << "RK4 Solution:" << std::endl;
-        rk4_solution.steps = 15;
+        rk4_solution.steps = 5;
         std::cout << rk4_solution << std::endl;
 
         // Save results to CSV
-        save_on_CSV("../../output/scalar_ode_results_FE.csv", euler_solution);
+        save_on_CSV("../../output/ODE_Module/scalar_ode_results_FE.csv", euler_solution);
         std::cout << "results saved on output/ODE_Module/scalar_ode_results_FE.csv" << std::endl;
-        save_on_CSV("../../output/scalar_ode_results_EM.csv", midpoint_solution);
+        save_on_CSV("../../output/ODE_Module/scalar_ode_results_EM.csv", midpoint_solution);
         std::cout << "results saved on output/ODE_Module/scalar_ode_results_EM.csv" << std::endl;
-        save_on_CSV("../../output/scalar_ode_results_RK4.csv", rk4_solution);
+        save_on_CSV("../../output/ODE_Module/scalar_ode_results_RK4.csv", rk4_solution);
         std::cout << "results saved on output/ODE_Module/scalar_ode_results_RK4.csv" << std::endl;
 
         // Example 2: Vector ODE (predator-prey model)
@@ -77,20 +80,27 @@ int main() {
         
         // Solve using Forward Euler
         auto vector_euler = ForwardEulerSolver(vector_f, t0, vector_y0, tf, h);
-        auto vector_euler_result = vector_euler.Solve();
-        save_on_CSV("../../output/vector_ode_results_FE.csv", vector_euler_result);
-        std::cout << "results saved on output/ODE_Module/vector_ode_results_FE.csv" << std::endl;
+        auto vector_euler_solution= vector_euler.Solve();
+        vector_euler_solution.steps = 5;
+        std::cout << vector_euler_solution << std::endl;
 
         // Solve using Explicit Midpoint
         auto vector_midpoint = ExplicitMidpointSolver(vector_f, t0, vector_y0, tf, h);
-        auto vector_midpoint_result = vector_midpoint.Solve();
-        save_on_CSV("../../output/vector_ode_results_EM.csv", vector_midpoint_result);
-        std::cout << "results saved on output/ODE_Module/vector_ode_results_EM.csv" << std::endl;
+        auto vector_midpoint_solution= vector_midpoint.Solve();
+        vector_midpoint_solution.steps = 5;
+        std::cout << vector_midpoint_solution << std::endl;
 
         // Solve using RK4
         auto vector_rk4 = RK4Solver(vector_f, t0, vector_y0, tf, h);
-        auto vector_result = vector_rk4.Solve();
-        save_on_CSV("../../output/vector_ode_results_RK4.csv", vector_result);
+        auto vector_solution= vector_rk4.Solve();
+        vector_solution.steps = 5;
+        std::cout << vector_solution << std::endl;
+
+        save_on_CSV("../../output/ODE_Module/vector_ode_results_FE.csv", vector_euler_solution);
+        std::cout << "results saved on output/ODE_Module/vector_ode_results_FE.csv" << std::endl;
+        save_on_CSV("../../output/ODE_Module/vector_ode_results_EM.csv", vector_midpoint_solution);
+        std::cout << "results saved on output/ODE_Module/vector_ode_results_EM.csv" << std::endl;
+        save_on_CSV("../../output/ODE_Module/vector_ode_results_RK4.csv", vector_solution);
         std::cout << "results saved on output/ODE_Module/vector_ode_results_RK4.csv" << std::endl;
 
     } catch (const std::exception& e) {

@@ -80,6 +80,9 @@ make ode
 make statistics
 ```
 
+> [!NOTE]
+> Both test and run commands will automatically compile the code if needed.
+
 ## Testing
 
 ### Test all Modules
@@ -89,9 +92,9 @@ make test
 
 ### Test individual Modules
 ```bash
-make test-interpolation
-make test-ode
-make test-statistics
+make test interpolation
+make test ode
+make test statistics
 ```
 
 ## Running
@@ -103,9 +106,9 @@ make run
 
 ### Run individual Modules
 ```bash
-make run-interpolation
-make run-ode
-make run-statistics
+make run interpolation
+make run ode
+make run statistics
 ```
 
 
@@ -122,7 +125,7 @@ make run-statistics
 ```bash
 ./build/ODE_Module/bin/ODE_Module_main
 
-# Results are saved to output/ODE_Module/
+# This file contains a demostration of usage of the ODE module. Results are saved to output/ODE_Module/
 ```
 
 ### Statistics Module
@@ -141,7 +144,7 @@ make clean
 
 ### Cleaning individual Modules
 ```bash
-make clean-interpolation
-make clean-ode
-make clean-statistics
+make clean interpolation
+make clean ode
+make clean statistics
 ```

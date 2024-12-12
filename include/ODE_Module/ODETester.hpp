@@ -16,7 +16,6 @@
 #include "../Utilities/ImportCSV.hpp"
 #include <iostream>
 
-
 /**
  * @namespace ScientificToolbox::ODE
  * @brief Namespace containing utilities for Ordinary Differential Equations (ODE) handling

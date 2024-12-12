@@ -1,9 +1,9 @@
 #ifndef ANALYSIS_HPP
 #define ANALYSIS_HPP
 
-#include <chrono>
-#include "ODESolver.hpp"
 #include "utils.hpp"
+#include "ODESolver.hpp"
+#include <chrono>
 
 /**
  * @file analysis.hpp
@@ -16,6 +16,16 @@
  */
 
 namespace ScientificToolbox::ODE {
+
+var_vec abs(const var_vec& v) {
+    if (std::holds_alternative<double>(v)) {
+        return std::abs(std::get<double>(v));
+    } else if (std::holds_alternative<vec_d>(v)) {
+        return (std::get<vec_d>(v)).cwiseAbs();
+    } else {
+        throw std::runtime_error("Error: Incompatible types for abs function");
+    }
+}
 
 /** ### compute_error
  * @brief Computes the error between numerical and analytical solutions
@@ -34,7 +44,7 @@ double compute_error(const var_vec& result, const var_vec& expected, double sens
         const vec_d& ana = std::get<vec_d>(expected);
         return (num - ana).norm();
     } else {
-        throw std::runtime_error("Tipo di variante incompatibile per il calcolo dell'errore.");
+        throw std::runtime_error("Error: Incompatible types for error computation");
     }
 }
 
@@ -48,7 +58,7 @@ ODESolution solve_and_measure_execution_time(const ODESolver& solver) {
     ODESolution sol = solver.Solve(); // Call the Solve() method
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = end - start;
-    std::cout << "Elapsed Time: " << diff.count() << std::endl; // Time in seconds
+    std::cout << "  Elapsed Time: " << diff.count() << std::endl; // Time in seconds
     return sol;
 }
 
