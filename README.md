@@ -2,6 +2,19 @@
 
 ## Homework 
 
+This library has been created by Giacomo Amerio (giacomoamerio24@gmail.com), Christian Faccio (christianfaccio@outlook.it) and Andrea Spinelli (andreaspinelli2002@gmail.com). It is a toolbox written in C++ that contains three modules:
+
+1) Statistics Module - template only, covers descriptive statistics and correlation analysis on a given dataset. For this module it's being used templates for functions' simplicity and different types of data input. 
+2) Interpolation Module - covers four types of interpolation on a given set of points (Linear, Polynomial with Lagrange and Newton method, Cubic Spline). For this module it's being used templates for different data input (int and double). 
+3) ODE Module - solves given differential equations in three ways (Forward Euler, Runge-Kutta-4, Explicit-Midpoint). This module includes templates and std::variant for different types of values.
+
+All modules use inheritance for the natural form of hierarchy that exists in the various areas.
+
+Individual contributions:
+Giacomo Amerio developed the Statistics Module, and the general utilities of parsing and importing data. Christian Faccio developed the Interpolation Module. Andrea Spinelli developed the ODE Module and the makefile structure. All contributed to the debugging and optimisation phase, mostly Andrea who stimulated the whole group to look for the stars and make a great project.
+
+
+
 
 ## Project Structure
 ```bash
@@ -116,7 +129,7 @@ make run statistics
 
 ### Interpolation Module
 ```bash
-./build/Interpolation_Module/bin/Interpolation_Module_main
+./build/Interpolation_Module/bin/Interpolation_Module_main [input_file] [value_to_interpolate]
 
 # Follow the interactive prompts to specify input files and interpolation parameters
 ```
