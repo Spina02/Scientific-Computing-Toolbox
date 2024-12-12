@@ -138,6 +138,36 @@ Eigen::MatrixXd correlationM( const Eigen::MatrixXd&  dataMatrix) {
     Eigen::MatrixXd corr_coeff = cov.array() / (stand_dev * stand_dev.transpose()).array();
     return corr_coeff;
 }
+
+/** reportStrongCorr
+ * @brief Reports correlations stronger than a threshold
+ * @param correlationMatrix Correlation matrix of the numeric variables to analyze
+ * @param columnNames Vector of names of the numeric columns
+ * @param threshold Threshold value for correlation coefficient (absolute value)
+ * @param outStream Output stream to write the report
+ * @return void
+ */
+inline void reportStrongCorr(
+    const Eigen::MatrixXd& correlationMatrix,
+    const std::vector<std::string>& columnNames,
+    double threshold = 0.7,
+    std::ostream& outStream = std::cout) {
+
+    outStream << "Strong Correlations (|correlation| > " << threshold << "): \n";
+    for (int i = 0; i < correlationMatrix.rows();i++) {
+        for (int j = 0; j < correlationMatrix.cols(); j++) {
+            if (i != j && std::abs(correlationMatrix(i,j)) > threshold) {
+                outStream << columnNames[i] << " - " << columnNames[j] << ": " << correlationMatrix(i,j) << "\n";
+            }
+        }
+    
+
+
+    }
+
+
+}
+
 }
 
 #endif
