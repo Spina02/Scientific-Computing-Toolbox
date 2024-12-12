@@ -2,11 +2,11 @@ MODULE = Interpolation_Module
 
 # Compiler and flags
 CXX = g++
-CPPFLAGS = -Iinclude/$(MODULE) -I/opt/homebrew/opt/gsl/include -I/opt/homebrew/Cellar/gsl/2.8/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 
+CPPFLAGS = -Iinclude/$(MODULE) -I/opt/homebrew/opt/gsl/include -I/opt/homebrew/Cellar/gsl/2.8/include
 CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Werror -Wno-nested-anon-types -g -fPIC
 LDFLAGS = -L/opt/homebrew/opt/gsl/lib
 
-DEPS = gsl eigen3
+DEPS = gsl
 
 # Collect all flags from pkg-config
 PKG_CFLAGS := $(shell pkg-config --cflags $(DEPS) 2>/dev/null) 
@@ -16,12 +16,9 @@ ifeq ($(PKG_CFLAGS),)
     GSL_INCLUDE ?= /usr/include
     GSL_LIB ?= /usr/lib
     GSL_FLAGS = -I$(GSL_INCLUDE)
-    GSL_LIBS = -L$(GSL_LIB) -lgsl -lgslcblas
+    GSL_LIBS = -L$(GSL_LIB) -lgsl -lgslcblas 
 
-    EIGEN_INCLUDE ?= /usr/include/eigen3
-    EIGEN_FLAGS = -I$(EIGEN_INCLUDE) 
-
-    PKG_CFLAGS = $(GSL_FLAGS) $(EIGEN_FLAGS)
+    PKG_CFLAGS = $(GSL_FLAGS)
     PKG_LIBS = $(GSL_LIBS)
 endif
 
