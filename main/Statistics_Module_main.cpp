@@ -132,16 +132,7 @@ int main(int argc, char** argv) {
             }
         }
 
-        // Eigen::MatrixXd correlationMat = Statistics::correlationM(dataMat);
-
-        // outFile << "Strong Correlations (|correlation| > 0.7): \n";
-        // for (int i = 0; i < correlationMat.rows(); i++) {
-        //     for (int j = 0; j < correlationMat.cols(); j++) {
-        //         if (i != j && std::abs(correlationMat(i,j)) > 0.7) {
-        //              outFile << numericCols[i] << " - " << numericCols[j]  << ": " << correlationMat(i,j) << "\n";
-        //             }
-        //         }
-        // }
+        
 
 
         Eigen::MatrixXd correlationMat = Statistics::correlationM(dataMat);
