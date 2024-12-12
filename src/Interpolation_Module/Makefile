@@ -3,10 +3,11 @@ MODULE = Interpolation_Module
 # Compiler and flags
 CXX = g++
 CPPFLAGS = -Iinclude/$(MODULE) -I/opt/homebrew/opt/gsl/include -I/opt/homebrew/Cellar/gsl/2.8/include
+CPPFLAGS = -Iinclude/$(MODULE) -I/opt/homebrew/opt/gsl/include -I/opt/homebrew/Cellar/gsl/2.8/include
 CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Werror -Wno-nested-anon-types -g -fPIC
 LDFLAGS = -L/opt/homebrew/opt/gsl/lib
 
-DEPS = gsl eigen3
+DEPS = gsl
 
 # Collect all flags from pkg-config
 PKG_CFLAGS := $(shell pkg-config --cflags $(DEPS) 2>/dev/null) 
