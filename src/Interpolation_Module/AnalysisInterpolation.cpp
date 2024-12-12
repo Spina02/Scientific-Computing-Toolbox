@@ -170,100 +170,122 @@ void AnalysisInterpolation::EfficiencyAnalysis() {
 void AnalysisInterpolation::OrderConvergenceAnalysis() {
     std::cout << "Starting Order Convergence Analysis..." << std::endl;
 
-    // Known function for analysis
-    auto Analysis_function = [](double x) { return std::sin(x); };
+    std::vector<double> x_1 {1.5, 2.5};
+    std::vector<double> x_2 {1.25, 1.5, 1.75, 2.25, 2.5, 2.75};
+    std::vector<double> x_3 {1.125, 1.25, 1.375, 1.5, 1.625, 1.75, 1.875, 2.125, 2.25, 2.375, 2.5, 2.625, 2.75, 2.875};
 
-    // Number of analysis points
-    size_t num_Analysis_points = 100;
-    std::vector<double> Analysis_points(num_Analysis_points);
-    std::vector<double> Analysis_values(num_Analysis_points);
-
-    // Generate analysis points and values
-    double x_min = 0.0;
-    double x_max = 2.0 * M_PI;
-    double step = (x_max - x_min) / (num_Analysis_points - 1);
-    for (size_t i = 0; i < num_Analysis_points; ++i) {
-        Analysis_points[i] = x_min + i * step;
-        Analysis_values[i] = Analysis_function(Analysis_points[i]);
+    // generating y_true
+    std::vector<double> y_true_1, y_true_2, y_true_3;
+    for (const auto& x : x_1) {
+        y_true_1.push_back(generator_function(x));
+    }
+    for (const auto& x : x_2) {
+        y_true_2.push_back(generator_function(x));
+    }
+    for (const auto& x : x_3) {
+        y_true_3.push_back(generator_function(x));
     }
 
-    // Number of interpolation points
-    std::vector<size_t> num_points = {10, 20, 40, 80, 160};
-
-    // Store errors for each method
-    std::vector<double> linear_errors, lagrange_errors, newton_errors, spline_errors;
-    std::vector<double> step_sizes;
-
-    for (size_t n : num_points) {
-        std::set<point<double>> points;
-        double h = (x_max - x_min) / (n - 1);
-        step_sizes.push_back(h);
-        for (size_t i = 0; i < n; ++i) {
-            double x = x_min + i * h;
-            points.insert(point<double>(x, Analysis_function(x)));
-        }
-
-        // Linear Interpolation
-        LinearInterpolation<double> linear(points);
-        double linear_error = 0.0;
-        for (size_t i = 0; i < num_Analysis_points; ++i) {
-            double error = std::abs(linear.interpolate(Analysis_points[i]) - Analysis_values[i]);
-            linear_error += error * error;
-        }
-        linear_errors.push_back(std::sqrt(linear_error / num_Analysis_points));
-
-        // Lagrange Interpolation
-        Lagrange<double> lagrange(points);
-        double lagrange_error = 0.0;
-        for (size_t i = 0; i < num_Analysis_points; ++i) {
-            double error = std::abs(lagrange.interpolate(Analysis_points[i]) - Analysis_values[i]);
-            lagrange_error += error * error;
-        }
-        lagrange_errors.push_back(std::sqrt(lagrange_error / num_Analysis_points));
-
-        // Newton Interpolation
-        Newton<double> newton(points);
-        double newton_error = 0.0;
-        for (size_t i = 0; i < num_Analysis_points; ++i) {
-            double error = std::abs(newton.interpolate(Analysis_points[i]) - Analysis_values[i]);
-            newton_error += error * error;
-        }
-        newton_errors.push_back(std::sqrt(newton_error / num_Analysis_points));
-
-        // Cubic Spline Interpolation
-        SplineInterpolation<double> spline(points);
-        double spline_error = 0.0;
-        for (size_t i = 0; i < num_Analysis_points; ++i) {
-            double error = std::abs(spline.interpolate(Analysis_points[i]) - Analysis_values[i]);
-            spline_error += error * error;
-        }
-        spline_errors.push_back(std::sqrt(spline_error / num_Analysis_points));
+    // Linear Interpolation
+    LinearInterpolation<double> linear(points);
+    std::vector<double> y_pred_linear_1, y_pred_linear_2, y_pred_linear_3;
+    for (const auto& x : x_1) {
+        y_pred_linear_1.push_back(linear(x));
+    }
+    for (const auto& x : x_2) {
+        y_pred_linear_2.push_back(linear(x));
+    }
+    for (const auto& x : x_3) {
+        y_pred_linear_3.push_back(linear(x));
     }
 
-    // Compute and display the order of convergence for each method
-    auto compute_order = [](const std::vector<double>& errors, const std::vector<double>& steps) {
-        std::vector<double> orders;
-        for (size_t i = 1; i < errors.size(); ++i) {
-            double p = std::log(errors[i] / errors[i - 1]) / std::log(steps[i] / steps[i - 1]);
-            orders.push_back(p);
-        }
-        return orders;
-    };
+    // Error calculation
+    double linear_mae_1 = mae(y_true_1, y_pred_linear_1);
+    double linear_mae_2 = mae(y_true_2, y_pred_linear_2);
+    double linear_mae_3 = mae(y_true_3, y_pred_linear_3);
 
-    std::vector<double> linear_orders = compute_order(linear_errors, step_sizes);
-    std::vector<double> lagrange_orders = compute_order(lagrange_errors, step_sizes);
-    std::vector<double> newton_orders = compute_order(newton_errors, step_sizes);
-    std::vector<double> spline_orders = compute_order(spline_errors, step_sizes);
+    // Order Convergence Analysis
+    double linear_order_1 = std::log2(linear_mae_2 / linear_mae_1) / std::log2(0.25/0.5);
+    double linear_order_2 = std::log2(linear_mae_3 / linear_mae_2) / std::log2(0.125/0.25);
 
-    // Print results
-    std::cout << "Convergence Orders:\n";
-    for (size_t i = 1; i < num_points.size(); ++i) {
-        std::cout << "n = " << num_points[i] << "\n";
-        std::cout << "  Linear Order: " << linear_orders[i - 1] << "\n";
-        std::cout << "  Lagrange Order: " << lagrange_orders[i - 1] << "\n";
-        std::cout << "  Newton Order: " << newton_orders[i - 1] << "\n";
-        std::cout << "  Spline Order: " << spline_orders[i - 1] << "\n";
+    // Lagrange Interpolation
+    Lagrange<double> lagrange(points);
+    std::vector<double> y_pred_lagrange_1, y_pred_lagrange_2, y_pred_lagrange_3;
+    for (const auto& x : x_1) {
+        y_pred_lagrange_1.push_back(lagrange(x));
     }
+    for (const auto& x : x_2) {
+        y_pred_lagrange_2.push_back(lagrange(x));
+    }
+    for (const auto& x : x_3) {
+        y_pred_lagrange_3.push_back(lagrange(x));
+    }
+
+    // Error calculation
+    double lagrange_mae_1 = mae(y_true_1, y_pred_lagrange_1);
+    double lagrange_mae_2 = mae(y_true_2, y_pred_lagrange_2);
+    double lagrange_mae_3 = mae(y_true_3, y_pred_lagrange_3);
+
+    // Order Convergence Analysis
+    double lagrange_order_1 = std::log2(lagrange_mae_2 / lagrange_mae_1) / std::log2(0.25/0.5);
+    double lagrange_order_2 = std::log2(lagrange_mae_3 / lagrange_mae_2) / std::log2(0.125/0.25);
+
+    // Newton Interpolation
+    Newton<double> newton(points);
+    std::vector<double> y_pred_newton_1, y_pred_newton_2, y_pred_newton_3;
+    for (const auto& x : x_1) {
+        y_pred_newton_1.push_back(newton(x));
+    }
+    for (const auto& x : x_2) {
+        y_pred_newton_2.push_back(newton(x));
+    }
+    for (const auto& x : x_3) {
+        y_pred_newton_3.push_back(newton(x));
+    }
+
+    // Error calculation
+    double newton_mae_1 = mae(y_true_1, y_pred_newton_1);
+    double newton_mae_2 = mae(y_true_2, y_pred_newton_2);
+    double newton_mae_3 = mae(y_true_3, y_pred_newton_3);
+
+    // Order Convergence Analysis
+    double newton_order_1 = std::log2(newton_mae_2 / newton_mae_1) / std::log2(0.25/0.5);
+    double newton_order_2 = std::log2(newton_mae_3 / newton_mae_2) / std::log2(0.125/0.25);
+
+    // Cubic Spline Interpolation
+    SplineInterpolation<double> cubic_spline(points);
+    std::vector<double> y_pred_cubic_spline_1, y_pred_cubic_spline_2, y_pred_cubic_spline_3;
+    for (const auto& x : x_1) {
+        y_pred_cubic_spline_1.push_back(cubic_spline(x));
+    }
+    for (const auto& x : x_2) {
+        y_pred_cubic_spline_2.push_back(cubic_spline(x));
+    }
+    for (const auto& x : x_3) {
+        y_pred_cubic_spline_3.push_back(cubic_spline(x));
+    }
+
+    // Error calculation
+    double cubic_spline_mae_1 = mae(y_true_1, y_pred_cubic_spline_1);
+    double cubic_spline_mae_2 = mae(y_true_2, y_pred_cubic_spline_2);
+    double cubic_spline_mae_3 = mae(y_true_3, y_pred_cubic_spline_3);
+
+    // Order Convergence Analysis
+    double cubic_spline_order_1 = std::log2(cubic_spline_mae_2 / cubic_spline_mae_1) / std::log2(0.25/0.5);
+    double cubic_spline_order_2 = std::log2(cubic_spline_mae_3 / cubic_spline_mae_2) / std::log2(0.125/0.25);
+
+    // Displaying errors and orders
+    std::cout << "Linear Interpolation errors: " << linear_mae_1 << " " << linear_mae_2 << " " << linear_mae_3 << std::endl;
+    std::cout << "Linear Interpolation Order: " << linear_order_1 << " " << linear_order_2 << std::endl;
+
+    std::cout << "Lagrange Interpolation errors: " << lagrange_mae_1 << " " << lagrange_mae_2 << " " << lagrange_mae_3 << std::endl;
+    std::cout << "Lagrange Interpolation Order: " << lagrange_order_1 << " " << lagrange_order_2 << std::endl;
+
+    std::cout << "Newton Interpolation errors: " << newton_mae_1 << " " << newton_mae_2 << " " << newton_mae_3 << std::endl;
+    std::cout << "Newton Interpolation Order: " << newton_order_1 << " " << newton_order_2 << std::endl;
+
+    std::cout << "Cubic Spline Interpolation errors: " << cubic_spline_mae_1 << " " << cubic_spline_mae_2 << " " << cubic_spline_mae_3 << std::endl;
+    std::cout << "Cubic Spline Interpolation Order: " << cubic_spline_order_1 << " " << cubic_spline_order_2 << std::endl;
 
     std::cout << "Order Convergence Analysis completed successfully." << std::endl;
 }
