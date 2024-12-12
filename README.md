@@ -130,10 +130,10 @@ make run statistics
 
 ### Statistics Module
 ```bash
-./build/Statistics_Module/bin/Statistics_Module_main [input_file] [output_file] [target_column]
+./build/Statistics_Module/bin/Statistics_Module_main [input_file] [output_file] [target_columns]
 
 # Example
-./build/Statistics_Module/bin/Statistics_Module_main data/Food_and_Nutrition__.csv output/stats.txt Ages
+./build/Statistics_Module/bin/Statistics_Module_main data/Food_and_Nutrition__.csv output/stats.txt "Weight,Height"
 ```
 
 
