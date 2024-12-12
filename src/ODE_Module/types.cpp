@@ -17,9 +17,24 @@ std::ostream& operator<<(std::ostream& os, const ODESolution& solution) {
     os << "\n  Solution trajectory:" << std::endl << std::endl;
     size_t step = std::max(1, static_cast<int>(n / solution.steps));
     for (size_t i = 0; i < n; i += step) {
-        os << "    t = " << solution.t_values[i] << ", y = " << solution.y_values[i] << std::endl;
+        os << "    t = " << solution.t_values[i] << ",\ty = " << solution.y_values[i] << std::endl;
     }
-    os << "    t = " << solution.t_values[n] << ", y = " << solution.y_values.back() << std::endl;
+    os << "    t = " << solution.t_values[n] << ",\ty = " << solution.y_values.back() << std::endl;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, ODETestCase test) {
+    os << "ODE Test Case:" << std::endl;
+    os << "  Expression        :\t" << test.expr << std::endl;
+    os << "  Time interval     :\t[" << test.t0 << ", " << test.tf << "]" << std::endl;
+    os << "  Step size         :\t" << test.h << std::endl;
+    os << "  y(0)              :\t" << test.y0 << std::endl;
+    if (test.expected_final.has_value()) {
+        os << "  Expected final value:\t" << test.expected_final.value() << std::endl;
+    }
+    if (test.expected_derivative.has_value()) {
+        os << "  Expected derivative:\t" << test.expected_derivative.value() << std::endl;
+    }
     return os;
 }
 

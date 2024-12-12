@@ -151,7 +151,6 @@ void load_tests_from_csv(const std::string& filename) {
 
         // Clear existing test cases
         cases.clear();
-        cases.clear();
         
         // Check if file exists
         std::ifstream file(filename);
@@ -264,7 +263,7 @@ void parse_test_case(const std::unordered_map<std::string, OptionalDataValue>& r
         std::string type = std::get<std::string>(row.at("type").value());
 
         const std::vector<std::string> required_fields = {
-            "expr", "t0", "tf", "h", "y0", "expected_final", "expected_derivative"
+            "expr", "t0", "tf", "h", "y0"
         };
 
         // Check required fields
@@ -282,12 +281,22 @@ void parse_test_case(const std::unordered_map<std::string, OptionalDataValue>& r
         test.h = std::get<double>(row.at("h").value());
         try {
             test.y0 = parse_var_vec(std::get<double>(row.at("y0").value()));
-            test.expected_final = parse_var_vec(std::get<double>(row.at("expected_final").value()));
-            test.expected_derivative = parse_var_vec(std::get<double>(row.at("expected_derivative").value()));
+            try {
+                test.expected_final = parse_var_vec(std::get<double>(row.at("expected_final").value()));
+                test.expected_derivative = parse_var_vec(std::get<double>(row.at("expected_derivative").value()));
+            } catch (...) {
+                test.expected_final = std::nullopt;
+                test.expected_derivative  = std::nullopt;
+            }
         } catch (...) {
             test.y0 = parse_var_vec(std::get<std::string>(row.at("y0").value()));
-            test.expected_final = parse_var_vec(std::get<std::string>(row.at("expected_final").value()));
-            test.expected_derivative = parse_var_vec(std::get<std::string>(row.at("expected_derivative").value()));
+            try {
+                test.expected_final = parse_var_vec(std::get<std::string>(row.at("expected_final").value()));
+                test.expected_derivative = parse_var_vec(std::get<std::string>(row.at("expected_derivative").value()));
+            } catch (...) {
+                test.expected_final = std::nullopt;
+                test.expected_derivative  = std::nullopt;
+            }
         }
 
         cases.push_back(test);

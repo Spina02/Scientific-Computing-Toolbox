@@ -6,12 +6,20 @@
 #include <vector>
 #include <random>
 
-/** random_value_generator function
+using namespace ScientificToolbox::Interpolation;
+
+/** @function random_value_generator function
  * @brief Function to generate random values
  * 
  * This function generates random values between 1.0 and 10.0.
  * 
  */
+double random_value_generator() {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    static std::uniform_real_distribution<double> dis(1.0, 10.0);
+    return dis(gen);
+}
 
 /** main function
  * @brief Main function for the Interpolation module test
@@ -24,16 +32,6 @@
  * @return 0
  *  
  */
-
-using namespace ScientificToolbox::Interpolation;
-
-double random_value_generator() {
-    static std::random_device rd;
-    static std::mt19937 gen(rd());
-    static std::uniform_real_distribution<double> dis(1.0, 10.0);
-    return dis(gen);
-}
-
 int main() {
     std::cout << "\n TEST SECTION" << std::endl;
 

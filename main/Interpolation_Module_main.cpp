@@ -11,65 +11,42 @@
 
 using namespace ScientificToolbox::Interpolation;
 
-int main() {
+int main(int argc, char** argv) {
 
-    // Import data from CSV file 
+    // Default values
     std::string filename = "../../data/cubic_data.csv";
-    std::cout << "Do you want to insert your csv file? (y/n): ";
-    char answer;
-    std::cin >> answer;
-    if (answer == 'y') {
-        std::cout << "Enter the filename: ";
-        std::cin >> filename;
+    double x = 1.5;
+
+    if (argc > 1) {
+        filename = argv[1];
     }
+    if (argc > 2) {
+        x = std::stod(argv[2]);
+    }
+    
     ScientificToolbox::ImportCSV importer;
     
     try {
         std::set<point<double>> points = importer.read_points_from_csv<double>(filename);
 
-        // Find the minimum and maximum x values
-        interval<double> min_max = minmax_search(points);
-        std::cout << "Minimum x value: " << min_max.get_lower_bound() << std::endl;
-        std::cout << "Maximum x value: " << min_max.get_upper_bound() << std::endl;
-
         // Linear Interpolation Test
         LinearInterpolation<double> linear(points);
         std::cout << "\nLinear Interpolation:" << std::endl;
-        std::cout << "Insert a value for x: ";
-        double x;
-        std::cin >> x;
         std::cout << "Interpolated value at x = " << x << ": " << linear(x) << std::endl;
 
         // Lagrange Interpolation Test
         Lagrange<double> lagrange(points);
         std::cout << "\nLagrange Interpolation:" << std::endl;
-        std::cout << "Insert a value for x: ";
-        std::cin >> x;
         std::cout << "Interpolated value at x = " << x << ": " << lagrange(x) << std::endl;
 
         // Newton Interpolation Test
         Newton<double> newton(points);
         std::cout << "\nNewton Interpolation:" << std::endl;
-        std::cout << "Insert a value for x: ";
-        std::cin >> x;
         std::cout << "Interpolated value at x = " << x << ": " << newton(x) << std::endl;
-
-        // printing polynomial in form of a0 + a1*x + a2*x^2 + ... with method newton_coefficients
-        std::cout << "Polynomial: ";
-        std::vector<double> coefficients = newton.newton_coefficients();
-        for (size_t i = 0; i < coefficients.size(); ++i) {
-            std::cout << coefficients[i] << "*x^" << i;
-            if (i < coefficients.size() - 1) {
-                std::cout << " + ";
-            }
-        }
-        std::cout << std::endl;
 
         // Cubic Spline Interpolation Test
         SplineInterpolation<double> spline(points);
         std::cout << "\nCubic Spline Interpolation:" << std::endl;
-        std::cout << "Insert a value for x: ";
-        std::cin >> x;
         std::cout << "Interpolated value at x = " << x << ": " << spline(x) << std::endl;
 
     } catch (const std::exception& e) {
