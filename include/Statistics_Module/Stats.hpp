@@ -1,6 +1,7 @@
 #ifndef STATS_HPP
 #define STATS_HPP
 
+#include <iostream>
 #include <vector>
 #include <unordered_map>
 #include <optional>
