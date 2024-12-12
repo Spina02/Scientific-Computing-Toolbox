@@ -111,6 +111,20 @@ make run ode
 make run statistics
 ```
 
+## Cleaning all Build Files
+```bash
+make clean
+```
+
+### Cleaning individual Modules
+```bash
+make clean interpolation
+make clean ode
+make clean statistics
+```
+
+> [!NOTE]
+> Both Interpolation and ODE modules include comprehensive test analysis sections that demonstrate error metrics, convergence rates, and other performance indicators.
 
 ## Module Specific example usage
 
@@ -128,23 +142,13 @@ make run statistics
 # This file contains a demostration of usage of the ODE module. Results are saved to output/ODE_Module/
 ```
 
+> [!TIP]
+> It is possible to enable DEBUG prints in tweaking the flag in `include/ODE_Module/utils.cpp`.
+
 ### Statistics Module
 ```bash
 ./build/Statistics_Module/bin/Statistics_Module_main [input_file] [output_file] [target_columns]
 
 # Example
 ./build/Statistics_Module/bin/Statistics_Module_main data/Food_and_Nutrition__.csv output/stats.txt "Weight,Height"
-```
-
-
-## Cleaning all Build Files
-```bash
-make clean
-```
-
-### Cleaning individual Modules
-```bash
-make clean interpolation
-make clean ode
-make clean statistics
 ```
