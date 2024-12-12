@@ -12,6 +12,53 @@
 #include <cmath>
 #include <chrono>
 
+/** AnalysisInterpolation class
+ * @brief Class for analyzing interpolation methods
+ * 
+ * This class provides methods for analyzing the accuracy, efficiency, and order convergence of interpolation methods.
+ * It takes a set of points, a generator function, and random x values as input.
+ * 
+ */
+
+/** Constructor
+ * @brief Constructor for the AnalysisInterpolation class
+ * 
+ * This constructor initializes the analysis of the interpolation method using the data provided.
+ * 
+ */
+
+/** Method for calculating the Mean Absolute Error (MAE)
+ * @brief Method for calculating the Mean Absolute Error (MAE)
+ * 
+ * This method calculates the Mean Absolute Error (MAE) between two vectors of values.
+ * 
+ * @param y_true True values
+ * @param y_pred Predicted values
+ * @return Mean Absolute Error (MAE)
+ * 
+ */
+
+/** Accuracy Analysis function
+ * @brief Accuracy Analysis function for the AnalysisInterpolation class
+ * 
+ * This function performs an accuracy analysis of the interpolation method.
+ * 
+ */
+
+/** Efficiency Analysis function
+ * @brief Efficiency Analysis function for the AnalysisInterpolation class
+ * 
+ * This function performs an efficiency analysis of the interpolation method.
+ * 
+ */
+
+/** Order Convergence Analysis function
+ * @brief Order Convergence Analysis function for the AnalysisInterpolation class
+ * 
+ * This function performs an order convergence analysis of the interpolation method.
+ * 
+ */
+
 using namespace ScientificToolbox::Interpolation;
 
 // Define the constructor properly here
