@@ -11,13 +11,26 @@
 namespace ScientificToolbox::ODE {
 
 ODETester::ODETester() {
-    load_tests_from_csv("../../data/ode_examples.csv");
+    load_tests_from_csv("../../data/ode_tests.csv");
 }
 
-bool ODETester::test_expression(const var_expr& expr_variant, double t_val, const var_vec& y_val, const var_vec& expected_val, int test_num) const {
+bool ODETester::test_expression(ODETestCase test, int test_num) const {
     if (DEBUG) {
         std::cout << std::endl << " ----------------- Test " << test_num << " -----------------" << std::endl << std::endl;
     }
+
+    // Extract test case data
+    var_expr expr_variant = test.expr;
+    double t_val = test.t0;
+    var_vec y_val = test.y0;
+    var_vec expected_val;
+    if (!test.expected_derivative.has_value()) {
+        std::cout << "  Test " << test_num << " failed: Expected derivative not provided" << std::endl;
+        return false;
+    } else {
+        expected_val = test.expected_derivative.value();
+    }
+
     Func f{parseExpression(expr_variant)};
     var_vec result = f(t_val, y_val);
     if (DEBUG) {
@@ -58,7 +71,7 @@ bool ODETester::run_parser_tests() const {
         }
 
     for (const auto& test : cases) {
-        res.push_back(test_expression(test.expr,test.t0,test.y0,test.expected_derivative,test_counter++));
+        res.push_back(test_expression(test, test_counter++));
     }
 
     // Print summary
@@ -85,7 +98,12 @@ bool ODETester::test_simple_ode(const ODETestCase& test_case, const std::string 
     tf = test_case.tf;
     h = test_case.h;
     y0 = test_case.y0;
-    expected_final = test_case.expected_final;
+    if (!test_case.expected_final.has_value()) {
+        std::cout << "  Test " << test_num << " failed: Expected value not provided" << std::endl;
+        return false;
+    } else {
+        expected_final = test_case.expected_final.value();
+    }
 
 
     if (DEBUG) {
@@ -181,8 +199,6 @@ bool ODETester::run_ode_tests() const {
 
         // Scalar tests
         for (const auto& test : cases) {
-            var_vec y0_var = test.y0;
-            var_vec expected_var = test.expected_final;
             results.push_back(test_simple_ode(test, solver_type, test_counter++));
         }
 

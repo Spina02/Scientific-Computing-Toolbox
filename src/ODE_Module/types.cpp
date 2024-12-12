@@ -23,6 +23,22 @@ std::ostream& operator<<(std::ostream& os, const ODESolution& solution) {
     return os;
 }
 
+std::ostream& operator<<(std::ostream& os, ODETestCase test) {
+    os << "ODE Test Case:\t\t" << std::endl;
+    os << "  Expression:\t\t" << test.expr << std::endl;
+    os << "  Initial time:\t\t" << test.t0 << std::endl;
+    os << "  Final time:\t\t" << test.tf << std::endl;
+    os << "  Step size:\t\t" << test.h << std::endl;
+    os << "  Initial condition:\t" << test.y0 << std::endl;
+    if (test.expected_final.has_value()) {
+        os << "  Expected final value:\t" << test.expected_final.value() << std::endl;
+    }
+    if (test.expected_derivative.has_value()) {
+        os << "  Expected derivative:\t" << test.expected_derivative.value() << std::endl;
+    }
+    return os;
+}
+
 var_vec operator*(double h, const var_vec& v) {
     return apply_unary_operation(v, h, [](const auto& value, double scalar) {
         return value * scalar;

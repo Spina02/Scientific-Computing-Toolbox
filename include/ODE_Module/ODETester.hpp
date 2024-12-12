@@ -56,7 +56,7 @@ private:
      * @param test_num Test case number
      * @return true if the test passes, false otherwise
      */
-    bool test_expression(const var_expr& expr_variant, double t_val, const var_vec& y_val, const var_vec& expected_val, int test_num) const;
+    bool test_expression(ODETestCase test, int test_num) const;
     
     /** ### test_simple_ode
      * @brief Run a single test case for an ODE solver

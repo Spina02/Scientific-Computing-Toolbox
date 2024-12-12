@@ -16,6 +16,7 @@
 #include <functional>
 #include <variant>
 #include <Eigen/Dense>
+#include <optional>
 #include <vector>
 #include <string>
 
@@ -47,6 +48,9 @@ struct ODESolution {
     int size;
     vec_d t_values;
     var_vecs y_values;
+    var_vec get_result() {
+        return y_values.back();
+    }
     int steps = 10;
 };
 
@@ -67,8 +71,8 @@ struct ODETestCase {
     double tf;
     double h;
     var_vec y0;
-    var_vec expected_final;
-    var_vec expected_derivative;
+    std::optional<var_vec> expected_final;
+    std::optional<var_vec> expected_derivative;
 };
 
 /**
@@ -97,6 +101,7 @@ struct Func {
 std::ostream& operator<<(std::ostream& os, const var_vec& vec);
 std::ostream& operator<<(std::ostream& os, const var_expr& expr);
 std::ostream& operator<<(std::ostream& os, const ODESolution& solution);
+std::ostream& operator<<(std::ostream& os, ODETestCase test);
 
 // Overload for arithmetic operations
 var_vec operator*(double h, const var_vec& v);

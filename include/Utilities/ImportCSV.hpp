@@ -1,9 +1,9 @@
 #ifndef IMPORTCSV_HPP
 #define IMPORTCSV_HPP
 
-
 #include "ImportData.hpp"
 #include "../Interpolation_Module/utilities_interpolation.hpp"
+
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -17,8 +17,6 @@
 #include <stdexcept>
 #include <iostream>
 #include <charconv>
-
-const inline bool DEBUG = false;
 
 using DataValue = std::variant<int, double, std::string>;
 using OptionalDataValue = std::optional<DataValue>;
@@ -41,6 +39,7 @@ using OptionalDataValue = std::optional<DataValue>;
  */
 namespace ScientificToolbox {
 
+
 /**
  * @class ImportCSV
  * @brief Class for importing and parsing CSV files with mixed data types
@@ -51,6 +50,8 @@ namespace ScientificToolbox {
  */
 class ImportCSV : public ImportData{
 public: 
+
+    bool DEBUG = false;
 
     /**
      * @method import
