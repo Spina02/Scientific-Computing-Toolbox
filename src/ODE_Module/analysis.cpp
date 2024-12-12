@@ -56,10 +56,6 @@ double compute_order_of_convergence(std::string solver_type) {
         errors(i) = error;
     }
 
-    for (int i = 0; i < steps.size(); ++i) {
-        std::cout << "h = " << steps(i) << ", error = " << errors(i) << std::endl;
-    }
-
     // Compute order of convergence
     vec_d orders(steps.size() - 1);
     for (Eigen::Index i = 0; i < steps.size() - 1; ++i) {
