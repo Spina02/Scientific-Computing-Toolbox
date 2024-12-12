@@ -236,6 +236,20 @@ private:
 
 
     
+    /**
+     * @brief Removes leading and trailing whitespace and quotes from a string
+     * 
+     * This function trims whitespace from both ends of a string and optionally removes
+     * enclosing quotation marks if present.
+     * 
+     * @param str The input string to be trimmed
+     * @return std::string The trimmed string with whitespace and optional quotes removed
+     * 
+     * @details The function:
+     * 1. Removes leading whitespace characters
+     * 2. Removes trailing whitespace characters  
+     * 3. If the remaining string starts and ends with quotes, removes them
+     */
     std::string trim(const std::string& str) {
         size_t start = 0;
         while (start < str.size() && std::isspace(static_cast<unsigned char>(str[start]))) {
