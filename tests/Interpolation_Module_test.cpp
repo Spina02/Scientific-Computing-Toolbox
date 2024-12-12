@@ -1,5 +1,5 @@
 
-#include "../include/Interpolation_Module/DataTester.hpp"
+#include "../include/Interpolation_Module/InterpolationTester.hpp"
 #include "../include/Interpolation_Module/AnalysisInterpolation.hpp"
 #include "../include/Interpolation_Module/utilities_interpolation.hpp"
 #include <iostream>
@@ -16,12 +16,26 @@ double random_value_generator() {
 }
 
 int main() {
+    std::cout << "\n TEST SECTION" << std::endl;
+
     InterpolationTester tester;
+
+    tester.run_tests();
+
+    std::cout << "\nANALYSIS SECTION" << std::endl;
     
     std::vector<double> x_values = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
 
+    // printing x values
+    std::cout << "X values: ";
+    for (const auto& x : x_values) {
+        std::cout << x << " ";
+    }
+    std::cout << std::endl;
+
     // Function x^6
     std::function<double(double)> generator_function = [](double x) { return std::pow(x, 6); };
+    std::cout << "Generator function: y=x^6" << std::endl;
 
     // Generating y_true values
     std::vector<double> y_true;

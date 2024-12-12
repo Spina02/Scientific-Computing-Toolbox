@@ -14,9 +14,14 @@ using namespace ScientificToolbox::Interpolation;
 int main() {
 
     // Import data from CSV file 
-    std::string filename;
-    std::cout << "Enter the filename: ";
-    std::cin >> filename;
+    std::string filename = "../../data/cubic_data.csv";
+    std::cout << "Do you want to insert your csv file? (y/n): ";
+    char answer;
+    std::cin >> answer;
+    if (answer == 'y') {
+        std::cout << "Enter the filename: ";
+        std::cin >> filename;
+    }
     ScientificToolbox::ImportCSV importer;
     
     try {
