@@ -12,22 +12,22 @@
 #include <cmath>
 #include <chrono>
 
-/** AnalysisInterpolation class
- * @brief Class for analyzing interpolation methods
- * 
- * This class provides methods for analyzing the accuracy, efficiency, and order convergence of interpolation methods.
- * It takes a set of points, a generator function, and random x values as input.
- * 
- */
+using namespace ScientificToolbox::Interpolation;
 
-/** Constructor
+/** @Constructor
  * @brief Constructor for the AnalysisInterpolation class
  * 
  * This constructor initializes the analysis of the interpolation method using the data provided.
  * 
  */
+AnalysisInterpolation::AnalysisInterpolation(std::set<point<double>> points, 
+                                             std::function<double(double)> generator_function, 
+                                             std::vector<double> random_x) 
+    : points(std::move(points)), generator_function(std::move(generator_function)), random_x(std::move(random_x)) {}
 
-/** Method for calculating the Mean Absolute Error (MAE)
+AnalysisInterpolation::~AnalysisInterpolation() {}
+
+/** @method for calculating the Mean Absolute Error (MAE)
  * @brief Method for calculating the Mean Absolute Error (MAE)
  * 
  * This method calculates the Mean Absolute Error (MAE) between two vectors of values.
@@ -37,38 +37,6 @@
  * @return Mean Absolute Error (MAE)
  * 
  */
-
-/** Accuracy Analysis function
- * @brief Accuracy Analysis function for the AnalysisInterpolation class
- * 
- * This function performs an accuracy analysis of the interpolation method.
- * 
- */
-
-/** Efficiency Analysis function
- * @brief Efficiency Analysis function for the AnalysisInterpolation class
- * 
- * This function performs an efficiency analysis of the interpolation method.
- * 
- */
-
-/** Order Convergence Analysis function
- * @brief Order Convergence Analysis function for the AnalysisInterpolation class
- * 
- * This function performs an order convergence analysis of the interpolation method.
- * 
- */
-
-using namespace ScientificToolbox::Interpolation;
-
-// Define the constructor properly here
-AnalysisInterpolation::AnalysisInterpolation(std::set<point<double>> points, 
-                                             std::function<double(double)> generator_function, 
-                                             std::vector<double> random_x) 
-    : points(std::move(points)), generator_function(std::move(generator_function)), random_x(std::move(random_x)) {}
-
-AnalysisInterpolation::~AnalysisInterpolation() {}
-
 double AnalysisInterpolation::mae(std::vector<double> y_true, std::vector<double> y_pred) {
     if (y_true.size() != y_pred.size()) {
         throw std::invalid_argument("Mean Absolute Error: input vectors must have the same size.");
@@ -82,6 +50,12 @@ double AnalysisInterpolation::mae(std::vector<double> y_true, std::vector<double
     return sum / y_true.size();
 }
 
+/** @ method Accuracy Analysis function
+ * @brief Accuracy Analysis function for the AnalysisInterpolation class
+ * 
+ * This function performs an accuracy analysis of the interpolation method.
+ * 
+ */
 void AnalysisInterpolation::AccuracyAnalysis() {
     bool exception_thrown = false;
     try {    
@@ -139,6 +113,12 @@ void AnalysisInterpolation::AccuracyAnalysis() {
     
 }
 
+/** @method Efficiency Analysis function
+ * @brief Efficiency Analysis function for the AnalysisInterpolation class
+ * 
+ * This function performs an efficiency analysis of the interpolation method.
+ * 
+ */
 void AnalysisInterpolation::EfficiencyAnalysis() {
     std::cout << "Starting Efficiency Analysis..." << std::endl;
     bool exception_thrown = false;
@@ -181,6 +161,12 @@ void AnalysisInterpolation::EfficiencyAnalysis() {
     }
 }
 
+/** @method Order Convergence Analysis function
+ * @brief Order Convergence Analysis function for the AnalysisInterpolation class
+ * 
+ * This function performs an order convergence analysis of the interpolation method.
+ * 
+ */
 void AnalysisInterpolation::OrderConvergenceAnalysis() {
     std::cout << "Starting Order Convergence Analysis..." << std::endl;
 

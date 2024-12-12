@@ -8,8 +8,7 @@
 #include <limits> // For std::numeric_limits
 #include <set> // For std::set
 
-/**
- * namespace ScientificToolbox::Interpolation
+/** @namespace ScientificToolbox::Interpolation
  * @brief Interpolation module providing basic interpolation functions
  * 
  * This namespace contains template classes for common interpolation methods:
@@ -18,34 +17,15 @@
  * - Spline interpolation
  */
 
-/** point class
- * @brief Class for storing data points
- * @tparam T Type of x and y coordinates
- * 
- * This class stores a pair of x and y coordinates as a data point.
- * It provides methods to access the x and y coordinates.
- * 
- */
-
-/** interval class
- * @brief Class for storing interval bounds
- * @tparam T Type of interval bounds
- * 
- * This class stores a pair of lower and upper bounds as an interval.
- * It provides methods to access the lower and upper bounds, and to check if a value is within the interval.
- * 
- */
-
-/** minmax_search function
- * @brief Function to find the minimum and maximum x values in a set of points
- * @tparam T Type of x and y coordinates
- * 
- * This function takes a set of points and returns the minimum and maximum x values.
- * 
- */
-
 namespace ScientificToolbox::Interpolation {
-    // point class
+    /** @class point class
+     * @brief Class for storing data points
+     * @tparam T Type of x and y coordinates
+     * 
+     * This class stores a pair of x and y coordinates as a data point.
+     * It provides methods to access the x and y coordinates.
+     * 
+     */
     template <typename T>
     class point {
     public:
@@ -65,7 +45,14 @@ namespace ScientificToolbox::Interpolation {
         T y;
     };
 
-    // interval class
+    /** @class interval class
+     * @brief Class for storing interval bounds
+     * @tparam T Type of interval bounds
+     * 
+     * This class stores a pair of lower and upper bounds as an interval.
+     * It provides methods to access the lower and upper bounds, and to check if a value is within the interval.
+     * 
+     */
     template <typename T>
     class interval {
     public:
@@ -92,7 +79,13 @@ namespace ScientificToolbox::Interpolation {
         T upper_bound;
     };
 
-    // Minmax search
+    /** @class minmax_search function
+     * @brief Function to find the minimum and maximum x values in a set of points
+     * @tparam T Type of x and y coordinates
+     * 
+     * This function takes a set of points and returns the minimum and maximum x values.
+     * 
+     */
     template <typename T>
     interval<T> minmax_search(const std::set<point<T>>& points) {
         if (points.empty()) {

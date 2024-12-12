@@ -11,87 +11,17 @@
 #include <iostream>
 #include <vector>
 
-/** @class InterpolationTester
- * @brief Class for testing interpolation methods
- * 
- * This class provides methods for testing the interpolation methods in the Interpolation module.
- * It generates test data for linear, quadratic, and cubic functions, and tests the interpolation
- * methods on this data.
- * 
- */
+using namespace ScientificToolbox::Interpolation;
 
-/** run_tests method
+InterpolationTester::InterpolationTester() {}
+
+/** @method run_tests method
  * @brief Method to run all interpolation tests
  * 
  * This method runs all the interpolation tests, including linear, Lagrange, Newton, and cubic spline interpolation.
  * It generates test data for linear, quadratic, and cubic functions, and tests the interpolation methods on this data.
  * 
  */
-
-/** import_data method
- * @brief Method to test the import of data
- * 
- * This method tests the import of data from CSV files for linear, quadratic, and cubic functions.
- * It reads the data from the CSV files and checks for any errors in the data.
- * 
- * @return bool True if the data is imported successfully, false otherwise
- * 
- */
-
-/** check_data method
- * @brief Method to check the imported data
- * 
- * This method checks the imported data for uniqueness and sorted order of x values.
- * It ensures that there are no duplicate points in the data and that the x values are sorted.
- * 
- * @return bool True if the data is checked successfully, false otherwise
- * 
- */
-
-/** LinearInterpolationTest method
- * @brief Method to test linear interpolation
- * 
- * This method tests the linear interpolation method on the generated linear data.
- * It interpolates the y values for the x values x1, x2, and x3 and checks the results.
- * 
- * @return bool True if the linear interpolation test passes, false otherwise
- * 
- */
-
-/** LagrangeInterpolationTest method
- * @brief Method to test Lagrange interpolation
- * 
- * This method tests the Lagrange interpolation method on the generated quadratic data.
- * It interpolates the y values for the x values x1, x2, and x3 and checks the results.
- * 
- * @return bool True if the Lagrange interpolation test passes, false otherwise
- * 
- */
-
-/** NewtonInterpolationTest method
- * @brief Method to test Newton interpolation
- * 
- * This method tests the Newton interpolation method on the generated quadratic data.
- * It interpolates the y values for the x values x1, x2, and x3 and checks the results.
- * 
- * @return bool True if the Newton interpolation test passes, false otherwise
- * 
- */
-
-/** CubicSplineInterpolationTest method
- * @brief Method to test cubic spline interpolation
- * 
- * This method tests the cubic spline interpolation method on the generated cubic data.
- * It interpolates the y values for the x values x1, x2, and x3 and checks the results.
- * 
- * @return bool True if the cubic spline interpolation test passes, false otherwise
- * 
- */
-
-using namespace ScientificToolbox::Interpolation;
-
-InterpolationTester::InterpolationTester() {}
-
 void InterpolationTester::run_tests() {
     std::cout << "Running interpolation tests..." << std::endl;
 
@@ -142,6 +72,15 @@ void InterpolationTester::run_tests() {
     
 }
 
+/** @method import_data method
+ * @brief Method to test the import of data
+ * 
+ * This method tests the import of data from CSV files for linear, quadratic, and cubic functions.
+ * It reads the data from the CSV files and checks for any errors in the data.
+ * 
+ * @return bool True if the data is imported successfully, false otherwise
+ * 
+ */
 bool InterpolationTester::import_data() {
     std::string filename_1 = "../../data/linear_data.csv";
     std::string filename_2 = "../../data/quadratic_data.csv";
@@ -175,6 +114,15 @@ bool InterpolationTester::import_data() {
     return true;
 }
 
+/** @method check_data method
+ * @brief Method to check the imported data
+ * 
+ * This method checks the imported data for uniqueness and sorted order of x values.
+ * It ensures that there are no duplicate points in the data and that the x values are sorted.
+ * 
+ * @return bool True if the data is checked successfully, false otherwise
+ * 
+ */
 bool InterpolationTester::check_data() {
     // Checking uniqueness of data points
 
@@ -273,6 +221,15 @@ bool InterpolationTester::check_data() {
     return true;
 }
 
+/** @method LinearInterpolationTest method
+ * @brief Method to test linear interpolation
+ * 
+ * This method tests the linear interpolation method on the generated linear data.
+ * It interpolates the y values for the x values x1, x2, and x3 and checks the results.
+ * 
+ * @return bool True if the linear interpolation test passes, false otherwise
+ * 
+ */
 bool InterpolationTester::LinearInterpolationTest() {
     LinearInterpolation<double> linear_interpolation(linear_data);
 
@@ -301,6 +258,15 @@ bool InterpolationTester::LinearInterpolationTest() {
     return true;
 }
 
+/** @method LagrangeInterpolationTest method
+ * @brief Method to test Lagrange interpolation
+ * 
+ * This method tests the Lagrange interpolation method on the generated quadratic data.
+ * It interpolates the y values for the x values x1, x2, and x3 and checks the results.
+ * 
+ * @return bool True if the Lagrange interpolation test passes, false otherwise
+ * 
+ */
 bool InterpolationTester::LagrangeInterpolationTest() {
 
     // Test Lagrange interpolation
@@ -328,6 +294,15 @@ bool InterpolationTester::LagrangeInterpolationTest() {
     return true;
 }
 
+/** @method NewtonInterpolationTest method
+ * @brief Method to test Newton interpolation
+ * 
+ * This method tests the Newton interpolation method on the generated quadratic data.
+ * It interpolates the y values for the x values x1, x2, and x3 and checks the results.
+ * 
+ * @return bool True if the Newton interpolation test passes, false otherwise
+ * 
+ */
 bool InterpolationTester::NewtonInterpolationTest() {
 
     // Test Newton interpolation
@@ -355,6 +330,15 @@ bool InterpolationTester::NewtonInterpolationTest() {
     return true;
 }
 
+/** @method CubicSplineInterpolationTest method
+ * @brief Method to test cubic spline interpolation
+ * 
+ * This method tests the cubic spline interpolation method on the generated cubic data.
+ * It interpolates the y values for the x values x1, x2, and x3 and checks the results.
+ * 
+ * @return bool True if the cubic spline interpolation test passes, false otherwise
+ * 
+ */
 bool InterpolationTester::CubicSplineInterpolationTest() {
 
     // Test Cubic Spline interpolation

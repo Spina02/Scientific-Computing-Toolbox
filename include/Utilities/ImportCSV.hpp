@@ -24,71 +24,6 @@ using DataValue = std::variant<int, double, std::string>;
 using OptionalDataValue = std::optional<DataValue>;
 
 /**
- * @class ImportCSV
- * @brief Class for importing and parsing CSV files with mixed data types
- * @inherits ImportData
- * 
- * This class provides functionality to read CSV files and parse their contents into
- * a data structure that can handle mixed types (integers, doubles, strings) and null values.
- */
-
-/**
- * @method import
- * @brief Main method to import data from a CSV file
- * @param filename The path to the CSV file to be imported
- * @throws std::runtime_error if the file cannot be opened
- * 
- * Opens and reads a CSV file line by line, parsing the header and subsequent data rows.
- */
-
-/** @method read_points_from_csv
- * @brief Reads a CSV file and returns a set of points
- * @tparam T The data type of the points
- * @param filename The path to the CSV file
- * @return Set of points read from the CSV file
- * 
- * This method reads a CSV file containing x,y pairs of data and returns a set of points
- * of type T. The CSV file is expected to have a format where each line contains two values
- * separated by a comma, representing the x and y coordinates of a point. The points are
- * stored in a set to ensure uniqueness and sorted order. The sorted order is important here since 
- * the points are used for interpolation, and the interpolation methods require the points to be sorted.
- * Also, the set ensures that there are no duplicate points in the data.
- */
-
-/**
- * @method parseHeader
- * @brief Parses the header line of the CSV file
- * @param line String containing the header line
- * @private
- * 
- * Splits the header line by commas and stores column names in headers_ vector.
- */
-
-/**
- * @method parseLine
- * @brief Parses a single data line from the CSV file
- * @param line String containing the data line
- * @private
- * 
- * Processes each cell in the data line, handling empty values as null
- * and converting non-empty values to appropriate data types.
- * Stores the parsed data in the data_ structure.
- */
-
-/**
- * @method parseValue
- * @brief Attempts to parse a string value into an appropriate data type
- * @param cell String containing the value to parse
- * @return OptionalDataValue containing the parsed value
- * @private
- * 
- * Tries to convert the input string to:
- * 1. Integer
- * 2. Double
- * If both conversions fail, returns the original string
- */
-
-/**
  * @var headers_
  * @brief Vector storing the column names from the CSV file
  * @private
@@ -106,8 +41,25 @@ using OptionalDataValue = std::optional<DataValue>;
  */
 namespace ScientificToolbox {
 
+/**
+ * @class ImportCSV
+ * @brief Class for importing and parsing CSV files with mixed data types
+ * @inherits ImportData
+ * 
+ * This class provides functionality to read CSV files and parse their contents into
+ * a data structure that can handle mixed types (integers, doubles, strings) and null values.
+ */
 class ImportCSV : public ImportData{
 public: 
+
+    /**
+     * @method import
+     * @brief Main method to import data from a CSV file
+     * @param filename The path to the CSV file to be imported
+     * @throws std::runtime_error if the file cannot be opened
+     * 
+     * Opens and reads a CSV file line by line, parsing the header and subsequent data rows.
+     */
     void import(const std::string& filename) override{
         std::ifstream file(filename);
         if (!file.is_open()) {
@@ -123,8 +75,20 @@ public:
             parseLine(line);
         }
     }
-    
-    // Function to read CSV file and output std::set<point<T>> for double values
+
+    /** @method read_points_from_csv
+     * @brief Reads a CSV file and returns a set of points
+     * @tparam T The data type of the points
+     * @param filename The path to the CSV file
+     * @return Set of points read from the CSV file
+     * 
+     * This method reads a CSV file containing x,y pairs of data and returns a set of points
+     * of type T. The CSV file is expected to have a format where each line contains two values
+     * separated by a comma, representing the x and y coordinates of a point. The points are
+     * stored in a set to ensure uniqueness and sorted order. The sorted order is important here since 
+     * the points are used for interpolation, and the interpolation methods require the points to be sorted.
+     * Also, the set ensures that there are no duplicate points in the data.
+     */
     template <typename T>
     std::set<ScientificToolbox::Interpolation::point<T>> read_points_from_csv(const std::string& filename) {
         std::set<ScientificToolbox::Interpolation::point<T>> points;
@@ -179,6 +143,14 @@ public:
 private: 
     std::vector<std::string> headers_;
 
+    /**
+     * @method parseHeader
+     * @brief Parses the header line of the CSV file
+     * @param line String containing the header line
+     * @private
+     * 
+     * Splits the header line by commas and stores column names in headers_ vector.
+     */
     void parseHeader(const std::string& line) {
         std::stringstream ss(line);
         std::string header;
@@ -210,6 +182,16 @@ private:
         }
     }
 
+    /**
+     * @method parseLine
+     * @brief Parses a single data line from the CSV file
+     * @param line String containing the data line
+     * @private
+     * 
+     * Processes each cell in the data line, handling empty values as null
+     * and converting non-empty values to appropriate data types.
+     * Stores the parsed data in the data_ structure.
+     */
     void parseLine(const std::string& line) {
         std::stringstream ss(line);
         std::string cell;
@@ -279,6 +261,18 @@ private:
         return str.substr(start, end - start);
     }
 
+    /**
+     * @method parseValue
+     * @brief Attempts to parse a string value into an appropriate data type
+     * @param cell String containing the value to parse
+     * @return OptionalDataValue containing the parsed value
+     * @private
+     * 
+     * Tries to convert the input string to:
+     * 1. Integer
+     * 2. Double
+     * If both conversions fail, returns the original string
+     */
     OptionalDataValue parseValue(const std::string& cell) {
         std::string trimmed_cell = trim(cell);
 

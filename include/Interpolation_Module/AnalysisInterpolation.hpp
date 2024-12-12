@@ -7,8 +7,7 @@
 #include <functional>
 #include <set>
 
-/**
- * namespace ScientificToolbox::Interpolation
+/** @namespace ScientificToolbox::Interpolation
  * @brief Interpolation module providing basic interpolation functions
  * 
  * This namespace contains template classes for common interpolation methods:
@@ -17,48 +16,38 @@
  * - Spline interpolation
  */
 
-/** Constructor
- * @brief Constructor for the AnalysisInterpolation class
- * 
- * This constructor initializes the analysis of the interpolation method using the data provided.
- * 
- * @param points Set of points to interpolate
- * @param generator_function Function to generate the data
- * @param random_x Random x values to test the interpolation
- * 
- */
-
-/** Destructor
- * @brief Destructor for the AnalysisInterpolation class
- * 
- * This destructor frees the memory allocated for the analysis of the interpolation method.
- * 
- */
-
-/** Accuracy Analysis function
- * @brief Accuracy Analysis function for the AnalysisInterpolation class
- * 
- * This function performs an accuracy analysis of the interpolation method.
- * 
- */
-
-/** Efficiency Analysis function
- * @brief Efficiency Analysis function for the AnalysisInterpolation class
- * 
- * This function performs an efficiency analysis of the interpolation method.
- * 
- */
-
-/** Order Convergence Analysis function
- * @brief Order Convergence Analysis function for the AnalysisInterpolation class
- * 
- * This function performs an order convergence analysis of the interpolation method.
- * 
- */
-
 namespace ScientificToolbox::Interpolation {
+    
+    /** @class AnalysisInterpolation
+     * @brief Class for the analysis of the interpolation method
+     * 
+     * This class provides the analysis of the interpolation method using the data provided.
+     * 
+     * The class provides the following methods:
+     * - Accuracy Analysis
+     * - Efficiency Analysis
+     * - Order Convergence Analysis 
+     * 
+     * The class also provides a Mean Absolute Error (MAE) function to calculate the error between the true and predicted values.
+     * 
+     * The class uses the following data:
+     * - Set of points to interpolate
+     * - Function to generate the data
+     * - Random x values to test the interpolation
+     * 
+     */
     class AnalysisInterpolation {
     public:
+        /** @method Constructor
+         * @brief Constructor for the AnalysisInterpolation class
+         * 
+         * This constructor initializes the analysis of the interpolation method using the data provided.
+         * 
+         * @param points Set of points to interpolate
+         * @param generator_function Function to generate the data
+         * @param random_x Random x values to test the interpolation
+         * 
+         */
         AnalysisInterpolation(std::set<point<double>> points, std::function<double(double)> generator_function, std::vector<double> random_x);
         ~AnalysisInterpolation();
 

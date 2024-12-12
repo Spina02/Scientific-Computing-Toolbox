@@ -4,8 +4,7 @@
 #include <set>
 #include "utilities_interpolation.hpp"
 
-/**
- * namespace ScientificToolbox::Interpolation
+/** @namespace ScientificToolbox::Interpolation
  * @brief Interpolation module providing basic interpolation functions
  * 
  * This namespace contains template classes for common interpolation methods:
@@ -14,16 +13,16 @@
  * - Spline interpolation
  */
 
-/** InterpolationTester class
- * @brief Class for testing interpolation methods
- * 
- * This class provides methods for testing the interpolation methods in the Interpolation module.
- * It generates test data for linear, quadratic, and cubic functions, and tests the interpolation
- * methods on this data.
- * 
- */
-
 namespace ScientificToolbox::Interpolation{
+    
+    /** @class InterpolationTester class
+     * @brief Class for testing interpolation methods
+     * 
+     * This class provides methods for testing the interpolation methods in the Interpolation module.
+     * It generates test data for linear, quadratic, and cubic functions, and tests the interpolation
+     * methods on this data.
+     * 
+     */
     class InterpolationTester{
     public:
         InterpolationTester();
