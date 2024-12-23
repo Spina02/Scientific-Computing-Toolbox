@@ -2,8 +2,9 @@ MODULE = Statistics_Module
 
 # Compiler and flags
 CXX = g++
-CPPFLAGS = -Iinclude/$(MODULE)
-CXXFLAGS = -std=c++17 -Wall -Wpedantic -Werror -fPIC
+CPPFLAGS = -Iinclude/$(MODULE) -I/opt/homebrew/opt/eigen/include/eigen3
+CXXFLAGS = -std=c++17 -Wall -Wpedantic -Werror
+LDFLAGS = 
 
 # Dependencies configuration
 DEPS = eigen3
@@ -11,11 +12,9 @@ DEPS = eigen3
 # Collect all flags from pkg-config
 PKG_CFLAGS := $(shell pkg-config --cflags $(DEPS) 2>/dev/null)
 PKG_LIBS := $(shell pkg-config --libs $(DEPS) 2>/dev/null)
-GETPOT_CXXFLAGS = -Wno-unused-variable -Wno-sign-compare
-	
+
 # Fallback paths if pkg-config fails
 ifeq ($(PKG_CFLAGS),)
-
 	# Eigen fallback
 	EIGEN_INCLUDE ?= /usr/include/eigen3
 	EIGEN_FLAGS = -I$(EIGEN_INCLUDE)
@@ -25,7 +24,6 @@ ifeq ($(PKG_CFLAGS),)
 endif
 
 CPPFLAGS += $(PKG_CFLAGS)
-LDFLAGS += $(PKG_LIBS)
 
 # Relative paths
 SRC_DIR = ../../src/$(MODULE)
@@ -36,16 +34,15 @@ LIB_DIR = $(BUILD_DIR)/lib
 OBJ_DIR = $(BUILD_DIR)/obj
 BIN_DIR = $(BUILD_DIR)/bin
 
-
 # Library and main program targets
-LIB_NAME = lib$(MODULE).so
+LIB_NAME = lib$(MODULE).a  # Static library
 LIB_TARGET = $(LIB_DIR)/$(LIB_NAME)
 MAIN_TARGET = $(BIN_DIR)/$(MODULE)_main
 TEST_TARGET = $(BIN_DIR)/$(MODULE)_test
 
 # Default target
 all: check_deps $(LIB_TARGET) $(MAIN_TARGET)
-	
+
 # Check for all dependencies
 check_deps:
 	@for dep in $(DEPS); do \
@@ -65,24 +62,19 @@ check_deps:
 		fi; \
 	done
 
-# Compiling the shared library
+# Header-only library: No actual compilation needed
 $(LIB_TARGET):
 	@mkdir -p $(LIB_DIR)
-	@touch $(LIB_TARGET)
+	@echo "Header-only library. No compilation required."
 
-# Compiling the object files
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	@mkdir -p $(OBJ_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@;
-
-# Compiling the main program for testing
+# Compiling the main program for testing (no -fPIC needed here)
 $(MAIN_TARGET): $(MAIN_DIR)/$(MODULE)_main.cpp $(LIB_TARGET)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -L$(LIB_DIR) -l$(MODULE) $< -o $@ $(LDFLAGS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -o $@ $(PKG_LIBS)
 
 $(TEST_TARGET): $(TEST_DIR)/$(MODULE)_test.cpp $(LIB_TARGET)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -L$(LIB_DIR) -l$(MODULE)  -o $(BIN_DIR)/$(MODULE)_test $(LDFLAGS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -o $(BIN_DIR)/$(MODULE)_test $(PKG_LIBS)
 
 # Clean up build artifacts
 clean:
@@ -94,7 +86,5 @@ run: $(MAIN_TARGET)
 
 test: $(TEST_TARGET) $(LIB_TARGET)
 	LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH ./$(TEST_TARGET)
-
-
 
 .PHONY: all clean run check_deps test

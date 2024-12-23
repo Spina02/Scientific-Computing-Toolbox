@@ -2,6 +2,8 @@
 
 ## Homework 
 
+Repository GitHub: https://github.com/christianfaccio/Scientific_Computing_Toolbox.git
+
 This library has been created by Giacomo Amerio (giacomoamerio24@gmail.com), Christian Faccio (christianfaccio@outlook.it) and Andrea Spinelli (andreaspinelli2002@gmail.com). It is a toolbox written in C++ that contains three modules:
 
 1) Statistics Module - template only, covers descriptive statistics and correlation analysis on a given dataset. For this module it's being used templates for functions' simplicity and different types of data input. 

@@ -3,7 +3,6 @@ MODULE = Interpolation_Module
 # Compiler and flags
 CXX = g++
 CPPFLAGS = -Iinclude/$(MODULE) -I/opt/homebrew/opt/gsl/include -I/opt/homebrew/Cellar/gsl/2.8/include
-CPPFLAGS = -Iinclude/$(MODULE) -I/opt/homebrew/opt/gsl/include -I/opt/homebrew/Cellar/gsl/2.8/include
 CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Werror -Wno-nested-anon-types -g -fPIC
 LDFLAGS = -L/opt/homebrew/opt/gsl/lib
 
