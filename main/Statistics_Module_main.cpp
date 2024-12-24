@@ -16,6 +16,12 @@ int main(int argc, char** argv) {
     std::string outputFile = project_dir + "/output/Statistics_output.txt";
     std::vector<std::string> targetColumns = {"Weight","Height"}; 
 
+    // printing input data path for debug
+    std::cout << "Input data path: " << inputFile << std::endl;
+
+    // printing project_dir
+    std::cout << "Project directory: " << project_dir << std::endl;
+
     // Parse command line arguments
     if (argc > 1) {
         inputFile = project_dir + "/data/" + std::string(argv[1]);

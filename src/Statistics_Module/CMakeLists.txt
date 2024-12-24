@@ -8,8 +8,7 @@ set(MODULE Statistics_Module)
 set(CXXFLAGS "-Wall -Wextra -Wpedantic -Werror")
 
 # Check dependencies and if not found, give a message
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(EIGEN3 REQUIRED eigen3)
+find_package(Eigen3 REQUIRED)
 
 if(NOT EIGEN3_FOUND)
     message(FATAL_ERROR "Eigen3 not found!")
@@ -26,20 +25,19 @@ set(TEST_DIR ${ROOT_DIR}/tests)
 set(LIB_DIR ${ROOT_DIR}/lib)
 set(BIN_DIR ${ROOT_DIR}/bin)
 
-# Explicitly set the eigen3 include directory
-set(EIGEN3_INCLUDE_DIR "/opt/homebrew/opt/eigen/include/eigen3") # Adjust based on your installation path
-
 add_library(Statistics_Module INTERFACE)
 
 # Set the include directories
 include_directories(
     ${INCLUDE_DIR}
     ${MODULE_INCLUDE_DIR}
-    ${EIGEN3_INCLUDE_DIR}
 )
 
 # Since it's a header-only library, we don't need to compile anything
 # We just need to set the include directories
+
+# Link the module with Eigen3
+target_link_libraries(Statistics_Module INTERFACE Eigen3::Eigen)
 
 # Compile the main program
 add_executable(main_stat ${MAIN_DIR}/Statistics_Module_main.cpp)

@@ -15,7 +15,7 @@ using namespace ScientificToolbox::Interpolation;
 int main(int argc, char** argv) {
 
     // Project directory
-    std::string project_dir = std::filesystem::current_path().parent_path().string() + "/";
+    std::string project_dir = std::filesystem::current_path().parent_path();
 
     // Default values
     std::string filename = project_dir + "/data/cubic_data.csv";

@@ -7,11 +7,13 @@
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
+#include <filesystem>
 
 namespace ScientificToolbox::ODE {
 
 ODETester::ODETester() {
-    load_tests_from_csv("../../data/ode_tests.csv");
+    std::string project_dir = std::filesystem::current_path().parent_path();
+    load_tests_from_csv(project_dir + "/data/ode_tests.csv");
 }
 
 bool ODETester::test_expression(ODETestCase test, int test_num) const {

@@ -8,9 +8,8 @@ set(MODULE ODE_Module)
 set(CXXFLAGS "-Wall -Wpedantic -fPIC -Wno-nested-anon-types -Werror")
 
 # Check dependencies muparser and eigen3 and if not found, give a message
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(MUPARSER REQUIRED muparser)
-pkg_check_modules(EIGEN3 REQUIRED eigen3)
+find_package(muparser REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 if(NOT MUPARSER_FOUND)
     message(FATAL_ERROR "muparser not found!")
@@ -31,16 +30,10 @@ set(TEST_DIR ${ROOT_DIR}/tests)
 set(LIB_DIR ${ROOT_DIR}/lib)
 set(BIN_DIR ${ROOT_DIR}/bin)
 
-# Explicitly set the muparser and eigen3 include directories
-set(MUPARSER_LIB_DIR "/opt/homebrew/opt/muparser/lib") # Adjust based on your installation path
-set(MUPARSER_INCLUDE_DIR "/opt/homebrew/opt/muparser/include") # Adjust based on your installation path
-
 # Set the include directories
 include_directories(
     ${INCLUDE_DIR}
     ${MODULE_INCLUDE_DIR}
-    ${MUPARSER_INCLUDE_DIR}
-    ${EIGEN3_INCLUDE_DIRS}
 )
 
 # Set the source files for the module
@@ -50,7 +43,10 @@ file(GLOB_RECURSE MODULE_SOURCES ${MODULE_SRC_DIR}/*.cpp)
 add_library(${MODULE} SHARED ${MODULE_SOURCES})
 
 # Link the module with muparser
-target_link_libraries(${MODULE} ${MUPARSER_LIB_DIR}/libmuparser.dylib)
+target_link_libraries(${MODULE} muparser::muparser)
+
+# Link the module with eigen3
+target_link_libraries(${MODULE} Eigen3::Eigen)
 
 # Set the output directory for the library
 set_target_properties(${MODULE} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${LIB_DIR})
