@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <filesystem>
 
 #include "../include/ODE_Module.hpp"
 #include "../include/Utilities/ImportCSV.hpp"
@@ -10,17 +11,19 @@ using namespace ScientificToolbox::ODE;
 
 int main(int argc, char** argv) {
 
+    std::string project_dir = std::filesystem::current_path().parent_path();
+
     try {
         // Default values
-        std::string inputFile = "../../data/ode_examples.csv";
-        std::string outputFile = "../../output/ODE_Module_output.csv";
+        std::string inputFile = project_dir + "/data/ode_examples.csv";
+        std::string outputFile = project_dir + "/output/ODE_Module_output.csv";
 
         // Parse command line arguments
         if (argc > 1) {
-            inputFile = "../../" + std::string(argv[1]);;
+            inputFile = project_dir + "/data/" + std::string(argv[1]);;
         }
         if (argc > 2) {
-            outputFile = "../../" + std::string(argv[2]);;
+            outputFile = project_dir + "/data/" + std::string(argv[2]);;
         }
 
         std::cout << "ODE Module Demo\n" << std::endl;

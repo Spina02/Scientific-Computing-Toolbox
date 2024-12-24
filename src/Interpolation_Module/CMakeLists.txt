@@ -69,22 +69,15 @@ target_include_directories(test PUBLIC ${INCLUDE_DIR} ${GSL_INCLUDE_DIR} ${MODUL
 set_target_properties(main test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 
 # Custom target for running the main program
-add_custom_target(run_main
+add_custom_target(run-interpolation
     COMMAND ${BIN_DIR}/main
     DEPENDS main
     WORKING_DIRECTORY ${BIN_DIR}
 )
 
 # Custom target for running the test program
-add_custom_target(run_test
+add_custom_target(test-interpolation
     COMMAND ${BIN_DIR}/test
     DEPENDS test
     WORKING_DIRECTORY ${BIN_DIR}
-)
-
-# Custom target for cleaning build artifacts
-add_custom_target(clean_interpolation
-    COMMAND ${CMAKE_COMMAND} -E remove_directory ${BIN_DIR}
-    COMMAND ${CMAKE_COMMAND} -E remove_directory ${LIB_DIR}
-    COMMAND ${CMAKE_COMMAND} -E rm -rf $(CMAKE_BINARY_DIR)/*
 )
