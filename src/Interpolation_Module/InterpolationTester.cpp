@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <vector>
+#include <filesystem>
 
 using namespace ScientificToolbox::Interpolation;
 
@@ -82,9 +83,10 @@ void InterpolationTester::run_tests() {
  * 
  */
 bool InterpolationTester::import_data() {
-    std::string filename_1 = "../../data/linear_data.csv";
-    std::string filename_2 = "../../data/quadratic_data.csv";
-    std::string filename_3 = "../../data/cubic_data.csv";
+    std::string project_dir = std::filesystem::current_path().parent_path().string() + "/";
+    std::string filename_1 = project_dir + "/data/linear_data.csv";
+    std::string filename_2 = project_dir + "/data/quadratic_data.csv";
+    std::string filename_3 = project_dir + "/data/cubic_data.csv";
 
     ScientificToolbox::ImportCSV importer;
 

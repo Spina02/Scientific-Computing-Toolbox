@@ -6,6 +6,7 @@
 #include <cmath>     // For isnan
 #include <set>       // For unique random number generation
 #include <limits>    // For infinity
+#include <filesystem> // For file existence check
 
 #include "../include/Interpolation_Module.hpp"
 
@@ -13,12 +14,15 @@ using namespace ScientificToolbox::Interpolation;
 
 int main(int argc, char** argv) {
 
+    // Project directory
+    std::string project_dir = std::filesystem::current_path().parent_path().string() + "/";
+
     // Default values
-    std::string filename = "../../data/cubic_data.csv";
+    std::string filename = project_dir + "/data/cubic_data.csv";
     double x = 1.5;
 
     if (argc > 1) {
-        filename = "../../" + std::string(argv[1]);
+        filename = project_dir + "/data/" + std::string(argv[1]);
     }
     if (argc > 2) {
         x = std::stod(argv[2]);
