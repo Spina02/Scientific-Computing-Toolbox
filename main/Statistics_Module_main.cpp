@@ -3,21 +3,25 @@
 #include <filesystem>
 #include <sstream>
 #include <iomanip>
+#include <filesystem>
 
 using namespace ScientificToolbox;
 
 int main(int argc, char** argv) {
+
+    std::string project_dir = std::filesystem::current_path().parent_path();
+
     // Default values
-    std::string inputFile = "../../data/Food_and_Nutrition__.csv";
-    std::string outputFile = "../../output/Statistics_output.txt";
+    std::string inputFile = project_dir + "/data/Food_and_Nutrition__.csv";
+    std::string outputFile = project_dir + "/output/Statistics_output.txt";
     std::vector<std::string> targetColumns = {"Weight","Height"}; 
 
     // Parse command line arguments
     if (argc > 1) {
-        inputFile = "../../" + std::string(argv[1]);
+        inputFile = project_dir + "/data/" + std::string(argv[1]);
     }
     if (argc > 2) {
-        outputFile = "../../" + std::string(argv[2]);
+        outputFile = project_dir + "/data/" + std::string(argv[2]);
     }
     if (argc > 3) {
         targetColumns.clear();

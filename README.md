@@ -165,5 +165,5 @@ make clean statistics
 ./build/Statistics_Module/bin/Statistics_Module_main [input_file] [output_file] [target_columns]
 
 # Example
-./build/Statistics_Module/bin/Statistics_Module_main data/Food_and_Nutrition__.csv output/stats.txt "Weight,Height"
+./build/Statistics_Module/bin/Statistics_Module_main Food_and_Nutrition__.csv stats.txt "Weight,Height"
 ```

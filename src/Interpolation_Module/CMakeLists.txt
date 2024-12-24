@@ -50,34 +50,34 @@ target_link_libraries(${MODULE} ${GSL_LIB_DIR}/libgsl.dylib ${GSL_LIB_DIR}/libgs
 set_target_properties(${MODULE} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${LIB_DIR})
 
 # Create executable for the main program
-add_executable(main ${MAIN_DIR}/Interpolation_Module_main.cpp)
+add_executable(main_interpolation ${MAIN_DIR}/Interpolation_Module_main.cpp)
 
 # Link the main program with the module
-target_link_libraries(main ${MODULE})
+target_link_libraries(main_interpolation ${MODULE})
 
 # Create executable for testing
-add_executable(test ${TEST_DIR}/Interpolation_Module_test.cpp)
+add_executable(test_interpolation ${TEST_DIR}/Interpolation_Module_test.cpp)
 
 # Link the test program with the module
-target_link_libraries(test ${MODULE})
+target_link_libraries(test_interpolation ${MODULE})
 
 # Specify include directories for the test and main programs
-target_include_directories(main PUBLIC ${INCLUDE_DIR} ${GSL_INCLUDE_DIR} ${MODULE_INCLUDE_DIR})
-target_include_directories(test PUBLIC ${INCLUDE_DIR} ${GSL_INCLUDE_DIR} ${MODULE_INCLUDE_DIR})
+target_include_directories(main_interpolation PUBLIC ${INCLUDE_DIR} ${GSL_INCLUDE_DIR} ${MODULE_INCLUDE_DIR})
+target_include_directories(test_interpolation PUBLIC ${INCLUDE_DIR} ${GSL_INCLUDE_DIR} ${MODULE_INCLUDE_DIR})
 
 # Set the output directory for executables at runtime (main and test)
-set_target_properties(main test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
+set_target_properties(main_interpolation test_interpolation PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 
 # Custom target for running the main program
 add_custom_target(run-interpolation
-    COMMAND ${BIN_DIR}/main
-    DEPENDS main
+    COMMAND ${BIN_DIR}/main_interpolation
+    DEPENDS main_interpolation
     WORKING_DIRECTORY ${BIN_DIR}
 )
 
 # Custom target for running the test program
 add_custom_target(test-interpolation
-    COMMAND ${BIN_DIR}/test
-    DEPENDS test
+    COMMAND ${BIN_DIR}/test_interpolation
+    DEPENDS test_interpolation
     WORKING_DIRECTORY ${BIN_DIR}
 )

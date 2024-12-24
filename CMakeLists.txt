@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Add subdirectories
 add_subdirectory(src/Interpolation_Module)
 add_subdirectory(src/ODE_Module)
+add_subdirectory(src/Statistics_Module)
 
 # Root-level run target
 add_custom_target(run-all

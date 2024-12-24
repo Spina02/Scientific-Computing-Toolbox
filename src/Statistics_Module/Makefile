@@ -4,7 +4,6 @@ MODULE = Statistics_Module
 CXX = g++
 CPPFLAGS = -Iinclude/$(MODULE) -I/opt/homebrew/opt/eigen/include/eigen3
 CXXFLAGS = -std=c++17 -Wall -Wpedantic -Werror
-LDFLAGS = 
 
 # Dependencies configuration
 DEPS = eigen3
