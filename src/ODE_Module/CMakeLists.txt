@@ -81,7 +81,7 @@ set_target_properties(main_ode test_ode PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BI
 
 # Custom target for running the main program
 add_custom_target(run-ode
-    COMMAND main_ode
+    COMMAND main_ode $(ARGS)
     DEPENDS main_ode
     WORKING_DIRECTORY ${BIN_DIR}
 )

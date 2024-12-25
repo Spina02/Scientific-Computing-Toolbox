@@ -61,9 +61,10 @@ target_include_directories(test_interpolation PUBLIC ${INCLUDE_DIR} ${MODULE_INC
 # Set the output directory for executables at runtime (main and test)
 set_target_properties(main_interpolation test_interpolation PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 
+
 # Custom target for running the main program
 add_custom_target(run-interpolation
-    COMMAND ${BIN_DIR}/main_interpolation
+    COMMAND ${BIN_DIR}/main_interpolation $(ARGS)
     DEPENDS main_interpolation
     WORKING_DIRECTORY ${BIN_DIR}
 )

@@ -57,7 +57,7 @@ set_target_properties(test_stat PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 
 # Custom target to run the main program
 add_custom_target(run-statistics
-    COMMAND ${BIN_DIR}/main_stat
+    COMMAND ${BIN_DIR}/main_stat $(ARGS)
     DEPENDS main_stat
     WORKING_DIRECTORY ${BIN_DIR}
 )
