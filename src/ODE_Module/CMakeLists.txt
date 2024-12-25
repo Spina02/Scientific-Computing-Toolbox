@@ -8,7 +8,8 @@ set(MODULE ODE_Module)
 set(CXXFLAGS "-Wall -Wpedantic -fPIC -Wno-nested-anon-types -Werror")
 
 # Check dependencies muparser and eigen3 and if not found, give a message
-find_package(muparser REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(MUPARSER REQUIRED muparser)
 find_package(Eigen3 REQUIRED)
 
 if(NOT MUPARSER_FOUND)
@@ -34,6 +35,14 @@ set(BIN_DIR ${ROOT_DIR}/bin)
 include_directories(
     ${INCLUDE_DIR}
     ${MODULE_INCLUDE_DIR}
+    ${MUPARSER_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIR}
+)
+
+# Link directories
+link_directories(
+    ${MUPARSER_LIBRARY_DIRS}
+    ${EIGEN3_LIBRARY_DIRS}
 )
 
 # Set the source files for the module
@@ -43,10 +52,10 @@ file(GLOB_RECURSE MODULE_SOURCES ${MODULE_SRC_DIR}/*.cpp)
 add_library(${MODULE} SHARED ${MODULE_SOURCES})
 
 # Link the module with muparser
-target_link_libraries(${MODULE} muparser::muparser)
+target_link_libraries(${MODULE} ${MUPARSER_LIBRARIES})
 
 # Link the module with eigen3
-target_link_libraries(${MODULE} Eigen3::Eigen)
+target_link_libraries(${MODULE} ${EIGEN3_LIBRARIES})
 
 # Set the output directory for the library
 set_target_properties(${MODULE} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${LIB_DIR})
