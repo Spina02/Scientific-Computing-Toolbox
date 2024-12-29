@@ -13,6 +13,12 @@ if (NOT GSL_FOUND)
     message(FATAL_ERROR "GSL not found!")
 endif()
 
+# Use the modern Python module
+set(PYBIND11_FINDPYTHON ON)  # Enables the modern FindPython module
+
+# Find pybind11
+find_package(pybind11 REQUIRED)
+
 # Set relative paths
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 set(SRC_DIR ${ROOT_DIR}/src)
@@ -23,11 +29,18 @@ set(MAIN_DIR ${ROOT_DIR}/main)
 set(TEST_DIR ${ROOT_DIR}/tests)
 set(LIB_DIR ${ROOT_DIR}/lib)
 set(BIN_DIR ${ROOT_DIR}/bin)
+set(PY_DIR ${ROOT_DIR}/python_bindings)
+
+pybind11_add_module(interpolation_bindings ${PY_DIR}/interpolation_bindings.cpp)
+
+# Link the pybind11 module to GSL
+target_link_libraries(interpolation_bindings PRIVATE GSL::gsl)
 
 # Set the include directories
 include_directories(
     ${INCLUDE_DIR}
     ${MODULE_INCLUDE_DIR}
+    ${GSL_INCLUDE_DIR}
 )
 
 # Set the source files for the module
@@ -73,5 +86,10 @@ add_custom_target(run-interpolation
 add_custom_target(test-interpolation
     COMMAND ${BIN_DIR}/test_interpolation
     DEPENDS test_interpolation
+    WORKING_DIRECTORY ${BIN_DIR}
+)
+
+add_custom_target(bind-interpolation
+    DEPENDS interpolation_bindings
     WORKING_DIRECTORY ${BIN_DIR}
 )
