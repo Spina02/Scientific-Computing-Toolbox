@@ -1,5 +1,6 @@
-
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h> // For std::vector conversion
+#include "../include/Interpolation_Module/utilities_interpolation.hpp"
 
 #include "../include/Interpolation_Module/Interpolation.hpp"
 #include "../include/Interpolation_Module/LinearInterpolation.hpp"
@@ -7,16 +8,38 @@
 #include "../include/Interpolation_Module/Newton.hpp"
 #include "../include/Interpolation_Module/Cubic_Spline_Interpolation.hpp"
 
-#include "../include/Interpolation_Module/AnalysisInterpolation.hpp"
-#include "../include/Interpolation_Module/InterpolationTester.hpp"
-
 namespace py = pybind11;
 using namespace ScientificToolbox::Interpolation;
 
 PYBIND11_MODULE(interpolation_bindings, m) {
     m.doc() = "Python bindings for the interpolation module";
 
-    // Interpolation class
+    // Point class
+    py::class_<point<double>>(m, "Point")
+        .def(py::init<double, double>())
+        .def("get_x", &point<double>::get_x)
+        .def("get_y", &point<double>::get_y)
+        .def("__repr__", [](const point<double>& p) {
+            return "(" + std::to_string(p.get_x()) + ", " + std::to_string(p.get_y()) + ")";
+        });
+
+    // Function to convert pandas DataFrame to std::set<point<double>>
+    m.def("df_to_set_of_points", [](py::object df) -> std::set<point<double>> {
+        std::set<point<double>> points;
+        auto x_values = df.attr("x").cast<std::vector<double>>();
+        auto y_values = df.attr("y").cast<std::vector<double>>();
+
+        if (x_values.size() != y_values.size()) {
+            throw std::runtime_error("The x and y columns must have the same length.");
+        }
+
+        for (size_t i = 0; i < x_values.size(); ++i) {
+            points.insert(point<double>(x_values[i], y_values[i]));
+        }
+        return points;
+    });   
+
+    // Interpolation base class
     py::class_<Interpolation<double>>(m, "Interpolation")
         .def("interpolate", &Interpolation<double>::interpolate)
         .def("__call__", &Interpolation<double>::operator());
@@ -41,4 +64,3 @@ PYBIND11_MODULE(interpolation_bindings, m) {
         .def(py::init<const std::set<point<double>>&>())
         .def("interpolate", &SplineInterpolation<double>::interpolate);    
 }
-
