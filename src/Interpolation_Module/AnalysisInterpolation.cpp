@@ -20,10 +20,7 @@ using namespace ScientificToolbox::Interpolation;
  * This constructor initializes the analysis of the interpolation method using the data provided.
  * 
  */
-AnalysisInterpolation::AnalysisInterpolation(std::set<point<double>> points, 
-                                             std::function<double(double)> generator_function, 
-                                             std::vector<double> random_x) 
-    : points(std::move(points)), generator_function(std::move(generator_function)), random_x(std::move(random_x)) {}
+AnalysisInterpolation::AnalysisInterpolation() {}
 
 AnalysisInterpolation::~AnalysisInterpolation() {}
 
@@ -56,50 +53,55 @@ double AnalysisInterpolation::mae(std::vector<double> y_true, std::vector<double
  * This function performs an accuracy analysis of the interpolation method.
  * 
  */
-void AnalysisInterpolation::AccuracyAnalysis() {
+double AnalysisInterpolation::AccuracyAnalysis(std::set<point<double>> true_points, std::set<point<double>> sparse_points, std::string interpolation_method) {
     bool exception_thrown = false;
     try {    
-        std::cout << "\nStarting Accuracy Analysis..." << std::endl;
-        std::vector<double> y_true;
+        std::vector<double> x_true, y_true, x_sparse, y_sparse;
 
-        // Generating y_true values
-        for (const auto& x : random_x) {
-            y_true.push_back(generator_function(x));
+        // Generating true data
+        for (const auto& point : true_points) {
+            x_true.push_back(point.get_x());
+            y_true.push_back(point.get_y());
         }
 
-        // Linear Interpolation
-        LinearInterpolation<double> linear(points);
-        std::vector<double> y_pred_linear;
-        for (const auto& x : random_x) {
-            y_pred_linear.push_back(linear(x));
+        // Generating sparse data
+        for (const auto& point : sparse_points) {
+            x_sparse.push_back(point.get_x());
+            y_sparse.push_back(point.get_y());
         }
 
-        // Lagrange Interpolation
-        Lagrange<double> lagrange(points);
-        std::vector<double> y_pred_lagrange;
-        for (const auto& x : random_x) {
-            y_pred_lagrange.push_back(lagrange(x));
+        if(interpolation_method == "linear") {
+            std::vector<double> y_pred_linear;
+            LinearInterpolation<double> linear(sparse_points);
+            for (const auto& x : x_true) {
+                y_pred_linear.push_back(linear(x));
+            }
+            return mae(y_true, y_pred_linear);
+        } else if (interpolation_method == "lagrange") {
+            std::vector<double> y_pred_lagrange;
+            Lagrange<double> lagrange(sparse_points);
+            for (const auto& x : x_true) {
+                y_pred_lagrange.push_back(lagrange(x));
+            }
+            return mae(y_true, y_pred_lagrange);
+        } else if (interpolation_method == "newton") {
+            std::vector<double> y_pred_newton;
+            Newton<double> newton(sparse_points);
+            for (const auto& x : x_true) {
+                y_pred_newton.push_back(newton(x));
+            }
+            return mae(y_true, y_pred_newton);
+        } else if (interpolation_method == "cubic_spline") {
+            std::vector<double> y_pred_cubic_spline;
+            SplineInterpolation<double> cubic_spline(sparse_points);
+            for (const auto& x : x_true) {
+                y_pred_cubic_spline.push_back(cubic_spline(x));
+            }
+            return mae(y_true, y_pred_cubic_spline);
+        } else {
+            throw std::invalid_argument("Invalid interpolation method.");
         }
 
-        // Newton Interpolation
-        Newton<double> newton(points);
-        std::vector<double> y_pred_newton;
-        for (const auto& x : random_x) {
-            y_pred_newton.push_back(newton(x));
-        }
-
-        // Cubic Spline Interpolation
-        SplineInterpolation<double> cubic_spline(points);
-        std::vector<double> y_pred_cubic_spline;
-        for (const auto& x : random_x) {
-            y_pred_cubic_spline.push_back(cubic_spline(x));
-        }
-
-        // Displaying mae
-        std::cout << "Mean Absolute Error (Linear Interpolation): " << mae(y_true, y_pred_linear) << std::endl;
-        std::cout << "Mean Absolute Error (Lagrange Interpolation): " << mae(y_true, y_pred_lagrange) << std::endl;
-        std::cout << "Mean Absolute Error (Newton Interpolation): " << mae(y_true, y_pred_newton) << std::endl;
-        std::cout << "Mean Absolute Error (Cubic Spline Interpolation): " << mae(y_true, y_pred_cubic_spline) << std::endl;
     } catch (const std::exception& e) {
         exception_thrown = true;
     }
@@ -110,7 +112,8 @@ void AnalysisInterpolation::AccuracyAnalysis() {
         std::cout << "Accuracy Analysis completed successfully." << std::endl;
     }
 
-    
+    // Default return for error handling or invalid cases
+    return std::numeric_limits<double>::quiet_NaN();
 }
 
 /** @method Efficiency Analysis function
@@ -119,46 +122,62 @@ void AnalysisInterpolation::AccuracyAnalysis() {
  * This function performs an efficiency analysis of the interpolation method.
  * 
  */
-void AnalysisInterpolation::EfficiencyAnalysis() {
-    std::cout << "Starting Efficiency Analysis..." << std::endl;
+void AnalysisInterpolation::EfficiencyAnalysis(std::set<point<double>> true_points, std::set<point<double>> sparse_points, std::string interpolation_method) {
+
     bool exception_thrown = false;
     try{
-        // Linear Interpolation
-        auto start = std::chrono::high_resolution_clock::now();
-        LinearInterpolation<double> linear(points);
-        linear.interpolate(random_x[0]);
-        auto end = std::chrono::high_resolution_clock::now();
-        std::cout << "Linear Interpolation: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() << " ns" << std::endl;
+        std::vector<double> x_true, y_true, x_sparse, y_sparse;
 
-        // Lagrange Interpolation
-        start = std::chrono::high_resolution_clock::now();
-        Lagrange<double> lagrange(points);
-        lagrange.interpolate(random_x[0]);
-        end = std::chrono::high_resolution_clock::now();
-        std::cout << "Lagrange Interpolation: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() << " ns" << std::endl;
+        // Generating true data
+        for (const auto& point : true_points) {
+            x_true.push_back(point.get_x());
+            y_true.push_back(point.get_y());
+        }
 
-        // Newton Interpolation
-        start = std::chrono::high_resolution_clock::now();
-        Newton<double> newton(points);
-        newton.interpolate(random_x[0]);
-        end = std::chrono::high_resolution_clock::now();
-        std::cout << "Newton Interpolation: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() << " ns" << std::endl;
+        // Generating sparse data
+        for (const auto& point : sparse_points) {
+            x_sparse.push_back(point.get_x());
+            y_sparse.push_back(point.get_y());
+        }
 
-        // Cubic Spline Interpolation
-        start = std::chrono::high_resolution_clock::now();
-        SplineInterpolation<double> cubic_spline(points);
-        cubic_spline.interpolate(random_x[0]);
-        end = std::chrono::high_resolution_clock::now();
-        std::cout << "Cubic Spline Interpolation: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() << " ns" << std::endl;
+        if (interpolation_method == "linear") {
+            // Linear Interpolation
+            auto start = std::chrono::high_resolution_clock::now();
+            LinearInterpolation<double> linear(true_points);
+            linear.interpolate(x_sparse[0]);
+            auto end = std::chrono::high_resolution_clock::now();
+            std::cout << "Linear Interpolation: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() << " ns" << std::endl;
+        } else if (interpolation_method == "lagrange") {
+            // Lagrange Interpolation
+            auto start = std::chrono::high_resolution_clock::now();
+            Lagrange<double> lagrange(true_points);
+            lagrange.interpolate(x_sparse[0]);
+            auto end = std::chrono::high_resolution_clock::now();
+            std::cout << "Lagrange Interpolation: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() << " ns" << std::endl;
+        } else if (interpolation_method == "newton") {
+            // Newton Interpolation
+            auto start = std::chrono::high_resolution_clock::now();
+            Newton<double> newton(true_points);
+            newton.interpolate(x_sparse[0]);
+            auto end = std::chrono::high_resolution_clock::now();
+            std::cout << "Newton Interpolation: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() << " ns" << std::endl;
+        } else if (interpolation_method == "cubic_spline") {
+            // Cubic Spline Interpolation
+            auto start = std::chrono::high_resolution_clock::now();
+            SplineInterpolation<double> cubic_spline(true_points);
+            cubic_spline.interpolate(x_sparse[0]);
+            auto end = std::chrono::high_resolution_clock::now();
+            std::cout << "Cubic Spline Interpolation: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() << " ns" << std::endl;
+        } else {
+            throw std::invalid_argument("Invalid interpolation method.");
+        }
     } catch (const std::exception& e) {
         exception_thrown = true;
     }
 
     if (exception_thrown) {
         std::cerr << "Error occurred during Efficiency Analysis." << std::endl;
-    } else {
-        std::cout << "Efficiency Analysis completed successfully." << std::endl;
-    }
+    } 
 }
 
 /** @method Order Convergence Analysis function
@@ -167,125 +186,29 @@ void AnalysisInterpolation::EfficiencyAnalysis() {
  * This function performs an order convergence analysis of the interpolation method.
  * 
  */
-void AnalysisInterpolation::OrderConvergenceAnalysis() {
-    std::cout << "Starting Order Convergence Analysis..." << std::endl;
+double AnalysisInterpolation::OrderConvergenceAnalysis(std::set<point<double>> true_points, std::set<point<double>> sparse_points_1, std::set<point<double>> sparse_points_2, std::string interpolation_method) {
 
-    std::vector<double> x_1 {1.5, 2.5};
-    std::vector<double> x_2 {1.25, 1.5, 1.75, 2.25, 2.5, 2.75};
-    std::vector<double> x_3 {1.125, 1.25, 1.375, 1.5, 1.625, 1.75, 1.875, 2.125, 2.25, 2.375, 2.5, 2.625, 2.75, 2.875};
-
-    // generating y_true
-    std::vector<double> y_true_1, y_true_2, y_true_3;
-    for (const auto& x : x_1) {
-        y_true_1.push_back(generator_function(x));
+    if (interpolation_method == "linear") {
+        // Linear Interpolation
+        double mae_1 = this->AccuracyAnalysis(true_points, sparse_points_1, "linear");
+        double mae_2 = this->AccuracyAnalysis(true_points, sparse_points_2, "linear");
+        return std::log2(mae_1 / mae_2);
+    } else if (interpolation_method == "lagrange") {
+        // Lagrange Interpolation
+        double mae_1 = this->AccuracyAnalysis(true_points, sparse_points_1, "lagrange");
+        double mae_2 = this->AccuracyAnalysis(true_points, sparse_points_2, "lagrange");
+        return std::log2(mae_1 / mae_2);
+    } else if (interpolation_method == "newton") {
+        // Newton Interpolation
+        double mae_1 = this->AccuracyAnalysis(true_points, sparse_points_1, "newton");
+        double mae_2 = this->AccuracyAnalysis(true_points, sparse_points_2, "newton");
+        return std::log2(mae_1 / mae_2);
+    } else if (interpolation_method == "cubic_spline") {
+        // Cubic Spline Interpolation
+        double mae_1 = this->AccuracyAnalysis(true_points, sparse_points_1, "cubic_spline");
+        double mae_2 = this->AccuracyAnalysis(true_points, sparse_points_2, "cubic_spline");
+        return std::log2(mae_1 / mae_2);
+    } else {
+        throw std::invalid_argument("Invalid interpolation method.");
     }
-    for (const auto& x : x_2) {
-        y_true_2.push_back(generator_function(x));
-    }
-    for (const auto& x : x_3) {
-        y_true_3.push_back(generator_function(x));
-    }
-
-    // Linear Interpolation
-    LinearInterpolation<double> linear(points);
-    std::vector<double> y_pred_linear_1, y_pred_linear_2, y_pred_linear_3;
-    for (const auto& x : x_1) {
-        y_pred_linear_1.push_back(linear(x));
-    }
-    for (const auto& x : x_2) {
-        y_pred_linear_2.push_back(linear(x));
-    }
-    for (const auto& x : x_3) {
-        y_pred_linear_3.push_back(linear(x));
-    }
-
-    // Error calculation
-    double linear_mae_1 = mae(y_true_1, y_pred_linear_1);
-    double linear_mae_2 = mae(y_true_2, y_pred_linear_2);
-    double linear_mae_3 = mae(y_true_3, y_pred_linear_3);
-
-    // Order Convergence Analysis
-    double linear_order_1 = std::log2(linear_mae_2 / linear_mae_1) / std::log2(0.25/0.5);
-    double linear_order_2 = std::log2(linear_mae_3 / linear_mae_2) / std::log2(0.125/0.25);
-
-    // Lagrange Interpolation
-    Lagrange<double> lagrange(points);
-    std::vector<double> y_pred_lagrange_1, y_pred_lagrange_2, y_pred_lagrange_3;
-    for (const auto& x : x_1) {
-        y_pred_lagrange_1.push_back(lagrange(x));
-    }
-    for (const auto& x : x_2) {
-        y_pred_lagrange_2.push_back(lagrange(x));
-    }
-    for (const auto& x : x_3) {
-        y_pred_lagrange_3.push_back(lagrange(x));
-    }
-
-    // Error calculation
-    double lagrange_mae_1 = mae(y_true_1, y_pred_lagrange_1);
-    double lagrange_mae_2 = mae(y_true_2, y_pred_lagrange_2);
-    double lagrange_mae_3 = mae(y_true_3, y_pred_lagrange_3);
-
-    // Order Convergence Analysis
-    double lagrange_order_1 = std::log2(lagrange_mae_2 / lagrange_mae_1) / std::log2(0.25/0.5);
-    double lagrange_order_2 = std::log2(lagrange_mae_3 / lagrange_mae_2) / std::log2(0.125/0.25);
-
-    // Newton Interpolation
-    Newton<double> newton(points);
-    std::vector<double> y_pred_newton_1, y_pred_newton_2, y_pred_newton_3;
-    for (const auto& x : x_1) {
-        y_pred_newton_1.push_back(newton(x));
-    }
-    for (const auto& x : x_2) {
-        y_pred_newton_2.push_back(newton(x));
-    }
-    for (const auto& x : x_3) {
-        y_pred_newton_3.push_back(newton(x));
-    }
-
-    // Error calculation
-    double newton_mae_1 = mae(y_true_1, y_pred_newton_1);
-    double newton_mae_2 = mae(y_true_2, y_pred_newton_2);
-    double newton_mae_3 = mae(y_true_3, y_pred_newton_3);
-
-    // Order Convergence Analysis
-    double newton_order_1 = std::log2(newton_mae_2 / newton_mae_1) / std::log2(0.25/0.5);
-    double newton_order_2 = std::log2(newton_mae_3 / newton_mae_2) / std::log2(0.125/0.25);
-
-    // Cubic Spline Interpolation
-    SplineInterpolation<double> cubic_spline(points);
-    std::vector<double> y_pred_cubic_spline_1, y_pred_cubic_spline_2, y_pred_cubic_spline_3;
-    for (const auto& x : x_1) {
-        y_pred_cubic_spline_1.push_back(cubic_spline(x));
-    }
-    for (const auto& x : x_2) {
-        y_pred_cubic_spline_2.push_back(cubic_spline(x));
-    }
-    for (const auto& x : x_3) {
-        y_pred_cubic_spline_3.push_back(cubic_spline(x));
-    }
-
-    // Error calculation
-    double cubic_spline_mae_1 = mae(y_true_1, y_pred_cubic_spline_1);
-    double cubic_spline_mae_2 = mae(y_true_2, y_pred_cubic_spline_2);
-    double cubic_spline_mae_3 = mae(y_true_3, y_pred_cubic_spline_3);
-
-    // Order Convergence Analysis
-    double cubic_spline_order_1 = std::log2(cubic_spline_mae_2 / cubic_spline_mae_1) / std::log2(0.25/0.5);
-    double cubic_spline_order_2 = std::log2(cubic_spline_mae_3 / cubic_spline_mae_2) / std::log2(0.125/0.25);
-
-    // Displaying errors and orders
-    std::cout << "Linear Interpolation errors: " << linear_mae_1 << " " << linear_mae_2 << " " << linear_mae_3 << std::endl;
-    std::cout << "Linear Interpolation Order: " << linear_order_1 << " " << linear_order_2 << std::endl;
-
-    std::cout << "Lagrange Interpolation errors: " << lagrange_mae_1 << " " << lagrange_mae_2 << " " << lagrange_mae_3 << std::endl;
-    std::cout << "Lagrange Interpolation Order: " << lagrange_order_1 << " " << lagrange_order_2 << std::endl;
-
-    std::cout << "Newton Interpolation errors: " << newton_mae_1 << " " << newton_mae_2 << " " << newton_mae_3 << std::endl;
-    std::cout << "Newton Interpolation Order: " << newton_order_1 << " " << newton_order_2 << std::endl;
-
-    std::cout << "Cubic Spline Interpolation errors: " << cubic_spline_mae_1 << " " << cubic_spline_mae_2 << " " << cubic_spline_mae_3 << std::endl;
-    std::cout << "Cubic Spline Interpolation Order: " << cubic_spline_order_1 << " " << cubic_spline_order_2 << std::endl;
-
-    std::cout << "Order Convergence Analysis completed successfully." << std::endl;
 }

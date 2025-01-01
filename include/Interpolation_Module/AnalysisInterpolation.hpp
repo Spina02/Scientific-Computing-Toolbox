@@ -48,17 +48,14 @@ namespace ScientificToolbox::Interpolation {
          * @param random_x Random x values to test the interpolation
          * 
          */
-        AnalysisInterpolation(std::set<point<double>> points, std::function<double(double)> generator_function, std::vector<double> random_x);
+        AnalysisInterpolation();
         ~AnalysisInterpolation();
 
-        void AccuracyAnalysis();
-        void EfficiencyAnalysis();
-        void OrderConvergenceAnalysis();
+        double AccuracyAnalysis(std::set<point<double>> true_points, std::set<point<double>> sparse_points, std::string interpolation_method);
+        void EfficiencyAnalysis(std::set<point<double>> true_points, std::set<point<double>> sparse_points, std::string interpolation_method);
+        double OrderConvergenceAnalysis(std::set<point<double>> true_points, std::set<point<double>> sparse_points_1, std::set<point<double>> sparse_points_2, std::string interpolation_method);
 
     private:
-        std::set<point<double>> points;
-        std::function<double(double)> generator_function;
-        std::vector<double> random_x;
 
         double mae(std::vector<double> y_true, std::vector<double> y_pred);
     };

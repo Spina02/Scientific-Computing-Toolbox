@@ -32,6 +32,8 @@ set(PY_DIR ${ROOT_DIR}/python_bindings)
 # Add the pybind11 module
 pybind11_add_module(interpolation_bindings ${PY_DIR}/interpolation_bindings.cpp)
 
+target_link_libraries(interpolation_bindings PRIVATE ${MODULE})
+
 # Link the pybind11 module to GSL
 target_link_libraries(interpolation_bindings PRIVATE GSL::gsl)
 

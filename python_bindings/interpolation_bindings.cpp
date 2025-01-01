@@ -8,6 +8,9 @@
 #include "../include/Interpolation_Module/Newton.hpp"
 #include "../include/Interpolation_Module/Cubic_Spline_Interpolation.hpp"
 
+#include "../include/Interpolation_Module/InterpolationTester.hpp"
+#include "../include/Interpolation_Module/AnalysisInterpolation.hpp"
+
 namespace py = pybind11;
 using namespace ScientificToolbox::Interpolation;
 
@@ -63,4 +66,10 @@ PYBIND11_MODULE(interpolation_bindings, m) {
     py::class_<SplineInterpolation<double>, Interpolation<double>>(m, "SplineInterpolation")
         .def(py::init<const std::set<point<double>>&>())
         .def("interpolate", &SplineInterpolation<double>::interpolate);    
+    
+    // InterpolationTester class
+    py::class_<InterpolationTester>(m, "InterpolationTester")
+        .def(py::init())
+        .def("run_tests", &InterpolationTester::run_tests);
+    
 }
