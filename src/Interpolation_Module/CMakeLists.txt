@@ -7,11 +7,14 @@ set(MODULE Interpolation_Module)
 # Compilation Flags
 set(CXXFLAGS "-Wall -Wextra -Wpedantic -Werror -Wno-nested-anon-types -g -fPIC")
 
+
+
 # Find GSL
 find_package(GSL REQUIRED)
 if (NOT GSL_FOUND)
     message(FATAL_ERROR "GSL not found!")
 endif()
+
 
 # Add the pybind11 submodule
 set(PYBIND11_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../extern/pybind11)
@@ -93,3 +96,32 @@ add_custom_target(bind-interpolation
     DEPENDS interpolation_bindings
     WORKING_DIRECTORY ${BIN_DIR}
 )
+
+# setting Python3_EXECUTABLE
+find_package(Python3 COMPONENTS Interpreter Development)
+if (NOT Python3_FOUND)
+    message(FATAL_ERROR "Python3 not found!")
+endif()
+
+# Define variables for paths
+set(VENV_DIR ${ROOT_DIR}/venv)
+set(REQUIREMENTS_FILE ${ROOT_DIR}/scripts/requirements.txt)
+set(PYTHON_TEST_SCRIPT ${ROOT_DIR}/tests/Interpolation_Module_test.py)
+
+# Custom target for setting up the virtual environment
+add_custom_target(setup-venv
+    COMMAND ${Python3_EXECUTABLE} -m venv ${VENV_DIR}
+    COMMAND ${VENV_DIR}/bin/pip install --upgrade pip
+    COMMAND ${VENV_DIR}/bin/pip install -r ${REQUIREMENTS_FILE}
+    COMMENT "Setting up the virtual environment and installing dependencies"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
+# Custom target for running the Python test script
+add_custom_target(py-test-interpolation
+    COMMAND ${VENV_DIR}/bin/python ${PYTHON_TEST_SCRIPT}
+    COMMENT "Running Python test script"
+    WORKING_DIRECTORY ${TEST_DIR}
+    DEPENDS setup-venv
+)
+
