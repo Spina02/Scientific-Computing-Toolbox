@@ -33,12 +33,12 @@ set(BIN_DIR ${ROOT_DIR}/bin)
 set(PY_DIR ${ROOT_DIR}/python_bindings)
 
 # Add the pybind11 module
-pybind11_add_module(interpolation_bindings ${PY_DIR}/interpolation_bindings.cpp)
+pybind11_add_module(interpolation ${PY_DIR}/interpolation_bindings.cpp)
 
-target_link_libraries(interpolation_bindings PRIVATE ${MODULE})
+target_link_libraries(interpolation PRIVATE ${MODULE})
 
 # Link the pybind11 module to GSL
-target_link_libraries(interpolation_bindings PRIVATE GSL::gsl)
+target_link_libraries(interpolation PRIVATE GSL::gsl)
 
 # Set the include directories
 include_directories(
@@ -93,7 +93,7 @@ add_custom_target(test-interpolation
 )
 
 add_custom_target(bind-interpolation
-    DEPENDS interpolation_bindings
+    DEPENDS interpolation
     WORKING_DIRECTORY ${BIN_DIR}
 )
 
@@ -106,7 +106,8 @@ endif()
 # Define variables for paths
 set(VENV_DIR ${ROOT_DIR}/venv)
 set(REQUIREMENTS_FILE ${ROOT_DIR}/scripts/requirements.txt)
-set(PYTHON_TEST_SCRIPT ${ROOT_DIR}/tests/Interpolation_Module_test.py)
+set(PYTHON_TEST_SCRIPT ${ROOT_DIR}/tests/Interpolation_Test.py)
+set(PYTHON_MAIN_SCRIPT ${ROOT_DIR}/main/Interpolation_Module_main.py)
 
 # Custom target for setting up the virtual environment
 add_custom_target(setup-venv
@@ -122,6 +123,14 @@ add_custom_target(py-test-interpolation
     COMMAND ${VENV_DIR}/bin/python ${PYTHON_TEST_SCRIPT}
     COMMENT "Running Python test script"
     WORKING_DIRECTORY ${TEST_DIR}
+    DEPENDS setup-venv
+)
+
+# Custom target for running the Python main script
+add_custom_target(py-run-interpolation
+    COMMAND ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT}
+    COMMENT "Running Python main script"
+    WORKING_DIRECTORY ${MAIN_DIR}
     DEPENDS setup-venv
 )
 

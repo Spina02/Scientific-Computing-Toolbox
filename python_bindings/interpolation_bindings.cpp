@@ -14,7 +14,7 @@
 namespace py = pybind11;
 using namespace ScientificToolbox::Interpolation;
 
-PYBIND11_MODULE(interpolation_bindings, m) {
+PYBIND11_MODULE(interpolation, m) {
     m.doc() = "Python bindings for the interpolation module";
 
     // Point class

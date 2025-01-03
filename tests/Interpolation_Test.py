@@ -13,7 +13,7 @@ build_dir = os.path.join(script_dir, '../build/src/Interpolation_Module/')  # Ad
 sys.path.append(build_dir)
 
 # Now you can import your module
-import interpolation_bindings as ib
+import interpolation 
 
 # Function to generate random data
 def random_data_generator(min, max, num_points, seed=None):
@@ -31,7 +31,7 @@ def sparse_points_generator(min, max, n):
     sparse_x = np.linspace(min, max, n)
     sparse_y = [np.sin(x_i) for x_i in sparse_x]
     sparse_data = pd.DataFrame({'x': sparse_x, 'y': sparse_y})
-    return ib.df_to_set_of_points(sparse_data)
+    return interpolation.df_to_set_of_points(sparse_data)
 
 # Function to sample values without repetition and ordering them
 def sample_values(values, num_samples):
@@ -53,21 +53,21 @@ def sample_values(values, num_samples):
 
 
 # Testing interpolations
-ib.InterpolationTester().run_tests()
+interpolation.InterpolationTester().run_tests()
 
 print("Testing the interpolation module with random data in the interval (0,10)...")
 
 # Generating some random data and interpolating it
 random_data = random_data_generator(0, 10, 20, seed = 17)
-random_points = ib.df_to_set_of_points(random_data)
+random_points = interpolation.df_to_set_of_points(random_data)
 plt.plot(random_data['x'], random_data['y'], 'ro', label='Data points')
 plt.show()
 
 # Interpolating the data
-linear_interpolation = ib.LinearInterpolation(random_points)
-lagrange_interpolation = ib.Lagrange(random_points)
-newton_interpolation = ib.Newton(random_points)
-spline_interpolation = ib.SplineInterpolation(random_points)
+linear_interpolation = interpolation.LinearInterpolation(random_points)
+lagrange_interpolation = interpolation.Lagrange(random_points)
+newton_interpolation = interpolation.Newton(random_points)
+spline_interpolation = interpolation.SplineInterpolation(random_points)
 
 
 x = np.linspace(0, 10, 1000)
@@ -111,10 +111,10 @@ print("Analyzing the interpolations with y=sin(x) as generator function...")
 
 # Generating data with sin function
 data = data_generator(0, 10, 20, np.sin)
-points = ib.df_to_set_of_points(data)
+points = interpolation.df_to_set_of_points(data)
 
 sparse_data = sample_values(data['x'], 5)
-sparse_points = ib.df_to_set_of_points(sparse_data)
+sparse_points = interpolation.df_to_set_of_points(sparse_data)
 
 # plotting the data
 plt.plot(data['x'], data['y'], 'ro', label='Data points')
@@ -122,10 +122,10 @@ plt.plot(sparse_data['x'], sparse_data['y'], 'bo', label='Sparse points')
 plt.legend()
 plt.show()
 
-linear_interpolation = ib.LinearInterpolation(sparse_points)
-lagrange_interpolation = ib.Lagrange(sparse_points)
-newton_interpolation = ib.Newton(sparse_points)
-spline_interpolation = ib.SplineInterpolation(sparse_points)
+linear_interpolation = interpolation.LinearInterpolation(sparse_points)
+lagrange_interpolation = interpolation.Lagrange(sparse_points)
+newton_interpolation = interpolation.Newton(sparse_points)
+spline_interpolation = interpolation.SplineInterpolation(sparse_points)
 
 x = np.linspace(min(sparse_data['x']), max(sparse_data['x']), 1000)
 y_linear = [linear_interpolation.interpolate(x_i) for x_i in x]
@@ -160,16 +160,16 @@ axs[1, 1].legend()
 plt.show()
 
 print("Starting Accuracy Analysis...")
-print("Linear Interpolation mae: " + str(ib.AnalysisInterpolation().AccuracyAnalysis(points, sparse_points, "linear")))
-print("Lagrange Interpolation mae: " + str(ib.AnalysisInterpolation().AccuracyAnalysis(points, sparse_points, "lagrange")))
-print("Newton Interpolation mae: " + str(ib.AnalysisInterpolation().AccuracyAnalysis(points, sparse_points, "newton")))
-print("Spline Interpolation mae: " + str(ib.AnalysisInterpolation().AccuracyAnalysis(points, sparse_points, "cubic_spline")))
+print("Linear Interpolation mae: " + str(interpolation.AnalysisInterpolation().AccuracyAnalysis(points, sparse_points, "linear")))
+print("Lagrange Interpolation mae: " + str(interpolation.AnalysisInterpolation().AccuracyAnalysis(points, sparse_points, "lagrange")))
+print("Newton Interpolation mae: " + str(interpolation.AnalysisInterpolation().AccuracyAnalysis(points, sparse_points, "newton")))
+print("Spline Interpolation mae: " + str(interpolation.AnalysisInterpolation().AccuracyAnalysis(points, sparse_points, "cubic_spline")))
 
 print("Starting Efficiency Analysis...")
-ib.AnalysisInterpolation().EfficiencyAnalysis(points, sparse_points, "linear")
-ib.AnalysisInterpolation().EfficiencyAnalysis(points, sparse_points, "lagrange")
-ib.AnalysisInterpolation().EfficiencyAnalysis(points, sparse_points, "newton")
-ib.AnalysisInterpolation().EfficiencyAnalysis(points, sparse_points, "cubic_spline")
+interpolation.AnalysisInterpolation().EfficiencyAnalysis(points, sparse_points, "linear")
+interpolation.AnalysisInterpolation().EfficiencyAnalysis(points, sparse_points, "lagrange")
+interpolation.AnalysisInterpolation().EfficiencyAnalysis(points, sparse_points, "newton")
+interpolation.AnalysisInterpolation().EfficiencyAnalysis(points, sparse_points, "cubic_spline")
 
 print("Starting Order of Convergence Analysis duplicating points for 5 times starting from 4...")
 
@@ -193,14 +193,14 @@ for i in range(len(n_points)):
     sparse_points = sparse_points_generator(0, 10, n_points[i])
     vec_sparse_points.append(sparse_points)
     if i != 0:
-        linear_ooc.append(ib.AnalysisInterpolation().OrderConvergenceAnalysis(points, vec_sparse_points[i-1], vec_sparse_points[i], "linear"))
-        lagrangge_ooc.append(ib.AnalysisInterpolation().OrderConvergenceAnalysis(points, vec_sparse_points[i-1], vec_sparse_points[i], "lagrange"))
-        newton_ooc.append(ib.AnalysisInterpolation().OrderConvergenceAnalysis(points, vec_sparse_points[i-1], vec_sparse_points[i], "newton"))
-        spline_ooc.append(ib.AnalysisInterpolation().OrderConvergenceAnalysis(points, vec_sparse_points[i-1], vec_sparse_points[i], "cubic_spline"))
-    linear_interpolation = ib.LinearInterpolation(sparse_points)
-    lagrange_interpolation = ib.Lagrange(sparse_points)
-    newton_interpolation = ib.Newton(sparse_points)
-    spline_interpolation = ib.SplineInterpolation(sparse_points)
+        linear_ooc.append(interpolation.AnalysisInterpolation().OrderConvergenceAnalysis(points, vec_sparse_points[i-1], vec_sparse_points[i], "linear"))
+        lagrangge_ooc.append(interpolation.AnalysisInterpolation().OrderConvergenceAnalysis(points, vec_sparse_points[i-1], vec_sparse_points[i], "lagrange"))
+        newton_ooc.append(interpolation.AnalysisInterpolation().OrderConvergenceAnalysis(points, vec_sparse_points[i-1], vec_sparse_points[i], "newton"))
+        spline_ooc.append(interpolation.AnalysisInterpolation().OrderConvergenceAnalysis(points, vec_sparse_points[i-1], vec_sparse_points[i], "cubic_spline"))
+    linear_interpolation = interpolation.LinearInterpolation(sparse_points)
+    lagrange_interpolation = interpolation.Lagrange(sparse_points)
+    newton_interpolation = interpolation.Newton(sparse_points)
+    spline_interpolation = interpolation.SplineInterpolation(sparse_points)
     y_linear = [linear_interpolation.interpolate(x_i) for x_i in x]
     y_lagrange = [lagrange_interpolation.interpolate(x_i) for x_i in x]
     y_newton = [newton_interpolation.interpolate(x_i) for x_i in x]
