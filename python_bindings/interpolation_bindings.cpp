@@ -71,5 +71,12 @@ PYBIND11_MODULE(interpolation_bindings, m) {
     py::class_<InterpolationTester>(m, "InterpolationTester")
         .def(py::init())
         .def("run_tests", &InterpolationTester::run_tests);
+
+    // AnalysisInterpolation class
+    py::class_<AnalysisInterpolation>(m, "AnalysisInterpolation")
+        .def(py::init())
+        .def("AccuracyAnalysis", &AnalysisInterpolation::AccuracyAnalysis)
+        .def("EfficiencyAnalysis", &AnalysisInterpolation::EfficiencyAnalysis)
+        .def("OrderConvergenceAnalysis", &AnalysisInterpolation::OrderConvergenceAnalysis);
     
 }
