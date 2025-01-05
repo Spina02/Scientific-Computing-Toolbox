@@ -27,7 +27,7 @@ add_custom_target(test-all
 # Root-level clean target (removing lib and bin directories, and clean the build directory)
 add_custom_target(clean-all
     COMMAND rm -rf lib bin
-    COMMAND rm -rf $(CMAKE_BINARY_DIR)/*
+    COMMAND rm -rf build/*
     COMMAND make clean
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
