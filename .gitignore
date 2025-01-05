@@ -1,3 +1,81 @@
-build/
-output/
+#? This .gitignore file for this project is based on the one 
+#? provided by GitHub: https://github.com/github/gitignore
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables and object files
+*.exe
+*.out
+*.app
+*.so
+*.dylib
+*.dll
+*.a
+*.lib
+*.obj
+*.o
+*.lo
+*.la
+*.lai
+*.slo
+*.dSYM/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Visual Studio
 .vscode/
+.vs/
+*.VC.db
+*.VC.VC.opendb
+
+# ------------------------------
+# Build Directory
+# ------------------------------
+
+/build/
+/bin/
+/lib/
+/output/
+Makefile
+*.cmake.cache
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+CMakeUserPresets.json
