@@ -3,7 +3,7 @@
 namespace ScientificToolbox::ODE {
 
 // Implementation of Runge-Kutta-4 Solever
-ODESolution RK4Solver::Solve() const {
+ODESolution RK4Solver::solve() const {
 
     if (h <= 0) throw std::invalid_argument("Step size h must be positive.");
     if (t0 >= tf) throw std::invalid_argument("Initial time t0 must be less than final time tf.");

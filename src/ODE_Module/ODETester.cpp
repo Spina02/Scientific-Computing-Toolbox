@@ -124,19 +124,19 @@ bool ODETester::test_simple_ode(const ODETestCase& test_case, const std::string 
     if (solver_type == "ForwardEulerSolver") {
         h /= 100; // Lower h for Forward Euler
         sensitivity = 2e-4;
-        solver = std::make_unique<ForwardEulerSolver>(f, t0, y0, tf, h);
+        solver = std::make_unique<ForwardEulerSolver>(f, y0, t0, tf, h);
     } else if (solver_type == "ExplicitMidpointSolver") {
         sensitivity = 1e-4;
-        solver = std::make_unique<ExplicitMidpointSolver>(f, t0, y0, tf, h);
+        solver = std::make_unique<ExplicitMidpointSolver>(f, y0, t0, tf, h);
     } else if (solver_type == "RK4Solver") {
         sensitivity = 1e-8;
-        solver = std::make_unique<RK4Solver>(f, t0, y0, tf, h);
+        solver = std::make_unique<RK4Solver>(f, y0, t0, tf, h);
     } else {
         std::cout << "  Test " << test_num << " failed: Unknown solver type." << std::endl;
         return false;
     }
 
-    auto solution = solver->Solve();
+    auto solution = solver->solve();
     const auto& results = solution.y_values;
     if (results.empty()) {
         std::cout << "  Test " << test_num << " failed: No results produced" << std::endl;

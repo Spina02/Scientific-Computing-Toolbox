@@ -32,7 +32,7 @@ namespace ScientificToolbox::ODE {
 class ODESolver {    
 public:
     // Constructor
-    ODESolver(const Func& f, double t0, const var_vec& y0, double tf, double h)
+    ODESolver(const Func& f,  const var_vec& y0, double t0, double tf, double h)
         : f(f), t0(t0), tf(tf), h(h), y0(y0) {}
     // Default destructor
     virtual ~ODESolver() = default;
@@ -41,7 +41,7 @@ public:
      * @brief Solve the ODE using the implemented method
      * @return ODESolution containing the solution data
      */
-    virtual ODESolution Solve() const = 0; 
+    virtual ODESolution solve() const = 0; 
 
 protected:
     // State variables

@@ -33,7 +33,7 @@ int main() {
 
     for (auto solver_type : solver_types) {
         // Create solver with unique_ptr
-        auto solver_ptr = factories[solver_type](f, t0, y0, tf, h);
+        auto solver_ptr = factories[solver_type](f, y0, t0, tf, h);
         auto [sol, time] = solve_and_measure_execution_time(*solver_ptr);
         double error = compute_error(sol.get_result(), solution);
         double order = compute_order_of_convergence(solver_type);

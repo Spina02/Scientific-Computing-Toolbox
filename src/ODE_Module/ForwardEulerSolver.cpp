@@ -3,7 +3,7 @@
 namespace ScientificToolbox::ODE {
 
 // Implementation of Forward Euler Solver
-ODESolution ForwardEulerSolver::Solve() const {
+ODESolution ForwardEulerSolver::solve() const {
     if (h <= 0) throw std::invalid_argument("Step size h must be positive.");
     if (t0 >= tf) throw std::invalid_argument("Initial time t0 must be less than final time tf.");
 

@@ -2,7 +2,7 @@
 
 namespace ScientificToolbox::ODE {
 
-ODESolution ExplicitMidpointSolver::Solve() const {    
+ODESolution ExplicitMidpointSolver::solve() const {    
     if (h <= 0) throw std::invalid_argument("Step size h must be positive.");
     if (t0 >= tf) throw std::invalid_argument("Initial time t0 must be less than final time tf.");
 

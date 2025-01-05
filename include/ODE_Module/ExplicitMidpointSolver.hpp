@@ -33,7 +33,7 @@ class ExplicitMidpointSolver : public ODESolver {
          * @brief Solves the ODE using the Explicit Midpoint method
          * @return ODESolution containing the solution data
          */
-        virtual ODESolution Solve() const override;
+        virtual ODESolution solve() const override;
 };
 
 } // namespace ScientificToolbox::ODE

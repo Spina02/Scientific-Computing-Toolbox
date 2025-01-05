@@ -3,14 +3,14 @@
 namespace ScientificToolbox::ODE {
 
 std::map<std::string, SolverFactory> factories = {
-    {"ForwardEulerSolver", [](Func f, double t0, double y0, double tf, double h) {
-        return std::make_unique<ForwardEulerSolver>(f, t0, y0, tf, h);
+    {"ForwardEulerSolver", [](Func f, double y0, double t0, double tf, double h) {
+        return std::make_unique<ForwardEulerSolver>(f, y0, t0, tf, h);
     }},
-    {"ExplicitMidpointSolver", [](Func f, double t0, double y0, double tf, double h) {
-        return std::make_unique<ExplicitMidpointSolver>(f, t0, y0, tf, h);
+    {"ExplicitMidpointSolver", [](Func f, double y0, double t0, double tf, double h) {
+        return std::make_unique<ExplicitMidpointSolver>(f, y0, t0, tf, h);
     }},
-    {"RK4Solver", [](Func f, double t0, double y0, double tf, double h) {
-        return std::make_unique<RK4Solver>(f, t0, y0, tf, h);
+    {"RK4Solver", [](Func f, double y0, double t0, double tf, double h) {
+        return std::make_unique<RK4Solver>(f, y0, t0, tf, h);
     }}
 };
 
@@ -30,7 +30,7 @@ double compute_error(const var_vec& result, const var_vec& expected) {
 
 TimedSolution solve_and_measure_execution_time(const ODESolver& solver) {
     auto start = std::chrono::high_resolution_clock::now();
-    ODESolution sol = solver.Solve(); // Call the Solve() method
+    ODESolution sol = solver.solve(); // Call the solve() method
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = end - start;
     return {sol, diff.count()};
@@ -49,8 +49,8 @@ double compute_order_of_convergence(std::string solver_type) {
     for (Eigen::Index i = 0; i < steps.size(); ++i) {
         double h = steps[i];
         // Create solver using unique_ptr and keep it in scope
-        auto current_solver = factories[solver_type](f, t0, y0, tf, h);
-        ODESolution sol = current_solver->Solve();
+        auto current_solver = factories[solver_type](f, y0, t0, tf, h);
+        ODESolution sol = current_solver->solve();
         const auto& result = sol.get_result();
         double error = compute_error(result, solution);
         errors(i) = error;

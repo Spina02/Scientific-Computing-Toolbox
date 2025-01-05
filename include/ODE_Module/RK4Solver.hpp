@@ -33,7 +33,7 @@ class RK4Solver : public ODESolver{
          * @brief Solve the ODE using 4th order Runge-Kutta method
          * @return ODESolution containing the solution data
          */
-        virtual ODESolution Solve() const override;
+        virtual ODESolution solve() const override;
 };
 
 } // namespace ScientificToolbox::ODE

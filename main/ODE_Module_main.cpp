@@ -52,22 +52,22 @@ int main(int argc, char** argv) {
             std::cout << std::endl << "  Solving ODE using different methods:" << std::endl << std::endl;
             
             // Solve using Forward Euler
-            auto euler = ForwardEulerSolver(f, t0, y0, tf, h);
-            auto euler_solution = euler.Solve();
+            auto euler = ForwardEulerSolver(f, y0, t0, tf, h);
+            auto euler_solution = euler.solve();
             std::cout << "  Forward Euler Method:\t\t";
             // use the result field to access the final value
             std::cout << euler_solution.get_result() << std::endl;
 
             // Solve using Explicit Midpoint
-            auto midpoint = ExplicitMidpointSolver(f, t0, y0, tf, h);
-            auto midpoint_solution = midpoint.Solve();
+            auto midpoint = ExplicitMidpointSolver(f, y0, t0, tf, h);
+            auto midpoint_solution = midpoint.solve();
             std::cout << "  Explicit Midpoint Method:\t";
             // use the result field to access the final value
             std::cout << midpoint_solution.get_result() << std::endl;
 
             // Solve using RK4
-            auto rk4 = RK4Solver(f, t0, y0, tf, h);
-            auto rk4_solution = rk4.Solve();
+            auto rk4 = RK4Solver(f, y0, t0, tf, h);
+            auto rk4_solution = rk4.solve();
             std::cout << "  Runge-Kutta 4th Order Method:\t";
             // use the result field to access the final value
             std::cout << rk4_solution.get_result() << std::endl;
@@ -93,8 +93,8 @@ int main(int argc, char** argv) {
 
         // Solve using Forward Euler
         std::cout << " Forward Euler Method" << std::endl << std::endl;
-        auto euler = ForwardEulerSolver(scalar_f, t0, y0, tf, h);
-        auto euler_solution = euler.Solve(); // solve without measuring execution time
+        auto euler = ForwardEulerSolver(scalar_f, y0, t0, tf, h);
+        auto euler_solution = euler.solve(); // solve without measuring execution time
         //auto euler_solution = solve_and_measure_execution_time(euler); // solve and measure execution time
         // Print the trajectory using 2 steps
         euler_solution.steps = 2;
@@ -102,8 +102,8 @@ int main(int argc, char** argv) {
 
         // Solve using Explicit Midpoint
         std::cout << " Explicit Midpoint Method" << std::endl << std::endl;
-        auto midpoint = ExplicitMidpointSolver(scalar_f, t0, y0, tf, h);
-        auto midpoint_solution = midpoint.Solve(); // solve without measuring execution time
+        auto midpoint = ExplicitMidpointSolver(scalar_f, y0, t0, tf, h);
+        auto midpoint_solution = midpoint.solve(); // solve without measuring execution time
         //auto midpoint_solution = solve_and_measure_execution_time(midpoint); // solve and measure execution time
         // Print the trajectory using 4 steps
         midpoint_solution.steps = 4;
@@ -111,8 +111,8 @@ int main(int argc, char** argv) {
 
         // Solve using RK4
         std::cout << " Runge-Kutta 4th Order Method" << std::endl << std::endl;
-        auto rk4 = RK4Solver(scalar_f, t0, y0, tf, h);
-        auto rk4_solution = rk4.Solve(); // solve without measuring execution time
+        auto rk4 = RK4Solver(scalar_f, y0, t0, tf, h);
+        auto rk4_solution = rk4.solve(); // solve without measuring execution time
         //auto rk4_solution = solve_and_measure_execution_time(rk4); // solve and measure execution time
         // Print the trajectory using 6 steps
         rk4_solution.steps = 6;
@@ -145,20 +145,20 @@ int main(int argc, char** argv) {
         std::cout << "    y(0)             :\t" << vector_y0 << std::endl;
 
         // Solve using Forward Euler
-        auto vector_euler = ForwardEulerSolver(vector_f, t0, vector_y0, tf, h);
-        auto vector_euler_solution= vector_euler.Solve();
+        auto vector_euler = ForwardEulerSolver(vector_f, vector_y0, t0, tf, h);
+        auto vector_euler_solution= vector_euler.solve();
         vector_euler_solution.steps = 5;
         std::cout << vector_euler_solution << std::endl;
 
         // Solve using Explicit Midpoint
-        auto vector_midpoint = ExplicitMidpointSolver(vector_f, t0, vector_y0, tf, h);
-        auto vector_midpoint_solution= vector_midpoint.Solve();
+        auto vector_midpoint = ExplicitMidpointSolver(vector_f, vector_y0, t0, tf, h);
+        auto vector_midpoint_solution= vector_midpoint.solve();
         vector_midpoint_solution.steps = 5;
         std::cout << vector_midpoint_solution << std::endl;
 
         // Solve using RK4
-        auto vector_rk4 = RK4Solver(vector_f, t0, vector_y0, tf, h);
-        auto vector_solution= vector_rk4.Solve();
+        auto vector_rk4 = RK4Solver(vector_f, vector_y0, t0, tf, h);
+        auto vector_solution= vector_rk4.solve();
         vector_solution.steps = 5;
         std::cout << vector_solution << std::endl;
 
