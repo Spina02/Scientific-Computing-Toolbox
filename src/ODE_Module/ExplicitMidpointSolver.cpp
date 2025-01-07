@@ -8,10 +8,20 @@ ODESolution ExplicitMidpointSolver::solve() const {
 
     ODESolution solution;
     
+    solution.expr = expr;
+
     double t = t0;
     var_vec y = y0;
     int n = static_cast<int>((tf - t0) / h);
-    solution.size = n;
+    
+    solution.size = std::visit([](const auto& val) -> size_t {
+        using T = std::decay_t<decltype(val)>;
+        if constexpr (std::is_same_v<T, double>) {
+            return 1;
+        } else {
+            return val.size();
+        }
+    }, y);
     
     // Store initial conditions
     solution.y_values.reserve(n + 1);

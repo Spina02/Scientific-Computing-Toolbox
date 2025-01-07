@@ -13,7 +13,7 @@ std::ostream& operator<<(std::ostream& os, const var_expr& expr) {
 }
 
 std::ostream& operator<<(std::ostream& os, const ODESolution& solution) {
-    size_t n = solution.size;
+    size_t n = solution.t_values.size() - 1;
     os << "\n  Solution trajectory:" << std::endl << std::endl;
     size_t step = std::max(1, static_cast<int>(n / solution.steps));
     for (size_t i = 0; i < n; i += step) {

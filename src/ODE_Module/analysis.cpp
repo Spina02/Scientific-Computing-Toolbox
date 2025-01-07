@@ -3,13 +3,13 @@
 namespace ScientificToolbox::ODE {
 
 std::map<std::string, SolverFactory> factories = {
-    {"ForwardEulerSolver", [](Func f, double y0, double t0, double tf, double h) {
+    {"ForwardEulerSolver", [](var_expr f, double y0, double t0, double tf, double h) {
         return std::make_unique<ForwardEulerSolver>(f, y0, t0, tf, h);
     }},
-    {"ExplicitMidpointSolver", [](Func f, double y0, double t0, double tf, double h) {
+    {"ExplicitMidpointSolver", [](var_expr f, double y0, double t0, double tf, double h) {
         return std::make_unique<ExplicitMidpointSolver>(f, y0, t0, tf, h);
     }},
-    {"RK4Solver", [](Func f, double y0, double t0, double tf, double h) {
+    {"RK4Solver", [](var_expr f, double y0, double t0, double tf, double h) {
         return std::make_unique<RK4Solver>(f, y0, t0, tf, h);
     }}
 };
@@ -37,7 +37,7 @@ TimedSolution solve_and_measure_execution_time(const ODESolver& solver) {
 }
 
 double compute_order_of_convergence(std::string solver_type) {
-    Func f {parseExpression("y")}; // Dummy function
+    var_expr expr = "y";           // Dummy function
     double solution = std::exp(1); // Dummy solution
     double t0 = 0;
     double tf = 1;
@@ -49,7 +49,7 @@ double compute_order_of_convergence(std::string solver_type) {
     for (Eigen::Index i = 0; i < steps.size(); ++i) {
         double h = steps[i];
         // Create solver using unique_ptr and keep it in scope
-        auto current_solver = factories[solver_type](f, y0, t0, tf, h);
+        auto current_solver = factories[solver_type](expr, y0, t0, tf, h);
         ODESolution sol = current_solver->solve();
         const auto& result = sol.get_result();
         double error = compute_error(result, solution);

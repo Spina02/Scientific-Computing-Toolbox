@@ -143,7 +143,7 @@ void save_on_CSV(const std::string& filename, const ODESolution& solution) {
     file.close();
 }
 
-void load_tests_from_csv(const std::string& filename) {
+std::vector<ODETestCase> load_tests_from_csv(const std::string& filename) {
     try {
         ImportCSV importer;
         
@@ -186,7 +186,7 @@ void load_tests_from_csv(const std::string& filename) {
             cases.push_back(scalar_test);
             cases.push_back(vector_test);
 
-            return;
+            return cases;
         }
         file.close();
 
@@ -196,7 +196,7 @@ void load_tests_from_csv(const std::string& filename) {
             
             if (data.empty()) {
                 std::cout << "Warning: No test cases found in " << filename << std::endl;
-                return;
+                return std::vector<ODETestCase>{};
             }
 
             std::cout << "Found " << data.size() << " test cases in file" << std::endl;
@@ -221,6 +221,8 @@ void load_tests_from_csv(const std::string& filename) {
         std::cerr << "Fatal error loading test cases: " << e.what() << std::endl;
         throw;
     }
+
+    return cases;
 }
 
 var_expr parse_var_expr(const std::string& str) {

@@ -33,7 +33,7 @@ bool ODETester::test_expression(ODETestCase test, int test_num) const {
         expected_val = test.expected_derivative.value();
     }
 
-    Func f{parseExpression(expr_variant)};
+    Func f{parseExpression(expr_variant), expr_variant};
     var_vec result = f(t_val, y_val);
     if (DEBUG) {
         std::cout << "  Expression: " << expr_variant << std::endl;
@@ -117,20 +117,18 @@ bool ODETester::test_simple_ode(const ODETestCase& test_case, const std::string 
         std::cout << "  y0 = " << y0 << std::endl;
     }
 
-
-    Func f {parseExpression(expr_variant)};
     std::unique_ptr<ODESolver> solver = nullptr;
     double sensitivity = 0;
     if (solver_type == "ForwardEulerSolver") {
         h /= 100; // Lower h for Forward Euler
-        sensitivity = 2e-4;
-        solver = std::make_unique<ForwardEulerSolver>(f, y0, t0, tf, h);
+        sensitivity = 2e-3;
+        solver = std::make_unique<ForwardEulerSolver>(expr_variant, y0, t0, tf, h);
     } else if (solver_type == "ExplicitMidpointSolver") {
         sensitivity = 1e-4;
-        solver = std::make_unique<ExplicitMidpointSolver>(f, y0, t0, tf, h);
+        solver = std::make_unique<ExplicitMidpointSolver>(expr_variant, y0, t0, tf, h);
     } else if (solver_type == "RK4Solver") {
         sensitivity = 1e-8;
-        solver = std::make_unique<RK4Solver>(f, y0, t0, tf, h);
+        solver = std::make_unique<RK4Solver>(expr_variant, y0, t0, tf, h);
     } else {
         std::cout << "  Test " << test_num << " failed: Unknown solver type." << std::endl;
         return false;

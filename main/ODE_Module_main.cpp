@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
         std::cout << "ODE Module Demo\n" << std::endl;
 
         // You can load the data from a CSV file using the ImportCSV class
-        load_tests_from_csv(inputFile);
+        std::vector<ODETestCase> test_cases = load_tests_from_csv(inputFile);
 
         /*
          * NOTE: 
@@ -41,9 +41,8 @@ int main(int argc, char** argv) {
          */
 
         std::cout << std::endl;
-        for (const auto& test : cases) {
+        for (const auto& test : test_cases) {
             std::cout << std::endl << test << std::endl;
-            Func f{parseExpression(test.expr)};
             double t0 = test.t0;
             double tf = test.tf;
             double h = test.h;
@@ -52,21 +51,21 @@ int main(int argc, char** argv) {
             std::cout << std::endl << "  Solving ODE using different methods:" << std::endl << std::endl;
             
             // Solve using Forward Euler
-            auto euler = ForwardEulerSolver(f, y0, t0, tf, h);
+            auto euler = ForwardEulerSolver(test.expr, y0, t0, tf, h);
             auto euler_solution = euler.solve();
             std::cout << "  Forward Euler Method:\t\t";
             // use the result field to access the final value
             std::cout << euler_solution.get_result() << std::endl;
 
             // Solve using Explicit Midpoint
-            auto midpoint = ExplicitMidpointSolver(f, y0, t0, tf, h);
+            auto midpoint = ExplicitMidpointSolver(test.expr, y0, t0, tf, h);
             auto midpoint_solution = midpoint.solve();
             std::cout << "  Explicit Midpoint Method:\t";
             // use the result field to access the final value
             std::cout << midpoint_solution.get_result() << std::endl;
 
             // Solve using RK4
-            auto rk4 = RK4Solver(f, y0, t0, tf, h);
+            auto rk4 = RK4Solver(test.expr, y0, t0, tf, h);
             auto rk4_solution = rk4.solve();
             std::cout << "  Runge-Kutta 4th Order Method:\t";
             // use the result field to access the final value
@@ -78,7 +77,7 @@ int main(int argc, char** argv) {
         // Example 1: Scalar ODE (dy/dt = y, y(0) = 1)
         std::cout << std::endl << "Example 1: Scalar ODE\n";
         var_expr scalar_expr = "y";  // dy/dt = y
-        Func scalar_f{parseExpression(scalar_expr)};
+        
         double t0 = 0.0;
         double tf = 1.0;
         double h = 0.001;
@@ -93,7 +92,7 @@ int main(int argc, char** argv) {
 
         // Solve using Forward Euler
         std::cout << " Forward Euler Method" << std::endl << std::endl;
-        auto euler = ForwardEulerSolver(scalar_f, y0, t0, tf, h);
+        auto euler = ForwardEulerSolver(scalar_expr, y0, t0, tf, h);
         auto euler_solution = euler.solve(); // solve without measuring execution time
         //auto euler_solution = solve_and_measure_execution_time(euler); // solve and measure execution time
         // Print the trajectory using 2 steps
@@ -102,7 +101,7 @@ int main(int argc, char** argv) {
 
         // Solve using Explicit Midpoint
         std::cout << " Explicit Midpoint Method" << std::endl << std::endl;
-        auto midpoint = ExplicitMidpointSolver(scalar_f, y0, t0, tf, h);
+        auto midpoint = ExplicitMidpointSolver(scalar_expr, y0, t0, tf, h);
         auto midpoint_solution = midpoint.solve(); // solve without measuring execution time
         //auto midpoint_solution = solve_and_measure_execution_time(midpoint); // solve and measure execution time
         // Print the trajectory using 4 steps
@@ -111,7 +110,7 @@ int main(int argc, char** argv) {
 
         // Solve using RK4
         std::cout << " Runge-Kutta 4th Order Method" << std::endl << std::endl;
-        auto rk4 = RK4Solver(scalar_f, y0, t0, tf, h);
+        auto rk4 = RK4Solver(scalar_expr, y0, t0, tf, h);
         auto rk4_solution = rk4.solve(); // solve without measuring execution time
         //auto rk4_solution = solve_and_measure_execution_time(rk4); // solve and measure execution time
         // Print the trajectory using 6 steps
@@ -129,7 +128,6 @@ int main(int argc, char** argv) {
         // Example 2: Vector ODE (predator-prey model)
         std::cout << std::endl << "Example 2: Vector ODE (Predator-Prey Model)" << std::endl << std::endl;
         vec_s vector_expr = {"0.1 * y1 - 0.02 * y1 * y2", "-0.3 * y2 + 0.01 * y1 * y2"};
-        Func vector_f{parseExpression(vector_expr)};
         
         // Initial conditions: [prey, predator]
         vec_d vec_y0(2);
@@ -145,19 +143,19 @@ int main(int argc, char** argv) {
         std::cout << "    y(0)             :\t" << vector_y0 << std::endl;
 
         // Solve using Forward Euler
-        auto vector_euler = ForwardEulerSolver(vector_f, vector_y0, t0, tf, h);
+        auto vector_euler = ForwardEulerSolver(vector_expr, vector_y0, t0, tf, h);
         auto vector_euler_solution= vector_euler.solve();
         vector_euler_solution.steps = 5;
         std::cout << vector_euler_solution << std::endl;
 
         // Solve using Explicit Midpoint
-        auto vector_midpoint = ExplicitMidpointSolver(vector_f, vector_y0, t0, tf, h);
+        auto vector_midpoint = ExplicitMidpointSolver(vector_expr, vector_y0, t0, tf, h);
         auto vector_midpoint_solution= vector_midpoint.solve();
         vector_midpoint_solution.steps = 5;
         std::cout << vector_midpoint_solution << std::endl;
 
         // Solve using RK4
-        auto vector_rk4 = RK4Solver(vector_f, vector_y0, t0, tf, h);
+        auto vector_rk4 = RK4Solver(vector_expr, vector_y0, t0, tf, h);
         auto vector_solution= vector_rk4.solve();
         vector_solution.steps = 5;
         std::cout << vector_solution << std::endl;

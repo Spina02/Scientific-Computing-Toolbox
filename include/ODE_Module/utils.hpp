@@ -23,9 +23,17 @@ inline const bool DEBUG = false;
 /** ### parseExpression
  * @brief Parse a mathematical expression into a callable function
  * @param expr Mathematical expression to parse of the form `f(t, y)` or `[f1(t, y0, y1, ...), f2(t, y0, y1, ...), ...]`
- * @return var_func Callable function representing the expression
+ * @return `var_func` Callable function representing the expression
  */
 var_func parseExpression(const var_expr& expr);
+
+/** ### parse_var_expr
+ * @brief Parse a string into a var_expr type (std::variant<std::vector<std::string>, std::string>)
+ * 
+ * @param str The string representing the expression(s)
+ * @return `var_expr` The result
+ */
+var_expr parse_var_expr(const std::string& str);
 
 /** ### save_on_CSV
  * @brief Save ODE solution data to a CSV file
@@ -38,7 +46,7 @@ void save_on_CSV(const std::string& filename, const ODESolution& solution);
  * @brief Load test cases from a CSV file
  * @param filename Path to the CSV file containing test cases
  */
-void load_tests_from_csv(const std::string& filename);
+std::vector<ODETestCase> load_tests_from_csv(const std::string& filename);
 
 /** ### parse_test_case
  * @brief Parse a test case from a row of data

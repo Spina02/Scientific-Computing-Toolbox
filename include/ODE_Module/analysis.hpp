@@ -53,7 +53,7 @@ TimedSolution solve_and_measure_execution_time(const ODESolver& solver);
  */
 double compute_order_of_convergence(std::string solver_type);
 
-using SolverFactory = std::function<std::unique_ptr<ODESolver>(Func f, double y0, double t0, double tf, double h)>;
+using SolverFactory = std::function<std::unique_ptr<ODESolver>(var_expr f, double y0, double t0, double tf, double h)>;
 
 extern std::map<std::string, SolverFactory> factories;
 

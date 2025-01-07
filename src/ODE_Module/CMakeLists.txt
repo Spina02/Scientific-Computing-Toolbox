@@ -30,6 +30,18 @@ set(MAIN_DIR ${ROOT_DIR}/main)
 set(TEST_DIR ${ROOT_DIR}/tests)
 set(LIB_DIR ${ROOT_DIR}/lib)
 set(BIN_DIR ${ROOT_DIR}/bin)
+set(PY_DIR ${ROOT_DIR}/python_bindings)
+
+# Add the pybind11 module
+pybind11_add_module(ODE ${PY_DIR}/ode_bindings.cpp)
+
+target_link_libraries(ODE PRIVATE ${MODULE})
+
+# Link the pybind11 module to muparser
+target_link_libraries(ODE PRIVATE ${MUPARSER_LIBRARIES})
+
+# Link the pybind11 module to eigen3
+target_link_libraries(ODE PRIVATE ${EIGEN3_LIBRARIES})
 
 # Set the include directories
 include_directories(
@@ -93,6 +105,39 @@ add_custom_target(test-ode
     WORKING_DIRECTORY ${BIN_DIR}
 )
 
-
-
-
+## setting Python3_EXECUTABLE
+#find_package(Python3 COMPONENTS Interpreter Development)
+#if (NOT Python3_FOUND)
+#    message(FATAL_ERROR "Python3 not found!")
+#endif()
+#
+## Define variables for paths
+#set(VENV_DIR ${ROOT_DIR}/venv)
+#set(REQUIREMENTS_FILE ${ROOT_DIR}/scripts/requirements.txt)
+#set(PYTHON_TEST_SCRIPT ${ROOT_DIR}/tests/ODE_Test.py)
+#set(PYTHON_MAIN_SCRIPT ${ROOT_DIR}/main/ODE_Module_main.py)
+#
+## Custom target for setting up the virtual environment
+#add_custom_target(setup-venv
+#    COMMAND ${Python3_EXECUTABLE} -m venv ${VENV_DIR}
+#    COMMAND ${VENV_DIR}/bin/pip install --upgrade pip
+#    COMMAND ${VENV_DIR}/bin/pip install -r ${REQUIREMENTS_FILE}
+#    COMMENT "Setting up the virtual environment and installing dependencies"
+#    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+#)
+#
+## Custom target for running the Python test script
+#add_custom_target(py-test-ode
+#    COMMAND ${VENV_DIR}/bin/python ${PYTHON_TEST_SCRIPT}
+#    COMMENT "Running Python test script"
+#    WORKING_DIRECTORY ${TEST_DIR}
+#    DEPENDS setup-venv
+#)
+#
+## Custom target for running the Python main script
+#add_custom_target(py-run-ode
+#    COMMAND ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT}
+#    COMMENT "Running Python main script"
+#    WORKING_DIRECTORY ${MAIN_DIR}
+#    DEPENDS setup-venv
+#)

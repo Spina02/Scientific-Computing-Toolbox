@@ -39,19 +39,26 @@ using var_func = std::variant<scalar_func, vec_func>;
 /**
  * @struct ODESolution
  * @brief Stores the solution of an ODE system
- * @param size The dimension of the system
+ * @param size The dimension of the system (= y_values.size())
  * @param t_values Time points vector
  * @param y_values Solution values at each time point
  * @param steps Number of steps to print (only for debugging)
  */
 struct ODESolution {
+    var_expr expr;
     int size;
     vec_d t_values;
     var_vecs y_values;
-    var_vec get_result() {
-        return y_values.back();
-    }
     int steps = 10;
+
+    var_vecs get_solution() { return y_values; }
+    var_vec get_result() { return y_values.back(); }
+    vec_d& get_times() { return t_values; }
+    var_expr get_expr() { return expr; }
+    int get_size() {return size; }
+    var_vec get_initial_conditions() { return y_values.front(); }
+    double get_final_time() { return t_values(t_values.size() - 1); }
+    double get_step_size() { return (t_values(t_values.size() - 1) - t_values(0)) / static_cast<double>(t_values.size()); }
 };
 
 /**
@@ -82,7 +89,13 @@ struct ODETestCase {
  * This struct provides a unified interface for handling both scalar and vector ODE functions overriding the function call operator.
  */
 struct Func {
+
     var_func func;
+    var_expr expr;
+
+    //Func(const var_func& f) : func(std::move(f)) {}
+    Func(const var_func& f, var_expr expr) : func(std::move(f)), expr(std::move(expr)) {}
+
     var_vec operator()(double t, const var_vec& y) const {
         return std::visit([&](auto&& f) -> var_vec {
             using T = std::decay_t<decltype(f)>;
@@ -111,7 +124,9 @@ var_vec operator/(const var_vec& v1, const double v2);
 var_vec operator/(const var_vec& v1, const var_vec& v2);
 
 // Solver types
-const vec_s solver_types = {"ForwardEulerSolver", "RK4Solver", "ExplicitMidpointSolver"};
+inline const vec_s solver_types = {"ForwardEulerSolver", "RK4Solver", "ExplicitMidpointSolver"};
+
+inline const vec_s get_solver_types() { return solver_types; }
 
 /** ### print_variant
  * @brief Print a variant type to an output stream
