@@ -74,28 +74,6 @@ std::unordered_map<T, size_t> StatisticalAnalyzer::frequencyCount(const std::str
     return freqMap;}
 
 
-void StatisticalAnalyzer::reportStrongCorrelations(const std::vector<std::string>& columnNames, double threshold,std::ostream& outStream) const {
-    
-    Eigen::MatrixXd corrMatrix = correlationMatrix(columnNames);
-    
-    // if (corrMatrix.rows() != columnNames.size() || corrMatrix.cols() != columnNames.size()) {
-    //     throw std::runtime_error("Correlation matrix dimensions do not match column names");
-    // }
-    
-    outStream << "Strong Correlations (|correlation| > " << threshold << "):\n";
-    
-    for (int i = 0; i < corrMatrix.rows(); i++) {
-        for (int j = i + 1; j < corrMatrix.cols(); j++) {
-            double correlation = corrMatrix(i, j);
-            if (std::abs(correlation) > threshold) {
-                outStream << columnNames[i] << " - " << columnNames[j] 
-                         << ": " << correlation << "\n";
-            }
-        }
-    }
-}
-
-
 
 
 Eigen::MatrixXd StatisticalAnalyzer::correlationMatrix(const std::vector<std::string>& columnNames) const {
@@ -123,6 +101,34 @@ Eigen::MatrixXd StatisticalAnalyzer::correlationMatrix(const std::vector<std::st
     
     return cov.array() / (stdDev * stdDev.transpose()).array();
 }
+
+
+
+
+void StatisticalAnalyzer::reportStrongCorrelations(const std::vector<std::string>& columnNames, double threshold,std::ostream& outStream) const {
+    
+    Eigen::MatrixXd corrMatrix = correlationMatrix(columnNames);
+    
+    // if (corrMatrix.rows() != columnNames.size() || corrMatrix.cols() != columnNames.size()) {
+    //     throw std::runtime_error("Correlation matrix dimensions do not match column names");
+    // }
+    
+    outStream << "Strong Correlations (|correlation| > " << threshold << "):\n";
+    
+    for (int i = 0; i < corrMatrix.rows(); i++) {
+        for (int j = i + 1; j < corrMatrix.cols(); j++) {
+            double correlation = corrMatrix(i, j);
+            if (std::abs(correlation) > threshold) {
+                outStream << columnNames[i] << " - " << columnNames[j] 
+                         << ": " << correlation << "\n";
+            }
+        }
+    }
+}
+
+
+
+
 
 
 

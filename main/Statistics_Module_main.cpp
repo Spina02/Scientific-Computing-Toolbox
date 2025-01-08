@@ -15,18 +15,18 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) {
         importer.import(inputFile);
         auto rawData = importer.getData();
 
-        // Create dataset
+        
         auto dataset = std::make_shared<Statistics::Dataset>(rawData);
         
-        // Create analyzer
+        
         Statistics::StatisticalAnalyzer analyzer(dataset);
 
-        // Create output file
+        
         std::filesystem::create_directories(std::filesystem::path(outputFile).parent_path());
         std::ofstream outFile(outputFile);
         std::vector<std::string> columns = {"Weight", "Height"};
 
-        // Generate statistics
+        
         for (const auto& col : columns) {
             outFile << "Statistics for " << col << ":\n";
             outFile << "Mean: " << analyzer.mean<double>(col) << "\n";
@@ -42,7 +42,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) {
             outFile << "\n";
         }
 
-        // Generate correlation analysis
+        
         analyzer.reportStrongCorrelations(columns, 0.7, outFile);
         
         std::cout << "Statistics saved to: " << outputFile << std::endl;

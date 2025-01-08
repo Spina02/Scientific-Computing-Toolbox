@@ -15,7 +15,7 @@ Dataset::Dataset(const std::vector<std::unordered_map<std::string, OptionalDataV
 // Column names getter
 std::vector<std::string> Dataset::getColumnNames() const {
     if (data.empty()) {
-        return {};
+        throw std::runtime_error("Cannot get column names from empty dataset");
     }
     
     std::vector<std::string> names;
@@ -25,9 +25,9 @@ std::vector<std::string> Dataset::getColumnNames() const {
     return names;
 }
 
-// Add new row
+
 void Dataset::addRow(const std::unordered_map<std::string, OptionalDataValue>& row) {
-    // Verify row has same columns as existing data
+    // Verifying if  row has same columns as existing data
     if (!data.empty()) {
         for (const auto& [key, _] : data[0]) {
             if (row.find(key) == row.end()) {
@@ -44,7 +44,7 @@ std::vector<T> Dataset::getColumn(const std::string& columnName) const {
     return Utils::extractColumn<T>(data, columnName);
 }
 
-// Explicit template instantiations
+
 template std::vector<int> Dataset::getColumn<int>(const std::string&) const;
 template std::vector<double> Dataset::getColumn<double>(const std::string&) const;
 template std::vector<std::string> Dataset::getColumn<std::string>(const std::string&) const;

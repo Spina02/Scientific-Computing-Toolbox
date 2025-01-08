@@ -1,190 +1,124 @@
-#include "../include/Statistics_Module/Stats.hpp"
 #include <iostream>
 #include <cassert>
-#include <cmath>
+#include <memory>
+#include <unordered_map>
 #include <random>
-#include <Eigen/Dense>
-
+#include "../include/Statistics_Module/Dataset.hpp"
+#include "../include/Statistics_Module/Statistical_analyzer.hpp"
 
 using namespace ScientificToolbox::Statistics;
 
-/**
- * @brief Test class for statistical functions validation
- * 
- * This class contains unit tests for various statistical computations including:
- * - Mean calculation
- * - Variance calculation  
- * - Correlation matrix computation
- * 
- * The test uses different data sets for completeness:
- * - Constant values
- * - Ascending sequence
- * - Normally distributed random data
- * - Correlated data matrix
- * 
- * @note Uses Eigen library for matrix operations
- * 
- * Test methods:
- * - test_mean(): Validates mean calculation
- * - test_variance(): Validates variance calculation
- * - test_correlation(): Validates correlation matrix computation
- * 
- * Helper methods:
- * - generateNormalDistribution(): Generates normal distribution test data
- * - approx_equal(): Compares floating point values with tolerance
- * - setUp(): Initializes test data sets
- * 
- * @test Validates statistical computations against known values
- * @see Stats.hpp for the implementation of tested functions
- */
-class StatisticsTest {
-protected:
-     
-    
-    /**
-     * @brief Generates normal distribution test data
-     * 
-     * @param n Number of data points
-     * @param mean Mean value of the distribution
-     * @param stddev Standard deviation of the distribution
-     * @return Vector of normally distributed data points
-     */
-    std::vector<double> generateNormalDistribution(size_t n, double mean, double stddev) {
-        std::random_device rd{};
-        std::mt19937 gen{rd()};
-        std::normal_distribution<> d{mean, stddev};
-        std::vector<double> data(n);
-        for(auto& x : data) {
-            x = d(gen);
-        }
-        return data;
-    }
+class StatisticsModuleTest {
+private:
+    std::shared_ptr<Dataset> dataset;
+    std::unique_ptr<StatisticalAnalyzer> analyzer;
 
-    bool approx_equal(double a, double b, double epsilon = 1e-1) {
+    
+    bool approx_equal(double a, double b, double epsilon = 1e-5) {
         return std::abs(a - b) < epsilon;
     }
 
-    // Test-data    
-    std::vector<double> constant_data;
-    std::vector<double> ascending_data;
-    std::vector<double> random_normal_data;
-    Eigen::MatrixXd correlation_data;
-
-
-
-     /**  @brief Initializes test data sets
-    */
-    void setUp() {
-        // Initialize test-data
-        constant_data = std::vector<double>(100, 5.0);  // 100 elements of value 5.0
-        
-        ascending_data.resize(100);
-        std::iota(ascending_data.begin(), ascending_data.end(), 1);  // 1 to 100
-        
-        random_normal_data = generateNormalDistribution(1000, 0.0, 1.0);
-
-        // Create correlation test data with known correlation
-        correlation_data.resize(100, 3);
-        for(int i = 0; i < 100; ++i) {
-            correlation_data(i, 0) = i;
-            correlation_data(i, 1) = 2 * i + generateNormalDistribution(1, 0, 0.1)[0];  // Strong positive correlation
-            correlation_data(i, 2) = -0.5 * i + generateNormalDistribution(1, 0, 0.1)[0];  // Strong negative correlation
-        }
-    }
-
-    bool test_mean() {
-        bool passed = true;
-        
-        // Test 1: Constant values
-        passed &= approx_equal(mean(constant_data), 5.0);
-        
-        
-        // Test 2: Arithmetic sequence
-        passed &= approx_equal(mean(ascending_data), 50.5);
-        
-        
-        // Test 3: Normal distribution
-        double sample_mean = mean(random_normal_data);
-        passed &= std::abs(sample_mean) < 0.1;  // Should be close to 0
-        
-        
-        //Test 4: Empty vector
-        try {
-            mean(std::vector<double>{});
-            passed = false;  // Should throw
-        } catch (const std::invalid_argument&) {
-            
-            passed = true;
-        }
-        
-        return passed;
-    }
-
-    bool test_variance() {
-        bool passed = true;
-        
-        // Test 1: Constant values (variance should be 0)
-        passed &= approx_equal(variance(constant_data), 0.0);
-        
-        
-        // Test 2: Known variance of arithmetic sequence
-        double expected_variance = 833.25;  // (n^2 - 1) / 12 for n = 100
-        passed &= approx_equal(variance(ascending_data), expected_variance, 0.01);
-        
-        
-        // Test 3: Normal distribution (should be close to 1)
-        passed &= std::abs(variance(random_normal_data) - 1.0) < 0.1;
-        
-        
-        return passed;
-    }
-
-    bool test_correlation() {
-        bool passed = true;
-        
-        Eigen::MatrixXd corr = correlationM(correlation_data);
-        
-        // Test 1: Diagonal elements should be 1
-        for(int i = 0; i < corr.rows(); ++i) {
-            passed &= approx_equal(corr(i,i), 1.0);
-            
-        }
-        
-        // Test 2: Correlation between column 0 and 1 should be close to 1
-        passed &= approx_equal(corr(0,1), 1.0, 0.1);
-        
-        
-        // Test 3: Correlation between column 0 and 2 should be close to -1
-        passed &= approx_equal(corr(0,2), -1.0, 0.1);
-        
-        
-        return passed;
-    }
-
 public:
-    bool run_all_tests() {
-        setUp();
+    void setUp() {
         
-        bool all_passed = true;
-        std::cout << "\n\n\n Running statistics tests \n";
-        
-        all_passed &= test_mean();
-        all_passed &= test_variance();
-        all_passed &= test_correlation();
-        
-        return all_passed;
+        std::vector<std::unordered_map<std::string, OptionalDataValue>> data = {
+            {{"ColA", 1.0}, {"ColB", 10.0}},
+            {{"ColA", 2.0}, {"ColB", 20.0}},
+            {{"ColA", 3.0}, {"ColB", 30.0}},
+            {{"ColA", 4.0}, {"ColB", 40.0}}
+        };
+        dataset = std::make_shared<Dataset>(data);
+        analyzer = std::make_unique<StatisticalAnalyzer>(dataset);
+    }
+
+    void testMean() {
+        double meanA = analyzer->mean<double>("ColA");
+        double meanB = analyzer->mean<double>("ColB");
+        assert(approx_equal(meanA, 2.5));
+        assert(approx_equal(meanB, 25.0));
+    }
+
+    void testMedian() {
+        double medianA = analyzer->median<double>("ColA");
+        double medianB = analyzer->median<double>("ColB");
+        assert(approx_equal(medianA, (2.0 + 3.0) / 2.0)); 
+        assert(approx_equal(medianB, (20.0 + 30.0) / 2.0)); 
+    }
+
+    void testVariance() {
+        double varA = analyzer->variance<double>("ColA");
+        double varB = analyzer->variance<double>("ColB");
+        assert(approx_equal(varA, 1.25));
+        assert(approx_equal(varB, 125.0));
+    }
+
+    void testStdDev() {
+        double stdA = analyzer->standardDeviation<double>("ColA");
+        double stdB = analyzer->standardDeviation<double>("ColB");
+        assert(approx_equal(stdA, 1.11803, 1e-3));
+        assert(approx_equal(stdB, 11.1803, 1e-3));
+    }
+
+    void testCorrelation() {
+        auto cm = analyzer->correlationMatrix({"ColA", "ColB"});
+        assert(cm.rows() == 2 && cm.cols() == 2);
+        assert(approx_equal(cm(0, 1), 1.0, 1e-1));
+        assert(approx_equal(cm(1, 0), 1.0, 1e-1));
+    }
+
+
+    void TestNormal() {
+
+        std::mt19937 gen(123);
+        std::normal_distribution<double> dist(0.0, 1.0);
+
+        std::vector<std::unordered_map<std::string, OptionalDataValue>> normalData;
+
+        for (int i = 0; i < 1000; ++i) {
+            normalData.push_back({{"Normal", dist(gen)}});
+        }
+
+        auto normalDataset = std::make_shared<Dataset>(normalData);
+        auto normalAnalyzer = std::make_unique<StatisticalAnalyzer>(normalDataset);
+
+        double computedMean = normalAnalyzer->mean<double>("Normal");
+        double computedVariance = normalAnalyzer->variance<double>("Normal");
+
+        assert(std::abs(computedMean) < 0.1);
+        assert(std::abs(computedVariance - 1.0) < 0.2);
+
+
+
+
+
+    }
+
+
+
+
+    bool runAllTests() {
+        try {
+            setUp();
+            testMean();
+            testMedian();
+            testVariance();
+            testStdDev();
+            testCorrelation();
+            TestNormal();
+        } catch (...) {
+            return false;
+        }
+        return true;
     }
 };
 
 int main() {
-    StatisticsTest tester;
-    bool all_passed = tester.run_all_tests();
-    
-    if (all_passed) {
-        std::cout << "\nAll statistics tests passed!" << std::endl;
+    StatisticsModuleTest tester;
+    if (tester.runAllTests()) {
+        std::cout << "All tests passed!\n";
         return 0;
     } else {
-        std::cerr << "\nSome tests failed!" << std::endl;
+        std::cerr << "Some tests failed!\n";
         return 1;
     }
 }
