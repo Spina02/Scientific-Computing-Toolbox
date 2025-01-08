@@ -12,22 +12,32 @@ add_subdirectory(src/Statistics_Module)
 
 # Root-level run target
 add_custom_target(run-all
-    COMMAND make run_interpolation
-    COMMAND make run_ode
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMAND ${CMAKE_COMMAND} --build . --target run-interpolation
+    COMMAND ${CMAKE_COMMAND} --build . --target run-ode
+    COMMAND ${CMAKE_COMMAND} --build . --target run-statistics
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
 # Root-level test target
 add_custom_target(test-all
-    COMMAND make test_interpolation
-    COMMAND make test_ode
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMAND ${CMAKE_COMMAND} --build . --target test-interpolation
+    COMMAND ${CMAKE_COMMAND} --build . --target test-ode
+    COMMAND ${CMAKE_COMMAND} --build . --target test-statistics
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
-# Root-level clean target (removing lib and bin directories, and clean the build directory)
+# Root-level py test target
+add_custom_target(py-test-all
+    COMMAND ${CMAKE_COMMAND} --build . --target py-test-interpolation
+    #COMMAND ${CMAKE_COMMAND} --build . --target py-test-ode
+    COMMAND ${CMAKE_COMMAND} --build . --target py-test-statistics
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
+# Root-level clean target
 add_custom_target(clean-all
-    COMMAND rm -rf lib bin
-    COMMAND rm -rf build/*
-    COMMAND make clean
+    COMMAND rm -rf ${CMAKE_BINARY_DIR}/*
+    COMMAND rm -rf ${CMAKE_SOURCE_DIR}/lib
+    COMMAND rm -rf ${CMAKE_SOURCE_DIR}/bin
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )

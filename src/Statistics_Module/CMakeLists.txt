@@ -136,7 +136,7 @@ add_custom_target(setup-venv-stats_cpp
 )
 
 # Custom target for running the Python test script
-add_custom_target(py-test-stats_cpp
+add_custom_target(py-test-statistics
     COMMAND ${VENV_DIR}/bin/python ${PYTHON_TEST_SCRIPT}
     COMMENT "Running Python test script"
     WORKING_DIRECTORY ${TEST_DIR}

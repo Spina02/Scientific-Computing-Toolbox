@@ -31,9 +31,8 @@ namespace ScientificToolbox::ODE {
  */
 class ODESolver {    
 public:
-    // Constructors
     ODESolver(const var_expr ex,  const var_vec& y0, double t0, double tf, double h) : expr(ex), f(parseExpression(ex), ex), t0(t0), tf(tf), h(h), y0(y0) { }
-    ODESolver(const ODETestCase& test) : f(parseExpression(test.expr), test.expr), t0(test.t0), tf(test.tf), h(test.h), y0(test.y0), expr(test.expr) { }
+    ODESolver(const ODETestCase& test) : expr(test.expr), f(parseExpression(test.expr), test.expr), t0(test.t0), tf(test.tf), h(test.h), y0(test.y0) { }
 
     // Default destructor
     virtual ~ODESolver() = default;

@@ -28,7 +28,6 @@ def main():
     # plot solutions from different solvers
     compare_solvers(data)
     
-    
     # Solve a single ODE
     
     expr = ["0.1 * y1 - 0.02 * y1 * y2", "-0.3 * y2 + 0.01 * y1 * y2"];
