@@ -17,25 +17,63 @@ sys.path.append(build_dir)
 import interpolation
 
 # Letting the user choose the path to data to interpolate, and if does not enter anything, the default data is used
-data_path = input("Enter the path to the data to interpolate: ")
+data = input("Enter the path to the data to interpolate: ")
+data_path = data_dir + data
 if data_path == "":
     data_path = os.path.join(data_dir, 'random_data.csv')
-    print("No path was entered, using the default random data in data.csv")
+    print("No path was entered, using the default random data in random_data.csv")
 data = pd.read_csv(data_path)
+
+
+# Interpolation method
+method = input("Enter the interpolation method (\"linear\", \"lagrange\", \"newton\", \"spline\"): ")
+if method == "":
+    method ="linear"
+    print("No method entered, using the linear one")
 
 # Interpolating the data
 points = interpolation.df_to_set_of_points(data)
-spline = interpolation.SplineInterpolation(points)
-value_to_interpolate = input(f"Enter the value to interpolate (in the range [{min(data['x']), max(data['x'])}]): ")
-if value_to_interpolate == "":
-    value_to_interpolate = 0.5
+if (method == "linear"):
+    interp = interpolation.LinearInterpolation(points)
+
+    value_to_interpolate = input(f"Enter the value to interpolate (in the range [{min(data['x']), max(data['x'])}]): ")
+    if value_to_interpolate == "":
+        value_to_interpolate = 0.5
     print("No value was entered, using 0.5")
-print(f"The interpolated value is: {spline.interpolate(float(value_to_interpolate))}")
+    ## assessing value_to_interpolate
+    if (float(value_to_interpolate) > max(data['x']) or float(value_to_interpolate) < min(data['x'])):
+        raise(ValueError)
+    
+
+elif (method == "lagrange"):
+    interp = interpolation.LagrangeInterpolation(points)
+    value_to_interpolate = input(f"Enter the value to interpolate: ")
+    if value_to_interpolate == "":
+        value_to_interpolate = 0.5
+    print("No value was entered, using 0.5")
+elif (method == "newton"):
+    interp = interpolation.NewtonInterpolation(points)
+    value_to_interpolate = input(f"Enter the value to interpolate: ")
+    if value_to_interpolate == "":
+        value_to_interpolate = 0.5
+    print("No value was entered, using 0.5")
+else:
+    interp = interpolation.SplineInterpolation(points)
+    value_to_interpolate = input(f"Enter the value to interpolate: ")
+    if value_to_interpolate == "":
+        value_to_interpolate = 0.5
+    print("No value was entered, using 0.5")
+    
+
+print(f"The interpolated value is: {interp.interpolate(float(value_to_interpolate))}")
+
+
+
 
 # Plotting the data and the interpolation
 x = np.linspace(min(data['x']), max(data['x']), 1000)
-y = [spline.interpolate(i) for i in x]
-y_chosen = spline.interpolate(float(value_to_interpolate))
+y = [interp.interpolate(i) for i in x]
+y_chosen = interp.interpolate(float(value_to_interpolate))
 plt.plot(x, y)
 plt.scatter(data['x'], data['y'])
 plt.scatter(float(value_to_interpolate), y_chosen, color='red', label=f"Interpolated value: {y_chosen}")

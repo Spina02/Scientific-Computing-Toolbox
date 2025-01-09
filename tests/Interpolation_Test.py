@@ -61,6 +61,8 @@ print("Testing the interpolation module with random data in the interval (0,10).
 random_data = random_data_generator(0, 10, 20, seed = 17)
 random_points = interpolation.df_to_set_of_points(random_data)
 plt.plot(random_data['x'], random_data['y'], 'ro', label='Data points')
+plt.title("Random Data")
+plt.legend()
 plt.show()
 
 # Interpolating the data

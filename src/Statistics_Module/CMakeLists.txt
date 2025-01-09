@@ -14,11 +14,8 @@ find_package(Eigen3 REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
 # Add the pybind11 submodule
-#set(PYBIND11_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../extern/pybind11)
+set(PYBIND11_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../extern/pybind11)
 #add_subdirectory(${PYBIND11_DIR} ${CMAKE_BINARY_DIR}/pybind11)
-
-# Add pybind11
-find_package(pybind11 REQUIRED)
 
 # Set relative paths
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)

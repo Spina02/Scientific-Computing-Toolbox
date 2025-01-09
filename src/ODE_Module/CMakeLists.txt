@@ -20,6 +20,18 @@ if(NOT EIGEN3_FOUND)
     message(FATAL_ERROR "eigen3 not found!")
 endif()
 
+# Add the include directory for muParser
+find_path(MUPARSER_INCLUDE_DIR muParser.h)
+find_library(MUPARSER_LIBRARY NAMES muparser)
+
+if (MUPARSER_INCLUDE_DIR AND MUPARSER_LIBRARY)
+    message(STATUS "Found muParser: ${MUPARSER_LIBRARY}")
+    include_directories(${MUPARSER_INCLUDE_DIR})
+    set(MUPARSER_LIBRARIES ${MUPARSER_LIBRARY})
+else()
+    message(FATAL_ERROR "muParser not found")
+endif()
+
 # Set relative paths
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 set(SRC_DIR ${ROOT_DIR}/src)
@@ -51,11 +63,11 @@ include_directories(
     ${EIGEN3_INCLUDE_DIR}
 )
 
-# Link directories
 link_directories(
     ${MUPARSER_LIBRARY_DIRS}
     ${EIGEN3_LIBRARY_DIRS}
 )
+
 
 # Set the source files for the module
 file(GLOB_RECURSE MODULE_SOURCES ${MODULE_SRC_DIR}/*.cpp)
@@ -64,10 +76,10 @@ file(GLOB_RECURSE MODULE_SOURCES ${MODULE_SRC_DIR}/*.cpp)
 add_library(${MODULE} SHARED ${MODULE_SOURCES})
 
 # Link the module with muparser
-target_link_libraries(${MODULE} ${MUPARSER_LIBRARIES})
+target_link_libraries(${MODULE} ${MUPARSER_LIBRARY})
 
 # Link the module with eigen3
-target_link_libraries(${MODULE} ${EIGEN3_LIBRARIES})
+target_link_libraries(${MODULE} ${EIGEN3_LIBRARY})
 
 # Set the output directory for the library
 set_target_properties(${MODULE} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${LIB_DIR})
