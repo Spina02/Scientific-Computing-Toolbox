@@ -63,7 +63,7 @@ random_points = interpolation.df_to_set_of_points(random_data)
 plt.plot(random_data['x'], random_data['y'], 'ro', label='Data points')
 plt.title("Random Data")
 plt.legend()
-plt.show()
+plt.savefig('../output/random_data_generated.png')
 
 # Interpolating the data
 linear_interpolation = interpolation.LinearInterpolation(random_points)
@@ -80,32 +80,37 @@ y_spline = [spline_interpolation.interpolate(x_i) for x_i in x]
 
 print("Plotting interpolations for 1000 random points in the interval [0, 10]...")
 
-# Showing the four graphs in one divided in 2x2
 fig, axs = plt.subplots(2, 2)
 fig.suptitle('Interpolations')
-axs[0, 0].plot(random_data['x'], random_data['y'], 'ro', label='Data points')
+
+# External legend elements
+external_legend_elements = [plt.Line2D([0], [0], color='red', marker='o', linestyle='None', label='Data points')]
+
+# Subplot 1: Linear interpolation
+axs[0, 0].plot(random_data['x'], random_data['y'], 'ro')  # Red points without legend
 axs[0, 0].plot(x, y_linear, label='Linear interpolation')
 axs[0, 0].legend()
 
-axs[0, 1].plot(random_data['x'], random_data['y'], 'ro', label='Data points')
+# Subplot 2: Lagrange interpolation
+axs[0, 1].plot(random_data['x'], random_data['y'], 'ro')  # Red points without legend
 axs[0, 1].plot(x, y_lagrange, label='Lagrange interpolation')
 axs[0, 1].legend()
 
-axs[1, 0].plot(random_data['x'], random_data['y'], 'ro', label='Data points')
+# Subplot 3: Newton interpolation
+axs[1, 0].plot(random_data['x'], random_data['y'], 'ro')  # Red points without legend
 axs[1, 0].plot(x, y_newton, label='Newton interpolation')
 axs[1, 0].legend()
 
-axs[1, 1].plot(random_data['x'], random_data['y'], 'ro', label='Data points')
+# Subplot 4: Spline interpolation
+axs[1, 1].plot(random_data['x'], random_data['y'], 'ro')  # Red points without legend
 axs[1, 1].plot(x, y_spline, label='Spline interpolation')
 axs[1, 1].legend()
 
-plt.show()
+# Add the external legend in the top-left corner
+fig.legend(handles=external_legend_elements, loc='upper left', bbox_to_anchor=(0, 1), frameon=False)
 
-
-
-
-
-
+plt.tight_layout()
+plt.savefig('../output/random_data_interpolations.png')
 
 
 
@@ -120,9 +125,10 @@ sparse_points = interpolation.df_to_set_of_points(sparse_data)
 
 # plotting the data
 plt.plot(data['x'], data['y'], 'ro', label='Data points')
-plt.plot(sparse_data['x'], sparse_data['y'], 'bo', label='Sparse points')
+plt.plot(sparse_data['x'], sparse_data['y'], 'bo', label='Sampled points')
+plt.title("Data with sin(x) as generator function")
 plt.legend()
-plt.show()
+plt.savefig('../output/sin_data_generated.png')
 
 linear_interpolation = interpolation.LinearInterpolation(sparse_points)
 lagrange_interpolation = interpolation.Lagrange(sparse_points)
@@ -136,30 +142,48 @@ y_newton = [newton_interpolation.interpolate(x_i) for x_i in x]
 y_spline = [spline_interpolation.interpolate(x_i) for x_i in x]
 
 print("Plotting interpolations for 1000 points in the interval [0, 10]...")
-# Showing the four graphs in one divided in 2x2
-fig, axs = plt.subplots(2, 2)
+
+fig, axs = plt.subplots(2, 2, figsize=(10, 8))
 fig.suptitle('Interpolations')
-axs[0, 0].plot(data['x'], data['y'], 'ro', label='True points')
-axs[0, 0].plot(sparse_data['x'], sparse_data['y'], 'bo', label='Sampled points')
-axs[0, 0].plot(x, y_linear, label='Linear interpolation')
-axs[0, 0].legend()
 
-axs[0, 1].plot(data['x'], data['y'], 'ro', label='True points')
-axs[0, 1].plot(sparse_data['x'], sparse_data['y'], 'bo', label='Sampled points')
-axs[0, 1].plot(x, y_lagrange, label='Lagrange interpolation')
-axs[0, 1].legend()
+# External legend elements
+external_legend_elements = [
+    plt.Line2D([0], [0], color='red', marker='o', linestyle='None', label='True points'),
+    plt.Line2D([0], [0], color='blue', marker='o', linestyle='None', label='Sampled points'),
+    plt.Line2D([0], [0], color='green', linestyle='-', label='Interpolation')
+]
 
-axs[1, 0].plot(data['x'], data['y'], 'ro', label='True points')
-axs[1, 0].plot(sparse_data['x'], sparse_data['y'], 'bo', label='Sampled points')
-axs[1, 0].plot(x, y_newton, label='Newton interpolation')
-axs[1, 0].legend()
+# Subplot 1: Linear interpolation
+axs[0, 0].plot(data['x'], data['y'], 'ro')  # True points
+axs[0, 0].plot(sparse_data['x'], sparse_data['y'], 'bo')  # Sampled points
+axs[0, 0].plot(x, y_linear, 'g-')  # Interpolation
+axs[0, 0].set_title("Linear Interpolation")
 
-axs[1, 1].plot(data['x'], data['y'], 'ro', label='True points')
-axs[1, 1].plot(sparse_data['x'], sparse_data['y'], 'bo', label='Sampled points')
-axs[1, 1].plot(x, y_spline, label='Spline interpolation')
-axs[1, 1].legend()
+# Subplot 2: Lagrange interpolation
+axs[0, 1].plot(data['x'], data['y'], 'ro')  # True points
+axs[0, 1].plot(sparse_data['x'], sparse_data['y'], 'bo')  # Sampled points
+axs[0, 1].plot(x, y_lagrange, 'g-')  # Interpolation
+axs[0, 1].set_title("Lagrange Interpolation")
 
-plt.show()
+# Subplot 3: Newton interpolation
+axs[1, 0].plot(data['x'], data['y'], 'ro')  # True points
+axs[1, 0].plot(sparse_data['x'], sparse_data['y'], 'bo')  # Sampled points
+axs[1, 0].plot(x, y_newton, 'g-')  # Interpolation
+axs[1, 0].set_title("Newton Interpolation")
+
+# Subplot 4: Spline interpolation
+axs[1, 1].plot(data['x'], data['y'], 'ro')  # True points
+axs[1, 1].plot(sparse_data['x'], sparse_data['y'], 'bo')  # Sampled points
+axs[1, 1].plot(x, y_spline, 'g-')  # Interpolation
+axs[1, 1].set_title("Spline Interpolation")
+
+# Add the external legend outside the subplots
+fig.legend(handles=external_legend_elements, loc='upper left', bbox_to_anchor=(0.1, 1), frameon=False)
+
+plt.tight_layout(rect=[0, 0, 1, 0.95])  # Adjust layout to fit the legend and title
+plt.savefig('../output/sin_data_interpolations.png')
+
+
 
 print("Starting Accuracy Analysis...")
 print("Linear Interpolation mae: " + str(interpolation.AnalysisInterpolation().AccuracyAnalysis(points, sparse_points, "linear")))
@@ -183,13 +207,26 @@ lagrangge_ooc = []
 newton_ooc = []
 spline_ooc = []
 
-fig, axs = plt.subplots(2, 2)
+fig, axs = plt.subplots(2, 2, figsize=(10, 8))
 fig.suptitle('Interpolations')
+
+n_colors = ['green', 'orange', 'purple', 'brown', 'pink']  # Ensure the colors are sufficient
+
+# External legend elements
+external_legend_elements = [
+    plt.Line2D([0], [0], color='red', marker='o', linestyle='None', label='True points'),
+    plt.Line2D([0], [0], color=n_colors[0], linestyle='-', label='4 points'),
+    plt.Line2D([0], [0], color=n_colors[1], linestyle='-', label='8 points'),
+    plt.Line2D([0], [0], color=n_colors[2], linestyle='-', label='16 points'),
+    plt.Line2D([0], [0], color=n_colors[3], linestyle='-', label='32 points'),
+    plt.Line2D([0], [0], color=n_colors[4], linestyle='-', label='64 points')
+]
+
+# Plotting original data points
 axs[0, 0].plot(data['x'], data['y'], 'ro', label='Data points')
 axs[0, 1].plot(data['x'], data['y'], 'ro', label='Data points')
 axs[1, 0].plot(data['x'], data['y'], 'ro', label='Data points')
 axs[1, 1].plot(data['x'], data['y'], 'ro', label='Data points')
-
 
 for i in range(len(n_points)):
     sparse_points = sparse_points_generator(0, 10, n_points[i])
@@ -207,15 +244,24 @@ for i in range(len(n_points)):
     y_lagrange = [lagrange_interpolation.interpolate(x_i) for x_i in x]
     y_newton = [newton_interpolation.interpolate(x_i) for x_i in x]
     y_spline = [spline_interpolation.interpolate(x_i) for x_i in x]
-    axs[0, 0].plot(x, y_linear, label='n = ' + str(n_points[i]))
-    axs[0, 1].plot(x, y_lagrange, label='n = ' + str(n_points[i]))
-    axs[1, 0].plot(x, y_newton, label='n = ' + str(n_points[i]))
-    axs[1, 1].plot(x, y_spline, label='n = ' + str(n_points[i]))
-axs[0, 0].legend()
-axs[0, 1].legend()
-axs[1, 0].legend()
-axs[1, 1].legend()
-plt.show()
+    axs[0, 0].plot(x, y_linear, color=n_colors[i % len(n_colors)], label=f'n = {n_points[i]}')
+    axs[0, 1].plot(x, y_lagrange, color=n_colors[i % len(n_colors)], label=f'n = {n_points[i]}')
+    axs[1, 0].plot(x, y_newton, color=n_colors[i % len(n_colors)], label=f'n = {n_points[i]}')
+    axs[1, 1].plot(x, y_spline, color=n_colors[i % len(n_colors)], label=f'n = {n_points[i]}')
+
+# Adding subtitles
+axs[0, 0].set_title('Linear Interpolation')
+axs[0, 1].set_title('Lagrange Interpolation')
+axs[1, 0].set_title('Newton Interpolation')
+axs[1, 1].set_title('Spline Interpolation')
+
+# Add the external legend
+fig.legend(handles=external_legend_elements, loc='upper left', bbox_to_anchor=(0.1, 1), ncol=3, frameon=False, fontsize='small')
+
+# Adjust layout
+plt.tight_layout(rect=[0, 0, 1, 0.95])  # Leave space for the legend
+plt.savefig('../output/interpolations_with_different_npoints.png')
+
 
 # Printing ooc
 print("Linear Interpolation Order of Convergence: " + str(linear_ooc))
@@ -226,13 +272,18 @@ print("Spline Interpolation Order of Convergence: " + str(spline_ooc))
 # Plotting ooc
 fig, axs = plt.subplots(2, 2)
 fig.suptitle('Order of Convergence')
-axs[0, 0].plot(n_points[1:], linear_ooc, 'o-', label='Linear Interpolation')
-axs[0, 0].legend()
-axs[0, 1].plot(n_points[1:], lagrangge_ooc, 'o-', label='Lagrange Interpolation')
-axs[0, 1].legend()
-axs[1, 0].plot(n_points[1:], newton_ooc, 'o-', label='Newton Interpolation')
-axs[1, 0].legend()
-axs[1, 1].plot(n_points[1:], spline_ooc, 'o-', label='Spline Interpolation')
-axs[1, 1].legend()
-plt.show()
+external_legend_elements = [
+    plt.Line2D([0], [0], color = 'blue',marker = 'o', linestyle='-', label = 'Error')
+]
+axs[0, 0].plot(n_points[1:], linear_ooc, 'o-', color = 'blue')
+axs[0, 1].plot(n_points[1:], lagrangge_ooc, 'o-', color = 'blue')
+axs[1, 0].plot(n_points[1:], newton_ooc, 'o-', color = 'blue')
+axs[1, 1].plot(n_points[1:], spline_ooc, 'o-', color = 'blue')
+axs[0, 0].set_title('Linear Interpolation')
+axs[0, 1].set_title('Lagrange Interpolation')
+axs[1, 0].set_title('Newton Interpolation')
+axs[1, 1].set_title('Spline Interpolation')
+fig.legend(handles=external_legend_elements, loc='upper left', bbox_to_anchor=(0, 1), frameon=False)
+plt.tight_layout()
+plt.savefig('../output/order_of_convergence.png')
 
