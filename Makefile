@@ -3,14 +3,16 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -Werror 
 
 # Directories
-SRC_DIR = src
-OBJ_DIR = build
-INC_DIR = include
+#SRC_DIR = src
+#OBJ_DIR = build
+#INC_DIR = include
 
 # Modules and directories
 MODULES = Interpolation_Module ODE_Module Statistics_Module
 
-all: $(MODULES)
+all: 
+	@mkdir -p build
+	@cd build && cmake .. && $(MAKE)
 
 # Help target
 help:
@@ -40,22 +42,24 @@ help:
 
 # Compile each module
 $(MODULES):
-	@$(MAKE) -C $(SRC_DIR)/$@
+	@$(MAKE) -C build 
 
 # Rules for multiple targets
-run clean test:
+run test py-test:
 	@if [ -n "$(MAKECMDGOALS)" ] && [ "$(word 2,$(MAKECMDGOALS))" != "" ]; then \
-		case "$(word 2,$(MAKECMDGOALS))" in \
-			ode) module="ODE_Module" ;; \
-			statistics) module="Statistics_Module" ;; \
-			interpolation) module="Interpolation_Module" ;; \
-		esac; \
+		module="$(word 2,$(MAKECMDGOALS))"; \
 		args="$(wordlist 3,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))"; \
-		$(MAKE) -C $(SRC_DIR)/$$module $@ ARGS="$$args" -s; \
+		$(MAKE) -C build $@-$$module ARGS="$$args" -s; \
 	else \
-		for module in $(MODULES); do \
-			$(MAKE) -C $(SRC_DIR)/$$module $@ -s; \
-		done; \
+		$(MAKE) -C build $@-all -s; \
+	fi
+
+clean:
+	@if [ -n "$(word 2,$(MAKECMDGOALS))" ]; then \
+		module="$(word 2,$(MAKECMDGOALS))"; \
+		rm -rf build/src/$$module/*; \
+	else \
+		rm -rf build/* lib/* bin/* output/*; \
 	fi
 
 # Targets for individual modules

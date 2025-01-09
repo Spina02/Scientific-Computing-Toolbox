@@ -49,7 +49,7 @@ def plot_solution(sol, title=None):
         fig.suptitle(title, fontsize=16)
     
     # Regolazione layout
-    fig.tight_layout(rect=[0, 0, 1, 0.95])  # Lascia spazio per il titolo generale
+    fig.tight_layout()  # Lascia spazio per il titolo generale
     plt.show()
     
 def lighten_color(color, amount=0.5):
@@ -65,10 +65,8 @@ def lighten_color(color, amount=0.5):
             l_new = 1 - amount * (1 - c[1])
             return colorsys.hls_to_rgb(c[0], l_new, c[2])
         
-def set_window_position(fig, x=100, y=100, width=800, height=600):
-    """
-    Imposta la posizione e le dimensioni iniziali della finestra Matplotlib.
-    """
+"""def set_window_position(fig, x=100, y=100, width=800, height=600):
+
     fig_manager = plt.get_current_fig_manager()
     try:
         if hasattr(fig_manager, 'window'):
@@ -76,7 +74,7 @@ def set_window_position(fig, x=100, y=100, width=800, height=600):
         elif hasattr(fig_manager, 'canvas'):
             fig_manager.window.setGeometry(x, y, width, height)  # Qt backend
     except:
-        pass  # Fallback for other backends
+        pass  # Fallback for other backends"""
 
 def compare_solvers(data, solvers=None):
     # If no solvers are specified, get all available solver types
@@ -112,7 +110,7 @@ def compare_solvers(data, solvers=None):
         )
         
         # Imposta la posizione e le dimensioni iniziali della finestra
-        set_window_position(fig, x=200, y=100, width=1200, height=800)
+        #set_window_position(fig, x=200, y=100, width=1200, height=800)
         
         # Ensure axes is 2D
         if num_eq == 1 and len(solvers) == 1:
