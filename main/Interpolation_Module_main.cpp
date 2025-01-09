@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
     std::string project_dir = std::filesystem::current_path().parent_path();
 
     // Default values
-    std::string filename = project_dir + "/data/cubic_data.csv";
+    std::string filename = project_dir + "/data/random_data.csv";
     double x = 1.5;
 
     if (argc > 1) {
@@ -26,6 +26,9 @@ int main(int argc, char** argv) {
     }
     if (argc > 2) {
         x = std::stod(argv[2]);
+    }
+    else {
+        std::cout << "\nNo args entered. Using random data and 1.5 as value to interpolate..."<< std::endl;
     }
     
     ScientificToolbox::ImportCSV importer;
@@ -52,6 +55,7 @@ int main(int argc, char** argv) {
         SplineInterpolation<double> spline(points);
         std::cout << "\nCubic Spline Interpolation:" << std::endl;
         std::cout << "Interpolated value at x = " << x << ": " << spline(x) << std::endl;
+        std::cout << std::endl;
 
     } catch (const std::exception& e) {
         std::cerr << "Error occurred during interpolation: " << e.what() << "\n";

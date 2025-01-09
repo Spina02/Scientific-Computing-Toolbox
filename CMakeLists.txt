@@ -39,5 +39,6 @@ add_custom_target(clean-all
     COMMAND rm -rf ${CMAKE_BINARY_DIR}/*
     COMMAND rm -rf ${CMAKE_SOURCE_DIR}/lib
     COMMAND rm -rf ${CMAKE_SOURCE_DIR}/bin
+    COMMAND rm -rf ${CMAKE_SOURCE_DIR}/output/*
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )

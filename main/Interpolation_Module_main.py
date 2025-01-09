@@ -34,7 +34,7 @@ if method == "":
 value_to_interpolate = input(f"Enter the value to interpolate (in the range [{min(data['x']), max(data['x'])}]): ")
 if value_to_interpolate == "":
     value_to_interpolate = 0.5
-print("No value was entered, using 0.5")
+    print("No value was entered, using 0.5")
 ## assessing value_to_interpolate
 if (float(value_to_interpolate) > max(data['x']) or float(value_to_interpolate) < min(data['x'])):
     raise(ValueError)
@@ -52,8 +52,6 @@ else:
     
 
 print(f"The interpolated value is: {interp.interpolate(float(value_to_interpolate))}")
-
-
 
 
 # Plotting the data and the interpolation

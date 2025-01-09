@@ -78,11 +78,16 @@ target_include_directories(test_interpolation PUBLIC ${INCLUDE_DIR} ${MODULE_INC
 # Set the output directory for executables at runtime (main and test)
 set_target_properties(main_interpolation test_interpolation PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 
+# Read from environment variables if set
+set(DATA_FILE $ENV{DATA_FILE} CACHE STRING "Path to the data file")
+set(VALUE $ENV{VALUE} CACHE STRING "Value to interpolate")
+
 # Custom target for running the main program
 add_custom_target(run-interpolation
-    COMMAND ${BIN_DIR}/main_interpolation $(ARGS)
+    COMMAND ${BIN_DIR}/main_interpolation ${DATA_FILE} ${VALUE}
     DEPENDS main_interpolation
     WORKING_DIRECTORY ${BIN_DIR}
+    COMMENT "Running interpolation with file=${DATA_FILE} and value=${VALUE}"
 )
 
 # Custom target for running the test program
