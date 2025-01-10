@@ -85,13 +85,13 @@ set_target_properties(${MODULE} main_stat test_stat
 )
 
 # Custom targets
-add_custom_target(run-stats_cpp
+add_custom_target(run-statistics
     COMMAND ${BIN_DIR}/main_stat ${ARGS}
     DEPENDS main_stat
     WORKING_DIRECTORY ${BIN_DIR}
 )
 
-add_custom_target(test-stats_cpp
+add_custom_target(test-statistics
     COMMAND ${BIN_DIR}/test_stat
     DEPENDS test_stat
     WORKING_DIRECTORY ${BIN_DIR}

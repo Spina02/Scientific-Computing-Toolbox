@@ -7,23 +7,23 @@
 #include "../include/ODE_Module.hpp"
 #include "../include/Utilities/ImportCSV.hpp"
 
+using namespace std::filesystem;
 using namespace ScientificToolbox::ODE;
 
 int main(int argc, char** argv) {
-
-    std::string project_dir = std::filesystem::current_path().parent_path();
-
     try {
         // Default values
-        std::string inputFile = project_dir + "/data/ode_examples.csv";
-        std::string outputFile = project_dir + "/output/ODE_Module_output.csv";
+        path project_dir = std::filesystem::current_path().parent_path();
+        path inputFile = project_dir / path("data/ode_examples.csv");
+        path outputFolder = project_dir / path("output");
+
 
         // Parse command line arguments
         if (argc > 1) {
-            inputFile = project_dir + "/data/" + std::string(argv[1]);;
+            inputFile = project_dir / path("data") / path(std::string(argv[1]));
         }
         if (argc > 2) {
-            outputFile = project_dir + "/data/" + std::string(argv[2]);;
+            outputFolder = project_dir / path("data") / path(std::string(argv[2]));
         }
 
         std::cout << "ODE Module Demo\n" << std::endl;
@@ -118,11 +118,13 @@ int main(int argc, char** argv) {
         std::cout << rk4_solution << std::endl;
 
         // Save results to CSV
-        save_on_CSV("../../output/ODE_Module/scalar_ode_results_FE.csv", euler_solution);
+        path pisello = outputFolder / path("scalar_ode_results_FE.csv");
+        std::cout << pisello << std::endl;
+        save_on_CSV(outputFolder / path("scalar_ode_results_FE.csv") , euler_solution);
         std::cout << "results saved on output/ODE_Module/scalar_ode_results_FE.csv" << std::endl;
-        save_on_CSV("../../output/ODE_Module/scalar_ode_results_EM.csv", midpoint_solution);
+        save_on_CSV(outputFolder / path("scalar_ode_results_EM.csv") , midpoint_solution);
         std::cout << "results saved on output/ODE_Module/scalar_ode_results_EM.csv" << std::endl;
-        save_on_CSV("../../output/ODE_Module/scalar_ode_results_RK4.csv", rk4_solution);
+        save_on_CSV(outputFolder / path("scalar_ode_results_RK4.csv") , rk4_solution);
         std::cout << "results saved on output/ODE_Module/scalar_ode_results_RK4.csv" << std::endl;
 
         // Example 2: Vector ODE (predator-prey model)
@@ -160,11 +162,11 @@ int main(int argc, char** argv) {
         vector_solution.steps = 5;
         std::cout << vector_solution << std::endl;
 
-        save_on_CSV("../../output/ODE_Module/vector_ode_results_FE.csv", vector_euler_solution);
+        save_on_CSV(outputFolder / path("vector_ode_results_FE.csv"), vector_euler_solution);
         std::cout << "results saved on output/ODE_Module/vector_ode_results_FE.csv" << std::endl;
-        save_on_CSV("../../output/ODE_Module/vector_ode_results_EM.csv", vector_midpoint_solution);
+        save_on_CSV(outputFolder / path("vector_ode_results_EM.csv"), vector_midpoint_solution);
         std::cout << "results saved on output/ODE_Module/vector_ode_results_EM.csv" << std::endl;
-        save_on_CSV("../../output/ODE_Module/vector_ode_results_RK4.csv", vector_solution);
+        save_on_CSV(outputFolder / path("vector_ode_results_RK4.csv"), vector_solution);
         std::cout << "results saved on output/ODE_Module/vector_ode_results_RK4.csv" << std::endl;
 
     } catch (const std::exception& e) {
