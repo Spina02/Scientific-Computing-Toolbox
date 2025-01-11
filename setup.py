@@ -75,35 +75,35 @@ setup(
             ],
             include_dirs=[
                 "extern/pybind11/include",
-                "include",
+                "include/Interpolation_Module",
             ],
             extra_compile_args=["-std=c++17"] + gsl_cflags,
             extra_link_args=gsl_libs,
             language='c++',
         ),
         Extension(
-            'scientific_toolbox.ode',
+            'scientific_toolbox.ODE',
             sources=[
                 "python_bindings/ode_bindings.cpp",
                 *glob.glob("src/ODE_Module/*.cpp"),
             ],
             include_dirs=[
                 "extern/pybind11/include",
-                "include",
+                "include/ODE_Module",
             ],
             language='c++',
             extra_compile_args=["-std=c++17"] + eigen_cflags + muparser_cflags,
             extra_link_args=eigen_libs + muparser_libs,
         ),
         Extension(
-            'scientific_toolbox.statistics',
+            'scientific_toolbox.stats_cpp',
             sources=[
                 "python_bindings/statistics_bindings.cpp",
                 *glob.glob("src/Statistics_Module/*.cpp"),
             ],
             include_dirs=[
                 "extern/pybind11/include",
-                "include",
+                "include/Statistics_Module",
             ],
             language='c++',
             extra_compile_args=["-std=c++17"] + eigen_cflags,
