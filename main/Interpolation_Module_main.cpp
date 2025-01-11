@@ -31,10 +31,10 @@ int main(int argc, char** argv) {
         std::cout << "\nNo args entered. Using random data and 1.5 as value to interpolate..."<< std::endl;
     }
     
-    ScientificToolbox::ImportCSV importer;
+    ScientificToolbox::Importer importer;
     
     try {
-        std::set<point<double>> points = importer.read_points_from_csv<double>(filename);
+        std::set<point<double>> points = read_points_from_csv<double>(filename);
 
         // Linear Interpolation Test
         LinearInterpolation<double> linear(points);

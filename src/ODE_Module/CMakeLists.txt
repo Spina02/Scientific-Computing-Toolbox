@@ -75,11 +75,14 @@ file(GLOB_RECURSE MODULE_SOURCES ${MODULE_SRC_DIR}/*.cpp)
 # Create the DYNAMIC library
 add_library(${MODULE} SHARED ${MODULE_SOURCES})
 
-# Link the module with muparser
-target_link_libraries(${MODULE} ${MUPARSER_LIBRARY})
-
-# Link the module with eigen3
-target_link_libraries(${MODULE} ${EIGEN3_LIBRARY})
+# Link all dependencies with keyword syntax
+target_link_libraries(${MODULE} 
+    PUBLIC 
+        Utilities
+    PRIVATE
+        ${MUPARSER_LIBRARY}
+        ${EIGEN3_LIBRARY}
+)
 
 # Set the output directory for the library
 set_target_properties(${MODULE} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${LIB_DIR})
@@ -105,10 +108,10 @@ set_target_properties(main_ode test_ode PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BI
 
 # Custom target for running the main program
 add_custom_target(run-ode
-    COMMAND cmake --build . -j$(nproc) --target main_ode
-    COMMAND main_ode $(ARGS)
+    COMMAND ${BIN_DIR}/main_ode ${ARGS}
     DEPENDS main_ode
-    WORKING_DIRECTORY ${BIN_DIR}
+    WORKING_DIRECTORY ${ROOT_DIR}
+    COMMENT "Running ODE Module main program"
 )
 
 # Custom target for running the test program

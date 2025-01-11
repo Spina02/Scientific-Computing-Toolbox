@@ -145,7 +145,7 @@ void save_on_CSV(const std::string& filename, const ODESolution& solution) {
 
 std::vector<ODETestCase> load_tests_from_csv(const std::string& filename) {
     try {
-        ImportCSV importer;
+        Importer importer;
         
         std::cout << "Attempting to load tests from: " << filename << std::endl;
 
@@ -155,38 +155,8 @@ std::vector<ODETestCase> load_tests_from_csv(const std::string& filename) {
         // Check if file exists
         std::ifstream file(filename);
         if (!file.good()) {
-            std::cout << "Warning: Test file " << filename << " not found. Using default tests." << std::endl;
-            
-            // Add default scalar test case
-            ODETestCase scalar_test;
-            scalar_test.expr = "y"; // dy/dt = y
-            scalar_test.t0 = 0.0;
-            scalar_test.tf = 1.0;
-            scalar_test.h = 0.001;
-            scalar_test.y0 = 1.0;
-            scalar_test.expected_final = std::exp(1.0); // Expected: e^t
-            scalar_test.expected_derivative = 1.0; // Expected derivative at t0
-
-            // Add default vector test case
-            ODETestCase vector_test;
-            vec_s exprs = {"y0", "y1"};
-            vec_d y0(2), ex(2), exd(2);
-            y0 << 1.0, 1.0;
-            ex << std::exp(1.0), std::exp(1.0);
-            exd << 1.0, 1.0;
-            vector_test.expr = exprs; // dy0/dt = y0, dy1/dt = y1
-            vector_test.t0 = 0.0;
-            vector_test.tf = 1.0;
-            vector_test.h = 0.001;
-            vector_test.y0 = y0;
-            vector_test.expected_final = ex; // Expected: [e^t, e^t]
-            vector_test.expected_derivative = exd; // Expected derivative at t0
-
-            // Add default test cases
-            cases.push_back(scalar_test);
-            cases.push_back(vector_test);
-
-            return cases;
+            std::cerr << "Error: File not found: " << filename << std::endl;
+            return std::vector<ODETestCase>{};
         }
         file.close();
 

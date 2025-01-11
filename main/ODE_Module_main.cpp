@@ -5,7 +5,7 @@
 #include <filesystem>
 
 #include "../include/ODE_Module.hpp"
-#include "../include/Utilities/ImportCSV.hpp"
+#include "../include/Utilities.hpp"
 
 using namespace std::filesystem;
 using namespace ScientificToolbox::ODE;
@@ -118,8 +118,6 @@ int main(int argc, char** argv) {
         std::cout << rk4_solution << std::endl;
 
         // Save results to CSV
-        path pisello = outputFolder / path("scalar_ode_results_FE.csv");
-        std::cout << pisello << std::endl;
         save_on_CSV(outputFolder / path("scalar_ode_results_FE.csv") , euler_solution);
         std::cout << "results saved on output/ODE_Module/scalar_ode_results_FE.csv" << std::endl;
         save_on_CSV(outputFolder / path("scalar_ode_results_EM.csv") , midpoint_solution);

@@ -68,14 +68,27 @@ target_link_libraries(stats_cpp PRIVATE
 
 # Link with Eigen3
 target_link_libraries(${MODULE} PUBLIC Eigen3::Eigen)
+target_link_libraries(${MODULE}
+    PUBLIC
+        Utilities
+        ${EIGEN3_LIBRARIES}
+)
 
 # Compile the main program
 add_executable(main_stat ${MAIN_DIR}/Statistics_Module_main.cpp)
-target_link_libraries(main_stat PRIVATE ${MODULE})
+target_link_libraries(main_stat 
+    PRIVATE
+        ${MODULE}
+        Utilities
+)
 
 # Compile the test program
 add_executable(test_stat ${TEST_DIR}/Statistics_Module_test.cpp)
-target_link_libraries(test_stat PRIVATE ${MODULE})
+target_link_libraries(test_stat
+    PRIVATE
+        ${MODULE}
+        Utilities
+)
 
 # Set output directories
 set_target_properties(${MODULE} main_stat test_stat 
@@ -86,10 +99,11 @@ set_target_properties(${MODULE} main_stat test_stat
 
 # Custom targets
 add_custom_target(run-statistics
-    COMMAND cmake --build . -j$(nproc) --target main_stat
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} -j$(nproc) --target main_stat
     COMMAND ${BIN_DIR}/main_stat ${ARGS}
     DEPENDS main_stat
-    WORKING_DIRECTORY ${BIN_DIR}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Running Statistics Module main program"
 )
 
 add_custom_target(test-statistics

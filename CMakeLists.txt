@@ -5,6 +5,10 @@ project(ScientificComputingToolbox)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Create Utilities library
+add_library(Utilities SHARED src/Utilities.cpp)
+target_include_directories(Utilities PUBLIC include)
+
 # Add subdirectories
 add_subdirectory(src/Interpolation_Module)
 add_subdirectory(src/ODE_Module)

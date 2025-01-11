@@ -8,6 +8,4 @@
 #include "ODE_Module/RK4Solver.hpp"
 #include "ODE_Module/analysis.hpp"
 
-using ScientificToolbox::ImportCSV;
-
 #endif

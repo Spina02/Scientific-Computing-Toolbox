@@ -7,6 +7,6 @@
 #include "Interpolation_Module/Cubic_Spline_Interpolation.hpp"
 #include "Interpolation_Module/Lagrange.hpp"
 #include "Interpolation_Module/Newton.hpp"
-#include "Utilities/ImportCSV.hpp"
+#include "Utilities.hpp"
 
 #endif // INTERPOLATION_MODULE_HPP

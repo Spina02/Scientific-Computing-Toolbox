@@ -6,11 +6,16 @@
 #include "../../include/Interpolation_Module/Cubic_Spline_Interpolation.hpp"
 #include "../../include/Interpolation_Module/Lagrange.hpp"
 #include "../../include/Interpolation_Module/Newton.hpp"
-#include "../../include/Utilities/ImportCSV.hpp"
+#include "../../include/Utilities.hpp"
 
 #include <iostream>
 #include <vector>
 #include <filesystem>
+#include <string>
+#include <stdexcept>
+#include <sstream>
+#include <set>
+#include <fstream>
 
 using namespace ScientificToolbox::Interpolation;
 
@@ -88,12 +93,12 @@ bool InterpolationTester::import_data() {
     std::string filename_2 = project_dir + "/data/quadratic_data.csv";
     std::string filename_3 = project_dir + "/data/cubic_data.csv";
 
-    ScientificToolbox::ImportCSV importer;
+    ScientificToolbox::Importer importer;
 
     try {
-        linear_data = importer.read_points_from_csv<double>(filename_1);
-        quadratic_data = importer.read_points_from_csv<double>(filename_2);
-        cubic_data = importer.read_points_from_csv<double>(filename_3);
+        linear_data = read_points_from_csv<double>(filename_1);
+        quadratic_data = read_points_from_csv<double>(filename_2);
+        cubic_data = read_points_from_csv<double>(filename_3);
         if (DEBUG) {
             std::cout << "Imported linear data points:" << std::endl;
             for (const auto& point : linear_data) {

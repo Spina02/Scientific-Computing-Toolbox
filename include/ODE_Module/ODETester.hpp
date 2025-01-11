@@ -14,7 +14,7 @@
 #include "RK4Solver.hpp"
 #include "ExplicitMidpointSolver.hpp"
 #include "analysis.hpp"
-#include "../Utilities/ImportCSV.hpp"
+#include "../Utilities.hpp"
 #include <iostream>
 
 /**

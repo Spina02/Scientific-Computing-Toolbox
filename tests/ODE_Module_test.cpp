@@ -1,9 +1,11 @@
 #include "../include/ODE_Module/ODETester.hpp"
+#include "../include/Utilities.hpp"
 
 #include <iostream>
 #include <vector>
 #include <algorithm>
 
+using namespace ScientificToolbox;
 using namespace ScientificToolbox::ODE;
 
 int main() {
@@ -32,17 +34,17 @@ int main() {
     double y0 = 1;
 
     for (auto solver_type : solver_types) {
-        // Create solver with unique_ptr
         auto solver_ptr = factories[solver_type]("y", y0, t0, tf, h);
-        auto [sol, time] = solve_and_measure_execution_time(*solver_ptr);
+        auto sol = measure_execution_time<ODESolution>([&solver_ptr]() {
+            return solver_ptr->solve();
+        });
         double error = compute_error(sol.get_result(), solution);
         double order = compute_order_of_convergence(solver_type);
         
         std::cout << "Solver: " << solver_type << std::endl;
         std::cout << "  Error: " << error << std::endl;
         std::cout << "  Order of Convergence: " << order << std::endl;
-        std::cout << "  Elapsed Time: " << time << std::endl;
-    } // solver_ptr automatically deleted here
+    }
 
     return 0;
 }

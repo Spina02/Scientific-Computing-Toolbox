@@ -12,8 +12,7 @@
  * - Debug configuration
  */
 
-#include "../../include/Utilities/ImportData.hpp"
-#include "../../include/Utilities/ImportCSV.hpp"
+#include "../../include/Utilities.hpp"
 #include "types.hpp"
 
 namespace ScientificToolbox::ODE {

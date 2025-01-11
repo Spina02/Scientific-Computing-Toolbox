@@ -1,5 +1,5 @@
 #include "../include/Statistics_Module/Statistical_analyzer.hpp"
-#include "../include/Utilities/ImportCSV.hpp"
+#include "../include/Utilities.hpp"
 #include <iostream>
 #include <filesystem>
 
@@ -11,7 +11,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) {
         std::string inputFile = project_dir + "/data/Food_and_Nutrition__.csv";
         std::string outputFile = project_dir + "/output/Statistics_output.txt";
 
-        ImportCSV importer;
+        Importer importer;
         importer.import(inputFile);
         auto rawData = importer.getData();
 
@@ -21,7 +21,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) {
         
         Statistics::StatisticalAnalyzer analyzer(dataset);
 
-        
         std::filesystem::create_directories(std::filesystem::path(outputFile).parent_path());
         std::ofstream outFile(outputFile);
         std::vector<std::string> columns = {"Weight", "Height"};
