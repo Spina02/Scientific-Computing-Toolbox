@@ -13,18 +13,24 @@ using namespace ScientificToolbox::ODE;
 int main(int argc, char** argv) {
     try {
         // Default values
-        path project_dir = std::filesystem::current_path().parent_path();
-        path inputFile = project_dir / path("data/ode_examples.csv");
+        path project_dir = std::filesystem::current_path();//.parent_path();
+        path inputFile = project_dir / path("data") / path("ode_examples.csv");
         path outputFolder = project_dir / path("output");
-
 
         // Parse command line arguments
         if (argc > 1) {
             inputFile = project_dir / path("data") / path(std::string(argv[1]));
         }
-        if (argc > 2) {
-            outputFolder = project_dir / path("data") / path(std::string(argv[2]));
+        else if (argc > 2) {
+            outputFolder = project_dir / path(std::string(argv[2]));
         }
+        else if (argc > 3) {
+            std::cout << "\nToo many arguments. Using only the first two arguments." << std::endl;
+        }
+        else {
+            std::cout << "\nNo args entered. Using " << inputFile << " as input file and " << outputFolder << " as output folder..." << std::endl;
+        }
+
 
         std::cout << "ODE Module Demo\n" << std::endl;
 
@@ -72,6 +78,7 @@ int main(int argc, char** argv) {
             std::cout << rk4_solution.get_result() << std::endl;
         }
 
+        /*
         // You can also define the test cases manually and parse them from strings
         std::cout << std::endl << "Manual Test Cases" << std::endl;
         // Example 1: Scalar ODE (dy/dt = y, y(0) = 1)
@@ -166,7 +173,7 @@ int main(int argc, char** argv) {
         std::cout << "results saved on output/ODE_Module/vector_ode_results_EM.csv" << std::endl;
         save_on_CSV(outputFolder / path("vector_ode_results_RK4.csv"), vector_solution);
         std::cout << "results saved on output/ODE_Module/vector_ode_results_RK4.csv" << std::endl;
-
+        */
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;

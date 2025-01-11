@@ -100,17 +100,17 @@ set_target_properties(${MODULE} main_stat test_stat
 # Custom targets
 add_custom_target(run-statistics
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} -j$(nproc) --target main_stat
-    COMMAND ${BIN_DIR}/main_stat ${ARGS}
+    COMMAND ${BIN_DIR}/main_stat $ENV{ARGS}
     DEPENDS main_stat
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    WORKING_DIRECTORY ${ROOT_DIR}
     COMMENT "Running Statistics Module main program"
 )
 
 add_custom_target(test-statistics
-    COMMAND cmake --build . -j$(nproc) --target test_stat
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} -j$(nproc) --target test_stat
     COMMAND ${BIN_DIR}/test_stat
     DEPENDS test_stat
-    WORKING_DIRECTORY ${BIN_DIR}
+    COMMENT "Running Statistics Module test program"
 )
 
 
@@ -158,8 +158,8 @@ add_custom_target(py-test-statistics
 
 
 # Custom target for running the Python main script
-add_custom_target(py-run-stats_cpp
-    COMMAND ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT}
+add_custom_target(py-run-statistics
+    COMMAND ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT} $ENV{ARGS}
     COMMENT "Running Python main script"
     WORKING_DIRECTORY ${MAIN_DIR}
     DEPENDS setup-venv-stats_cpp  

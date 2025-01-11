@@ -78,25 +78,21 @@ target_include_directories(test_interpolation PUBLIC ${INCLUDE_DIR} ${MODULE_INC
 # Set the output directory for executables at runtime (main and test)
 set_target_properties(main_interpolation test_interpolation PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 
-# Read from environment variables if set
-set(DATA_FILE $ENV{DATA_FILE} CACHE STRING "Path to the data file")
-set(VALUE $ENV{VALUE} CACHE STRING "Value to interpolate")
-
 # Custom targets
 add_custom_target(run-interpolation
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} -j$(nproc) --target main_interpolation
-    COMMAND ${BIN_DIR}/main_interpolation ${ARGS}
+    COMMAND ${BIN_DIR}/main_interpolation $ENV{ARGS}
     DEPENDS main_interpolation
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    WORKING_DIRECTORY ${ROOT_DIR}
     COMMENT "Running Interpolation Module main program"
 )
 
 # Custom target for running the test program
 add_custom_target(test-interpolation
-    COMMAND cmake --build . -j$(nproc) --target test_interpolation
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} -j$(nproc) --target test_interpolation
     COMMAND ${BIN_DIR}/test_interpolation
     DEPENDS test_interpolation
-    WORKING_DIRECTORY ${BIN_DIR}
+    COMMENT "Running Interpolation Module test program"
 )
 
 add_custom_target(bind-interpolation

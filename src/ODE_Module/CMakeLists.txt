@@ -5,7 +5,7 @@ project(ODE_Module)
 set(MODULE ODE_Module)
 
 # Compilation Flags
-set(CXXFLAGS "-Wall -Wpedantic -fPIC -Wno-nested-anon-types -Werror")
+set(CXXFLAGS "-Wall -Wpedantic -Wno-nested-anon-types -Werror  -fPIC")
 
 # Check dependencies muparser and eigen3 and if not found, give a message
 find_package(PkgConfig REQUIRED)
@@ -68,7 +68,6 @@ link_directories(
     ${EIGEN3_LIBRARY_DIRS}
 )
 
-
 # Set the source files for the module
 file(GLOB_RECURSE MODULE_SOURCES ${MODULE_SRC_DIR}/*.cpp)
 
@@ -108,7 +107,8 @@ set_target_properties(main_ode test_ode PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BI
 
 # Custom target for running the main program
 add_custom_target(run-ode
-    COMMAND ${BIN_DIR}/main_ode ${ARGS}
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} -j$(nproc) --target main_ode
+    COMMAND ${BIN_DIR}/main_ode $ENV{ARGS}
     DEPENDS main_ode
     WORKING_DIRECTORY ${ROOT_DIR}
     COMMENT "Running ODE Module main program"
@@ -116,10 +116,10 @@ add_custom_target(run-ode
 
 # Custom target for running the test program
 add_custom_target(test-ode
-    COMMAND cmake --build . -j$(nproc) --target test_ode
-    COMMAND test_ode
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} -j$(nproc) --target test_ode
+    COMMAND ${BIN_DIR}/test_ode
     DEPENDS test_ode
-    WORKING_DIRECTORY ${BIN_DIR}
+    COMMENT "Running ODE Module test program"
 )
 
 ## setting Python3_EXECUTABLE

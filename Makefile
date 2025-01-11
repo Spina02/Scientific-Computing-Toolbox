@@ -12,7 +12,7 @@ MODULES = Interpolation_Module ODE_Module Statistics_Module
 
 all: 
 	@mkdir -p build
-	@cd build && cmake .. && $(MAKE)
+	@cd build && cmake .. && $(MAKE) -j$(nproc)
 
 # Help target
 help:
@@ -59,7 +59,7 @@ clean:
 		module="$(word 2,$(MAKECMDGOALS))"; \
 		rm -rf build/src/$$module/*; \
 	else \
-		rm -rf build/* lib/* bin/* output/*; \
+		rm -rf build/* lib/* bin/* output/* scientific_toolbox.egg-info; \
 	fi
 
 # Targets for individual modules

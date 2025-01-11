@@ -7,9 +7,29 @@ using namespace ScientificToolbox;
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) {
     try {
-        std::string project_dir = std::filesystem::current_path().parent_path();
+        std::string project_dir = std::filesystem::current_path();//.parent_path();
         std::string inputFile = project_dir + "/data/Food_and_Nutrition__.csv";
         std::string outputFile = project_dir + "/output/Statistics_output.txt";
+        
+
+        if (argc > 1) {
+            inputFile = project_dir + "/data/" + std::string(argv[1]);
+        }
+        else if (argc > 2) {
+            outputFile = project_dir + "/output/" + std::string(argv[2]);
+        }
+
+
+            
+
+
+
+        else if (argc > 3) {
+            std::cout << "\nToo many arguments. Using only the first two arguments." << std::endl;
+        }
+        else {
+            std::cout << "\nNo args entered, using default values:\n  input file: " << inputFile << "\n  output file: " << outputFile << std::endl;
+        }
 
         Importer importer;
         importer.import(inputFile);

@@ -15,20 +15,29 @@ using namespace ScientificToolbox::Interpolation;
 int main(int argc, char** argv) {
 
     // Project directory
-    std::string project_dir = std::filesystem::current_path().parent_path();
+    std::string project_dir = std::filesystem::current_path();//.parent_path();
 
     // Default values
     std::string filename = project_dir + "/data/random_data.csv";
     double x = 1.5;
 
+    std::cout << "argc: " << argc << std::endl;
+
+    for (int i = 0; i < argc; i++) {
+        std::cout << "argv[" << i << "]: " << argv[i] << std::endl;
+    }
+
     if (argc > 1) {
         filename = project_dir + "/data/" + std::string(argv[1]);
     }
-    if (argc > 2) {
+    else if (argc > 2) {
         x = std::stod(argv[2]);
     }
+    else if (argc > 3) {
+        std::cout << "\nToo many arguments. Using only the first two arguments." << std::endl;
+    }
     else {
-        std::cout << "\nNo args entered. Using random data and 1.5 as value to interpolate..."<< std::endl;
+        std::cout << "\nNo args entered. Using " << filename << " and " << x << " as value to interpolate..."<< std::endl;
     }
     
     ScientificToolbox::Importer importer;

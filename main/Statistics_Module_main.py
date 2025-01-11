@@ -33,6 +33,7 @@ def read_csv_to_dataset(file_path: str) -> stats_cpp.Dataset:
     return dataset
 
 def main():
+    print(sys.argv)
     if len(sys.argv) != 2:
         print("Usage: python3 Statistics_Module_main.py <path_to_csv_file>")
         sys.exit(1)
