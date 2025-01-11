@@ -84,6 +84,7 @@ set(VALUE $ENV{VALUE} CACHE STRING "Value to interpolate")
 
 # Custom target for running the main program
 add_custom_target(run-interpolation
+    COMMAND cmake --build . -j$(nproc) --target main_interpolation
     COMMAND ${BIN_DIR}/main_interpolation ${DATA_FILE} ${VALUE}
     DEPENDS main_interpolation
     WORKING_DIRECTORY ${BIN_DIR}
@@ -92,6 +93,7 @@ add_custom_target(run-interpolation
 
 # Custom target for running the test program
 add_custom_target(test-interpolation
+    COMMAND cmake --build . -j$(nproc) --target test_interpolation
     COMMAND ${BIN_DIR}/test_interpolation
     DEPENDS test_interpolation
     WORKING_DIRECTORY ${BIN_DIR}

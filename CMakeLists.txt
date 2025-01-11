@@ -42,3 +42,22 @@ add_custom_target(clean-all
     COMMAND rm -rf ${CMAKE_SOURCE_DIR}/output/*
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
+
+# Macro per definire un target "run-<short>" che richiama un target "run-<long>"
+macro(create_alias short long)
+    add_custom_target(run-${short}
+        COMMAND ${CMAKE_COMMAND} --build . --target run-${long}
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+    add_custom_target(test-${short}
+        COMMAND ${CMAKE_COMMAND} --build . --target test-${long}
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+    add_custom_target(py-test-${short}
+        COMMAND ${CMAKE_COMMAND} --build . --target py-test-${long}
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+endmacro()
+
+create_alias(int interpolation)
+create_alias(stat statistics)

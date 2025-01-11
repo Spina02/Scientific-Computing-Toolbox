@@ -105,6 +105,7 @@ set_target_properties(main_ode test_ode PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BI
 
 # Custom target for running the main program
 add_custom_target(run-ode
+    COMMAND cmake --build . -j$(nproc) --target main_ode
     COMMAND main_ode $(ARGS)
     DEPENDS main_ode
     WORKING_DIRECTORY ${BIN_DIR}
@@ -112,6 +113,7 @@ add_custom_target(run-ode
 
 # Custom target for running the test program
 add_custom_target(test-ode
+    COMMAND cmake --build . -j$(nproc) --target test_ode
     COMMAND test_ode
     DEPENDS test_ode
     WORKING_DIRECTORY ${BIN_DIR}
