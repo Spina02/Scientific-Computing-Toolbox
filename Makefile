@@ -13,6 +13,8 @@ MODULES = Interpolation_Module ODE_Module Statistics_Module
 all: 
 	@mkdir -p build
 	@cd build && cmake .. && $(MAKE)
+	@cd .. 
+	@pip install .
 
 # Help target
 help:
@@ -44,6 +46,7 @@ help:
 $(MODULES):
 	@$(MAKE) -C build 
 
+
 # Rules for multiple targets
 run test py-test:
 	@if [ -n "$(MAKECMDGOALS)" ] && [ "$(word 2,$(MAKECMDGOALS))" != "" ]; then \
@@ -59,7 +62,7 @@ clean:
 		module="$(word 2,$(MAKECMDGOALS))"; \
 		rm -rf build/src/$$module/*; \
 	else \
-		rm -rf build/* lib/* bin/* output/*; \
+		rm -rf build/* lib/* bin/* output/* scientific_toolbox.egg-info; \
 	fi
 
 # Targets for individual modules
