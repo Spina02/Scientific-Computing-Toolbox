@@ -13,6 +13,8 @@ MODULES = Interpolation_Module ODE_Module Statistics_Module
 all: 
 	@mkdir -p build
 	@cd build && cmake .. && $(MAKE) -j$(nproc)
+	@cd .. 
+	@pip install .
 
 # Help target
 help:
@@ -43,6 +45,7 @@ help:
 # Compile each module
 $(MODULES):
 	@$(MAKE) -C build 
+
 
 # Rules for multiple targets
 run test py-test:
