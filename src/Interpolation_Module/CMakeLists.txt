@@ -92,6 +92,7 @@ add_custom_target(test-interpolation
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} -j$(nproc) --target test_interpolation
     COMMAND ${BIN_DIR}/test_interpolation
     DEPENDS test_interpolation
+    WORKING_DIRECTORY ${ROOT_DIR}
     COMMENT "Running Interpolation Module test program"
 )
 

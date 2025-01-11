@@ -110,6 +110,7 @@ add_custom_target(test-statistics
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} -j$(nproc) --target test_stat
     COMMAND ${BIN_DIR}/test_stat
     DEPENDS test_stat
+    WORKING_DIRECTORY ${ROOT_DIR}
     COMMENT "Running Statistics Module test program"
 )
 

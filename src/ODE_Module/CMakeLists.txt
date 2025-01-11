@@ -119,6 +119,7 @@ add_custom_target(test-ode
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} -j$(nproc) --target test_ode
     COMMAND ${BIN_DIR}/test_ode
     DEPENDS test_ode
+    WORKING_DIRECTORY ${ROOT_DIR}
     COMMENT "Running ODE Module test program"
 )
 

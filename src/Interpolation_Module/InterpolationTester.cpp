@@ -88,10 +88,12 @@ void InterpolationTester::run_tests() {
  * 
  */
 bool InterpolationTester::import_data() {
-    std::string project_dir = std::filesystem::current_path().parent_path();
+    std::string project_dir = std::filesystem::current_path();//.parent_path();
     std::string filename_1 = project_dir + "/data/linear_data.csv";
     std::string filename_2 = project_dir + "/data/quadratic_data.csv";
     std::string filename_3 = project_dir + "/data/cubic_data.csv";
+
+    std::cout << "Importing " << filename_1 << "..." << std::endl;
 
     ScientificToolbox::Importer importer;
 

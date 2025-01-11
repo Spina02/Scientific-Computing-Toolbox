@@ -12,7 +12,7 @@
 namespace ScientificToolbox::ODE {
 
 ODETester::ODETester() {
-    std::string project_dir = std::filesystem::current_path().parent_path();
+    std::string project_dir = std::filesystem::current_path();
     load_tests_from_csv(project_dir + "/data/ode_tests.csv");
 }
 
