@@ -14,7 +14,6 @@ all:
 	@mkdir -p build
 	@cd build && cmake .. && $(MAKE) -j$(nproc)
 	@cd .. 
-	@pip install .
 
 # Help target
 help:
@@ -56,6 +55,10 @@ run test py-run py-test:
 	else \
 		$(MAKE) -C build $@-all -s; \
 	fi
+
+# pip install .
+install:
+	@pip install .
 
 clean:
 	@if [ -n "$(word 2,$(MAKECMDGOALS))" ]; then \

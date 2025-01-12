@@ -11,7 +11,10 @@ int main(int argc, char** argv) {
         std::string inputFile = project_dir + "/data/Food_and_Nutrition__.csv";
         std::string outputFile = project_dir + "/output/Statistics_output.txt";
 
-        // Fix argument handling logic
+        if (argc == 1) {
+            std::cout << "No input file provided. Using default file: " << inputFile << std::endl;
+        }
+        else
         if (argc == 2) {
             inputFile = project_dir + "/data/" + std::string(argv[1]);
         }
