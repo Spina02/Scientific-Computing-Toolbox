@@ -158,10 +158,8 @@ add_custom_target(py-test-statistics
 )
 
 
-# Custom target for running the Python main script
 add_custom_target(py-run-statistics
-    COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${PYTHON_MODULE_DIR} 
-            ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT} ${CMAKE_SOURCE_DIR}/data/sample.csv
+    COMMAND ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT}            ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT} ${ARGS}
     COMMENT "Running Python main script"
     WORKING_DIRECTORY ${MAIN_DIR}
     DEPENDS setup-venv-stats_cpp stats_cpp

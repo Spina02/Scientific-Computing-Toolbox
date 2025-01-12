@@ -161,7 +161,7 @@ class TestStatisticsModule(unittest.TestCase):
         strong_threshold = 0.8
         output = analyzer.reportStrongCorrelations(col_names, strong_threshold)
 
-        # We expect X-Y to appear as strong correlation.
+        
         self.assertIn("X - Y", output,
             "reportStrongCorrelations should report X-Y as strongly correlated.")
         self.assertNotIn("X - Z", output,
@@ -219,8 +219,8 @@ class TestStatisticsModule(unittest.TestCase):
         cxx_std  = analyzer.standardDeviation("Rand")
 
         np_mean = np.mean(np_data)
-        np_var  = np.var(np_data)  # population variance
-        np_std  = np.std(np_data)  # population std
+        np_var  = np.var(np_data) 
+        np_std  = np.std(np_data) 
 
         self.assertAlmostEqual(cxx_mean, np_mean, delta=0.01,
             msg="C++ mean should match NumPy mean within tolerance.")
@@ -230,14 +230,12 @@ class TestStatisticsModule(unittest.TestCase):
             msg="C++ std dev should match NumPy std dev within tolerance.")
 
        
-        # Time the C++ calls
         t0 = time.time()
         _ = analyzer.mean("Rand")
         _ = analyzer.variance("Rand")
         _ = analyzer.standardDeviation("Rand")
         cxx_time = time.time() - t0
 
-        # Time the NumPy calls
         t1 = time.time()
         _ = np.mean(np_data)
         _ = np.var(np_data)
@@ -254,7 +252,6 @@ class TestStatisticsModule(unittest.TestCase):
         plt.figure(figsize=(8,6))
         plt.hist(np_data, bins=50, density=True, alpha=0.6, label='Data Histogram')
 
-        # Add small offset to x position of one line to make both visible
         plt.axvline(cxx_mean - 0.02, color='r', linestyle='--', label=f"C++ Mean={cxx_mean:.2f}")
         plt.axvline(np_mean + 0.02, color='g', linestyle='-', label=f"NumPy Mean={np_mean:.2f}")
 
@@ -263,15 +260,19 @@ class TestStatisticsModule(unittest.TestCase):
         plt.ylabel("Density")
         plt.legend()
         plt.tight_layout()
-        plt.savefig('histogram_comparison.png')
+        output_dir = os.path.join(ROOT_DIR, 'output')
+        
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        output_path = os.path.join(output_dir, 'histogram_comparison.png')
+        plt.savefig(output_path)
+        plt.close()
         plt.close()
 
-        # Create a second column correlated with "Rand"
-        # e.g., CorrRand = Rand * 2 + some noise
+        
         corr_col = np_data * 2.0 + np.random.normal(0, 1, n_samples)
 
-        # Add to dataset. Because we already added rows, we can't just do it row by row
-        # unless we create a brand new dataset. Let's do that for demonstration:
+        
         ds2 = stats_cpp.Dataset()
         for val, val2 in zip(np_data, corr_col):
             ds2.addRow({"Rand": float(val), "CorrRand": float(val2)})
@@ -280,7 +281,7 @@ class TestStatisticsModule(unittest.TestCase):
         col_names = ["Rand", "CorrRand"]
         corr_matrix = analyzer2.correlationMatrix(col_names)
         
-        # Compare with NumPy corrcoef
+        
         np_corr = np.corrcoef(np_data, corr_col)
 
      
