@@ -29,7 +29,7 @@ PYBIND11_MODULE(stats_cpp, m) {
         .def("getColumn", &Dataset::getColumn<double>)
         .def("getColumn", &Dataset::getColumn<int>)
         .def("getColumn", &Dataset::getColumn<std::string>)
-        .def("getColumnNames", &Dataset::getColumnNames)  // Removed invalid option
+        .def("getColumnNames", &Dataset::getColumnNames)  
         .def("size", &Dataset::size);
 
     py::class_<StatisticalAnalyzer>(m, "StatisticalAnalyzer")

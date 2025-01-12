@@ -32,6 +32,16 @@ def read_csv_to_dataset(file_path: str) -> stats_cpp.Dataset:
 
     return dataset
 
+def is_numeric_column(dataset, column_name):
+    """Check if a column contains only numeric values."""
+    try:
+        # Try to get mean - this will fail if column has non-numeric values
+        analyzer = stats_cpp.StatisticalAnalyzer(dataset)
+        analyzer.mean(column_name)
+        return True
+    except:
+        return False
+
 def main():
     print(sys.argv)
     if len(sys.argv) != 2:
@@ -56,8 +66,10 @@ def main():
         print("No columns found. Exiting.")
         return
 
-    print("\nBasic statistics for each column:")
-    for col in column_names:
+    print("\nBasic statistics for each numeric column:")
+    numeric_columns = [col for col in column_names if is_numeric_column(dataset, col)]
+    
+    for col in numeric_columns:
         try:
             col_mean = analyzer.mean(col)
             col_median = analyzer.median(col)
@@ -75,19 +87,19 @@ def main():
         except Exception as e:
             print(f"\n  Column: {col} (skipped) -> {e}")
 
-    if len(column_names) > 1:
+    if len(numeric_columns) > 1:
         print("\nCorrelation matrix among all numeric columns:")
         try:
-            corr_matrix = analyzer.correlationMatrix(column_names)
+            corr_matrix = analyzer.correlationMatrix(numeric_columns)
             print(corr_matrix)
             
             threshold = 0.7
             print(f"\nStrong correlations (|corr| > {threshold}):")
-            analyzer.reportStrongCorrelations(column_names, threshold)
+            analyzer.reportStrongCorrelations(numeric_columns, threshold)
         except Exception as e:
             print("Error while computing correlation matrix:", e)
     else:
-        print("\nInsufficient columns for correlation analysis.")
+        print("\nInsufficient numeric columns for correlation analysis.")
 
 if __name__ == "__main__":
     main()
