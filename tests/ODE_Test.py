@@ -4,22 +4,6 @@ import os
 import numpy as np
 import pandas as pd
 
-class ODEAnalysis:
-    
-def __init__(self):
-    self.script_dir = os.path.dirname(__file__)  # Directory of the current script
-    self.build_dir = os.path.join(self.script_dir, '../build/src/ODE_Module/')  # Adjust the relative path
-    self.data_dir = os.path.join(self.script_dir, '../data/')
-    self.src_dir = os.path.join(self.script_dir, '../src/ODE_Module')
-    sys.path.append(self.build_dir)
-    sys.path.append(self.src_dir)
-    
-    import ODE
-    from plotting import plot_solution, compare_solvers
-
-import numpy as np
-import pandas as pd
-
 # Add the build folder to sys.path
 script_dir = os.path.dirname(__file__)  # Directory of the current script
 build_dir = os.path.join(script_dir, '../build/src/ODE_Module/')  # Adjust the relative path
@@ -30,7 +14,7 @@ sys.path.append(src_dir)
 
 # Now you can import your module
 import ODE
-from plotting import plot_solution, compare_solvers
+import analysis
 
 def main():
     # Letting the user choose the path to data containing the ODEs, and if does not enter anything, the default data is used
@@ -41,8 +25,10 @@ def main():
         
     data = ODE.load_tests_from_csv(data_path)
     
+    analyzer = analysis.ODEAnalysis()
+    
     # plot solutions from different solvers
-    compare_solvers(data)
+    analyzer.compare_solvers(data)
     
     # Solve a single ODE
     
@@ -54,19 +40,19 @@ def main():
     euler_solution = euler.solve()
     print(f"The euler solution of the ODE '{expr}' is: {euler_solution.get_result()}\n\t expected value: {real_solution}\n\terror: {ODE.compute_error(euler_solution.get_result(), real_solution)}")
     
-    plot_solution(euler_solution, title = "Predator-Prey model - Euler")
+    analyzer.plot_solution(euler_solution, title = "Predator-Prey model - Euler")
     
     midpoint = ODE.ExplicitMidpointSolver(expr, y0, 0, 1, 0.001)
     midpoint_solution = midpoint.solve()
     print(f"The midpoint solution of the ODE '{expr}' is: {midpoint_solution.get_result()}\n\t expected value: {real_solution}\n\terror: {ODE.compute_error(midpoint_solution.get_result(), real_solution)}")
     
-    plot_solution(midpoint_solution, title = "Predator-Prey model - midpoint")
+    analyzer.plot_solution(midpoint_solution, title = "Predator-Prey model - midpoint")
     
     rk4 = ODE.RK4Solver(expr, y0, 0, 1, 0.001)
     rk4_solution = rk4.solve()
     print(f"The RK4 solution of the ODE '{expr}' is: {rk4_solution.get_result()}\n\t expected value: {real_solution}\n\terror: {ODE.compute_error(rk4_solution.get_result(), real_solution)}")
     
-    plot_solution(rk4_solution, title = "Predator-Prey model - RK4")
+    analyzer.plot_solution(rk4_solution, title = "Predator-Prey model - RK4")
        
 if __name__ == '__main__':
     main()

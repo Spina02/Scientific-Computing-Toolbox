@@ -14,7 +14,7 @@
 #include <functional>
 #include <chrono>
 
-const inline bool DEBUG = false; //? now it is global
+const inline bool DEBUG = false;
 using DataValue = std::variant<int, double, std::string>;
 using OptionalDataValue = std::optional<DataValue>;
 
@@ -38,6 +38,11 @@ T measure_execution_time(Callable&& callback, Args&&... args) {
     std::cout << "Execution time: " << duration.count() << " seconds" << std::endl;
     
     return result;
+}
+
+template <typename T>
+T measure_execution_time_py(std::function<T()> callback) {
+    return measure_execution_time<T>(callback);
 }
 
 /**

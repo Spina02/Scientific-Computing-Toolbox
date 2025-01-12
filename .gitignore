@@ -67,6 +67,7 @@ __pycache__/
 /lib/
 /output/
 /venv/
+*.egg-info/
 Makefile
 *.cmake.cache
 CMakeLists.txt.user

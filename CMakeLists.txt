@@ -33,7 +33,7 @@ add_custom_target(test-all
 # Root-level py test target
 add_custom_target(py-test-all
     COMMAND ${CMAKE_COMMAND} --build . --target py-test-interpolation
-    #COMMAND ${CMAKE_COMMAND} --build . --target py-test-ode
+    COMMAND ${CMAKE_COMMAND} --build . --target py-test-ode
     COMMAND ${CMAKE_COMMAND} --build . --target py-test-statistics
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )

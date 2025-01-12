@@ -123,39 +123,39 @@ add_custom_target(test-ode
     COMMENT "Running ODE Module test program"
 )
 
-## setting Python3_EXECUTABLE
-#find_package(Python3 COMPONENTS Interpreter Development)
-#if (NOT Python3_FOUND)
-#    message(FATAL_ERROR "Python3 not found!")
-#endif()
-#
-## Define variables for paths
-#set(VENV_DIR ${ROOT_DIR}/venv)
-#set(REQUIREMENTS_FILE ${ROOT_DIR}/scripts/requirements.txt)
-#set(PYTHON_TEST_SCRIPT ${ROOT_DIR}/tests/ODE_Test.py)
-#set(PYTHON_MAIN_SCRIPT ${ROOT_DIR}/main/ODE_Module_main.py)
-#
-## Custom target for setting up the virtual environment
-#add_custom_target(setup-venv
-#    COMMAND ${Python3_EXECUTABLE} -m venv ${VENV_DIR}
-#    COMMAND ${VENV_DIR}/bin/pip install --upgrade pip
-#    COMMAND ${VENV_DIR}/bin/pip install -r ${REQUIREMENTS_FILE}
-#    COMMENT "Setting up the virtual environment and installing dependencies"
-#    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-#)
-#
-## Custom target for running the Python test script
-#add_custom_target(py-test-ode
-#    COMMAND ${VENV_DIR}/bin/python ${PYTHON_TEST_SCRIPT}
-#    COMMENT "Running Python test script"
-#    WORKING_DIRECTORY ${TEST_DIR}
-#    DEPENDS setup-venv
-#)
-#
-## Custom target for running the Python main script
-#add_custom_target(py-run-ode
-#    COMMAND ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT}
-#    COMMENT "Running Python main script"
-#    WORKING_DIRECTORY ${MAIN_DIR}
-#    DEPENDS setup-venv
-#)
+# setting Python3_EXECUTABLE
+find_package(Python3 COMPONENTS Interpreter Development)
+if (NOT Python3_FOUND)
+    message(FATAL_ERROR "Python3 not found!")
+endif()
+
+# Define variables for paths
+set(VENV_DIR ${ROOT_DIR}/venv)
+set(REQUIREMENTS_FILE ${ROOT_DIR}/scripts/requirements.txt)
+set(PYTHON_TEST_SCRIPT ${ROOT_DIR}/tests/ODE_Test.py)
+set(PYTHON_MAIN_SCRIPT ${ROOT_DIR}/main/ODE_Module_main.py)
+
+# Custom target for setting up the virtual environment
+add_custom_target(setup-venv-ode
+    COMMAND ${Python3_EXECUTABLE} -m venv ${VENV_DIR}
+    COMMAND ${VENV_DIR}/bin/pip install --upgrade pip
+    COMMAND ${VENV_DIR}/bin/pip install -r ${REQUIREMENTS_FILE}
+    COMMENT "Setting up the virtual environment and installing dependencies"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
+# Custom target for running the Python test script
+add_custom_target(py-test-ode
+    COMMAND ${VENV_DIR}/bin/python ${PYTHON_TEST_SCRIPT}
+    COMMENT "Running Python test script"
+    WORKING_DIRECTORY ${TEST_DIR}
+    DEPENDS setup-venv-ode
+)
+
+# Custom target for running the Python main script
+add_custom_target(py-run-ode
+    COMMAND ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT}
+    COMMENT "Running Python main script"
+    WORKING_DIRECTORY ${MAIN_DIR}
+    DEPENDS setup-venv-ode
+)
