@@ -30,6 +30,14 @@ add_custom_target(test-all
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
+# Root-level py run target
+add_custom_target(py-run-all
+    COMMAND ${CMAKE_COMMAND} --build . --target py-run-interpolation
+    #COMMAND ${CMAKE_COMMAND} --build . --target py-run-ode
+    COMMAND ${CMAKE_COMMAND} --build . --target py-run-statistics
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
 # Root-level py test target
 add_custom_target(py-test-all
     COMMAND ${CMAKE_COMMAND} --build . --target py-test-interpolation
@@ -52,12 +60,16 @@ add_custom_target(run-${short}
     COMMAND ${CMAKE_COMMAND} --build . --target run-${long} ARGS="$ENV{ARGS}"
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
-    add_custom_target(test-${short}
-        COMMAND ${CMAKE_COMMAND} --build . --target test-${long}
+add_custom_target(test-${short}
+    COMMAND ${CMAKE_COMMAND} --build . --target test-${long}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
-    add_custom_target(py-test-${short}
-        COMMAND ${CMAKE_COMMAND} --build . --target py-test-${long}
+add_custom_target(py-run-${short}
+    COMMAND ${CMAKE_COMMAND} --build . --target py-run-${long} ARGS="$ENV{ARGS}"
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+add_custom_target(py-test-${short}
+    COMMAND ${CMAKE_COMMAND} --build . --target py-test-${long}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 endmacro()

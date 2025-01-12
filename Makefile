@@ -48,7 +48,7 @@ $(MODULES):
 
 
 # Rules for multiple targets
-run test py-test:
+run test py-run py-test:
 	@if [ -n "$(MAKECMDGOALS)" ] && [ "$(word 2,$(MAKECMDGOALS))" != "" ]; then \
 		module="$(word 2,$(MAKECMDGOALS))"; \
 		args="$(wordlist 3,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))"; \
