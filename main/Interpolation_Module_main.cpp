@@ -7,6 +7,8 @@
 #include <set>       // For unique random number generation
 #include <limits>    // For infinity
 #include <filesystem> // For file existence check
+#include <string>    // For string manipulation
+
 
 #include "../include/Interpolation_Module.hpp"
 
@@ -37,8 +39,39 @@ int main(int argc, char** argv) {
         std::cout << "\nToo many arguments. Using only the first two arguments." << std::endl;
     }
     else {
-        std::cout << "\nNo args entered. Using " << filename << " and " << x << " as value to interpolate..."<< std::endl;
+        // User input for filename
+        std::cout << "Enter the filename already inserted in the data folder: ";
+        std::getline(std::cin, filename);
+
+        if (filename.empty()) {
+            filename = project_dir + "/data/random_data.csv";
+            std::cout << "Invalid filename entered. Using " << filename << " as default." << std::endl;
+        } else {
+            filename = project_dir + "/data/" + filename;
+        }
+
+        // User input for interpolation value
+        std::cout << "Enter the value to interpolate: ";
+        std::string x_str;
+        std::getline(std::cin, x_str);
+
+        if (x_str.empty()) {
+            x = 1.5;
+            std::cout << "Invalid value entered. Using " << x << " as default." << std::endl;
+        } else {
+            try {
+                x = std::stod(x_str);
+            } catch (const std::exception&) {
+                x = 1.5;
+                std::cout << "Invalid value entered. Using " << x << " as default." << std::endl;
+            }
+        }
+
+        std::cout << "Filename: " << filename << std::endl;
+        std::cout << "Interpolation value: " << x << std::endl;
+
     }
+
     
     ScientificToolbox::Importer importer;
     
