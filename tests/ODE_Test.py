@@ -3,18 +3,22 @@ import os
 
 import numpy as np
 
-# Add the build folder to sys.path
-script_dir = os.path.dirname(__file__)  # Directory of the current script
-build_dir = os.path.join(script_dir, '../build/src/ODE_Module/')  # Adjust the relative path
-data_dir = os.path.join(script_dir, '../data/')
-src_dir = os.path.join(script_dir, '../src/ODE_Module')
-output_dir = os.path.join(script_dir, '../output/ODE_Module/Analysis')
-sys.path.append(build_dir)
-sys.path.append(src_dir)
+import scientific_toolbox.ODE as ODE
+from scientific_toolbox.ODE import ODEAnalysis
 
-# Now you can import your module
-import ODE
-import analysis
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Add the build folder to sys.path
+#script_dir = os.path.dirname(__file__)  # Directory of the current script
+#build_dir = os.path.join(script_dir, '../build/src/ODE_Module/')  # Adjust the relative path
+data_dir = os.path.join(ROOT_DIR, 'data')
+output_dir = os.path.join(ROOT_DIR, 'output/ODE_Module/Analysis')
+#src_dir = os.path.join(script_dir, '../src/ODE_Module')
+#sys.path.append(build_dir)
+#sys.path.append(src_dir)
+#
+## Now you can import your module
+#import ODE
+#import analysis
 
 def main():
     print(sys.executable)
@@ -28,7 +32,7 @@ def main():
         
     data = ODE.load_tests_from_csv(data_path)
     
-    analyzer = analysis.ODEAnalysis()
+    analyzer = ODEAnalysis()
     
     # plot solutions from different solvers
     analyzer.compare_solvers(data, save_path = os.path.join(output_dir, ""), show = False)

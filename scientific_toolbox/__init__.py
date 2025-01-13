@@ -1,9 +1,8 @@
 # __init__.py in python_bindings/
 
-from . import interpolation
-from . import ODE
-from . import stats
-from . import utilities
+from .interpolation import *
+from .ODE import *
+from .stats import *
+from .utilities import *
 
-
-__all__ = ['interpolation', 'ODE', 'stats', 'utilities']
+__all__ = ['interpolation', 'stats', 'utilities', 'ode']

@@ -1,4 +1,4 @@
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
 import subprocess
 import os
@@ -66,6 +66,12 @@ setup(
     description='A scientific toolbox for data analysis',
     long_description=open("README.md").read(),
     long_description_content_type='text/markdown',
+    
+    # Trova automaticamente i package e i sotto-package
+    packages=find_packages(
+        include=['scientific_toolbox', 'scientific_toolbox.*']
+    ),
+    
     ext_modules=[
         Extension(
             'scientific_toolbox.interpolation',
@@ -82,7 +88,7 @@ setup(
             language='c++',
         ),
         Extension(
-            'scientific_toolbox.ODE',
+            'scientific_toolbox._ODE',
             sources=[
                 "python_bindings/ode_bindings.cpp",
                 *glob.glob("src/ODE_Module/*.cpp"),
@@ -113,17 +119,17 @@ setup(
             'scientific_toolbox.utilities',
             sources=[
                 "python_bindings/utilities_bindings.cpp",
-                *glob.glob("src/Utilities_Module/*.cpp"),
             ],
             include_dirs=[
                 "extern/pybind11/include",
                 "include",
             ],
             language='c++',
-            extra_compile_args=["-std=c++17"] 
-        )
+            extra_compile_args=["-std=c++17"],
+        ),
     ],
     cmdclass={'build_ext': BuildExt},
+
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
