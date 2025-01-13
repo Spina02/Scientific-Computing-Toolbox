@@ -14,7 +14,6 @@ class Interpolator:
         self.output_dir = output_dir
         self.data = None
         self.method = "linear"
-        self.value_to_interpolate = 0.5
         self.interp = None
 
 
@@ -38,7 +37,7 @@ class Interpolator:
     def choose_value_to_interpolate(self):
         value_to_interpolate = input(f"Enter the value to interpolate (in the range [{min(self.data['x'])}, {max(self.data['x'])}]): ")
         if not value_to_interpolate:
-            self.value_to_interpolate = 0.5
+            self.value_to_interpolate = (max(self.data['x']) - min(self.data['x'])) / 2
             print("No value was entered, using 0.5")
         else:
             self.value_to_interpolate = float(value_to_interpolate)
