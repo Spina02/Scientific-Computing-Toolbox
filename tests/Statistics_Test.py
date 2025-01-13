@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT_DIR, 'lib', 'python'))  
 
-import stats_cpp
+import stats
 
 
 
@@ -48,7 +48,7 @@ class TestStatisticsModule(unittest.TestCase):
         Basic test that verifies dataset creation, row addition, 
         column names, and dataset size.
         """
-        ds = stats_cpp.Dataset()
+        ds = stats.Dataset()
         self.assertEqual(ds.size(), 0, "New dataset should be empty.")
 
         row_1 = {"A": 1.0, "B": 2.0, "C": "foo"}
@@ -74,11 +74,11 @@ class TestStatisticsModule(unittest.TestCase):
 
         samples = [random.gauss(mu, sigma) for _ in range(n_samples)]
 
-        ds = stats_cpp.Dataset()
+        ds = stats.Dataset()
         for val in samples:
             ds.addRow({"X": val})
 
-        analyzer = stats_cpp.StatisticalAnalyzer(ds)
+        analyzer = stats.StatisticalAnalyzer(ds)
 
        
         calc_mean = analyzer.mean("X")
@@ -106,13 +106,13 @@ class TestStatisticsModule(unittest.TestCase):
         """
         Tests the median calculation using a small set of known values.
         """
-        ds = stats_cpp.Dataset()
+        ds = stats.Dataset()
 
       
         for val in [10.0, 2.0, 5.0, 7.0]:
             ds.addRow({"Val": val})
 
-        analyzer = stats_cpp.StatisticalAnalyzer(ds)
+        analyzer = stats.StatisticalAnalyzer(ds)
         self.assertEqual(analyzer.median("Val"), 6.0,
                          "Median should be the average of (5.0 and 7.0).")
 
@@ -127,7 +127,7 @@ class TestStatisticsModule(unittest.TestCase):
         Test correlationMatrix and reportStrongCorrelations 
         with well-controlled data.
         """
-        ds = stats_cpp.Dataset()
+        ds = stats.Dataset()
         n_samples = 1000
 
         # X ~ Uniform(0,1)
@@ -140,7 +140,7 @@ class TestStatisticsModule(unittest.TestCase):
         for x, y, z in zip(x_vals, y_vals, z_vals):
             ds.addRow({"X": x, "Y": y, "Z": z})
 
-        analyzer = stats_cpp.StatisticalAnalyzer(ds)
+        analyzer = stats.StatisticalAnalyzer(ds)
         col_names = ["X", "Y", "Z"]
         corr_mtx = analyzer.correlationMatrix(col_names)
 
@@ -174,21 +174,21 @@ class TestStatisticsModule(unittest.TestCase):
         """
         Ensure that calling methods on an empty dataset raises exceptions.
         """
-        ds = stats_cpp.Dataset()
+        ds = stats.Dataset()
         with self.assertRaises(RuntimeError):
             _ = ds.getColumnNames()
 
         with self.assertRaises(RuntimeError):
-            analyzer = stats_cpp.StatisticalAnalyzer(ds)
+            analyzer = stats.StatisticalAnalyzer(ds)
             _ = analyzer.mean("NonExistent")
 
     def test_invalid_column_errors(self):
         """
         Ensure that calling methods on non-existent columns raises exceptions.
         """
-        ds = stats_cpp.Dataset()
+        ds = stats.Dataset()
         ds.addRow({"A": 1.0})
-        analyzer = stats_cpp.StatisticalAnalyzer(ds)
+        analyzer = stats.StatisticalAnalyzer(ds)
 
         with self.assertRaises(Exception):
             _ = analyzer.mean("NonExistent")
@@ -207,11 +207,11 @@ class TestStatisticsModule(unittest.TestCase):
         np_data = np.random.normal(loc=5.0, scale=2.0, size=n_samples)
 
       
-        ds = stats_cpp.Dataset()
+        ds = stats.Dataset()
         for val in np_data:
             ds.addRow({"Rand": float(val)})
 
-        analyzer = stats_cpp.StatisticalAnalyzer(ds)
+        analyzer = stats.StatisticalAnalyzer(ds)
 
      
         cxx_mean = analyzer.mean("Rand")
@@ -273,11 +273,11 @@ class TestStatisticsModule(unittest.TestCase):
         corr_col = np_data * 2.0 + np.random.normal(0, 1, n_samples)
 
         
-        ds2 = stats_cpp.Dataset()
+        ds2 = stats.Dataset()
         for val, val2 in zip(np_data, corr_col):
             ds2.addRow({"Rand": float(val), "CorrRand": float(val2)})
 
-        analyzer2 = stats_cpp.StatisticalAnalyzer(ds2)
+        analyzer2 = stats.StatisticalAnalyzer(ds2)
         col_names = ["Rand", "CorrRand"]
         corr_matrix = analyzer2.correlationMatrix(col_names)
         

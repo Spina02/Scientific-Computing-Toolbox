@@ -6,7 +6,7 @@ import datetime
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(ROOT_DIR, 'lib', 'python'))
 
-import stats_cpp
+import stats
 
 class StatisticsAnalyzer:
     def __init__(self, data_dir='../data/', output_dir='../output/'):
@@ -40,11 +40,11 @@ class StatisticsAnalyzer:
             raise FileNotFoundError(f"File '{data_path}' not found.")
             
         self.dataset = self._read_csv_to_dataset(data_path)
-        self.analyzer = stats_cpp.StatisticalAnalyzer(self.dataset)
+        self.analyzer = stats.StatisticalAnalyzer(self.dataset)
         self._identify_numeric_columns()
 
     def _read_csv_to_dataset(self, file_path):
-        dataset = stats_cpp.Dataset()
+        dataset = stats.Dataset()
         with open(file_path, mode='r', newline='', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for row in reader:

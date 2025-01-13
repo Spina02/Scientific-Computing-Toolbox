@@ -20,7 +20,7 @@ using namespace ScientificToolbox::Statistics;
 
 
 
-PYBIND11_MODULE(stats_cpp, m) {
+PYBIND11_MODULE(stats, m) {
     m.doc() = "Python bindings for the statistics module";
 
     py::class_<Dataset, std::shared_ptr<Dataset>>(m, "Dataset")

@@ -30,10 +30,10 @@ set(BIN_DIR ${ROOT_DIR}/bin)
 set(PY_DIR ${ROOT_DIR}/python_bindings)
 
 # Create pybind11 module
-pybind11_add_module(stats_cpp ${PY_DIR}/statistics_bindings.cpp)
+pybind11_add_module(stats ${PY_DIR}/statistics_bindings.cpp)
 
 # Add include directories for the module
-target_include_directories(stats_cpp PRIVATE
+target_include_directories(stats PRIVATE
     ${INCLUDE_DIR}
     ${MODULE_INCLUDE_DIR}
     ${EIGEN3_INCLUDE_DIR}
@@ -41,7 +41,7 @@ target_include_directories(stats_cpp PRIVATE
 
 
 # Link the pybind11 module to Eigen3
-target_link_libraries(stats_cpp PRIVATE Eigen3::Eigen)
+target_link_libraries(stats PRIVATE Eigen3::Eigen)
 
 
 
@@ -61,7 +61,7 @@ target_include_directories(${MODULE} PUBLIC
     ${EIGEN3_INCLUDE_DIR}
 )
 # Link with required libraries
-target_link_libraries(stats_cpp PRIVATE 
+target_link_libraries(stats PRIVATE 
     ${MODULE}
     Eigen3::Eigen
 )
@@ -127,7 +127,7 @@ set(PYTHON_MODULE_DIR ${ROOT_DIR}/lib/python)
 file(MAKE_DIRECTORY ${PYTHON_MODULE_DIR})
 
 # Set the output directory for the Python module
-set_target_properties(stats_cpp PROPERTIES
+set_target_properties(stats PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${PYTHON_MODULE_DIR}
     PREFIX ""
     SUFFIX ".so"
@@ -141,7 +141,7 @@ set(PYTHON_MAIN_SCRIPT ${ROOT_DIR}/main/Statistics_Module_main.py)
 
 
 
-add_custom_target(setup-venv-stats_cpp
+add_custom_target(setup-venv-stats
     COMMAND ${Python3_EXECUTABLE} -m venv ${VENV_DIR}
     COMMAND ${VENV_DIR}/bin/pip install --upgrade pip
     COMMAND ${VENV_DIR}/bin/pip install -r ${REQUIREMENTS_FILE}
@@ -154,7 +154,7 @@ add_custom_target(py-test-statistics
     COMMAND ${VENV_DIR}/bin/python ${PYTHON_TEST_SCRIPT}
     COMMENT "Running Python test script"
     WORKING_DIRECTORY ${TEST_DIR}
-    DEPENDS setup-venv-stats_cpp 
+    DEPENDS setup-venv-stats 
 )
 
 
@@ -162,5 +162,5 @@ add_custom_target(py-run-statistics
     COMMAND ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT}            ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT} ${ARGS}
     COMMENT "Running Python main script"
     WORKING_DIRECTORY ${MAIN_DIR}
-    DEPENDS setup-venv-stats_cpp stats_cpp
+    DEPENDS setup-venv-stats stats
 )
