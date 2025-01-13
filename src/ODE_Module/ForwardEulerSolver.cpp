@@ -15,6 +15,7 @@ ODESolution ForwardEulerSolver::solve() const {
     var_vec y = y0;
     int n = static_cast<int>((tf - t0) / h);
 
+    // Determine size of the solution (= system rank)
     solution.size = std::visit([](const auto& val) -> size_t {
         using T = std::decay_t<decltype(val)>;
         if constexpr (std::is_same_v<T, double>) {

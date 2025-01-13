@@ -5,28 +5,24 @@ import matplotlib.colors as mc
 import colorsys
 import os
 import sys
-
-#script_dir = os.path.dirname(__file__)  # Directory of the current script
-#build_dir = os.path.join(script_dir, '../build/src/ODE_Module/')  # Adjust the relative path
-#sys.path.append(build_dir)
-#
-## Now you can import your module
-#import ODE
+from scipy.integrate import solve_ivp
 
 class ODEAnalysis:
     def __init__(self):
-        self.script_dir = os.path.dirname(__file__)  # Directory of the current script
-        self.build_dir = os.path.join(self.script_dir, 'build/src/ODE_Module/')  # Adjust the relative path
-        self.data_dir = os.path.join(self.script_dir, 'data/')
-        self.src_dir = os.path.join(self.script_dir, 'src/ODE_Module')
-        sys.path.append(self.build_dir)
-        sys.path.append(self.src_dir)
+        self.script_dir = os.path.abspath(os.path.normpath(os.path.dirname(__file__)))
+        self.root_dir = os.path.abspath(os.path.normpath(os.path.join(self.script_dir, '../../')))
+        self.build_dir = os.path.join(self.root_dir, 'build/src/ODE_Module/')
         
-        print(f"Importing paths...{self.build_dir}, {self.data_dir} and {self.src_dir}")
+        # Add build directory to path for compiled modules
+        if self.build_dir not in sys.path:
+            sys.path.insert(0, self.build_dir)
         
+        # Import after path setup
         import ODE
-        from utilities import timer_decorator 
-        from Assignments.homework_2.src.ODE_Module.analysis import plot_solution, compare_solvers
+        import utilities
+        
+        self.ODE = ODE
+        self.timer_decorator = utilities.timer_decorator
         
     def plot_solution(self, sol, title=None):
         t_values = np.array(sol.get_times())
@@ -51,7 +47,7 @@ class ODEAnalysis:
             ax = fig.add_subplot(gridspec[0, eq])
             
             # Linea standard per la soluzione
-            ax.plot(t_values, y[eq], label='Soluzione', linestyle='-', linewidth=2, color=lighten_color('blue', 0.7))
+            ax.plot(t_values, y[eq], label='Soluzione', linestyle='-', linewidth=2, color=self._lighten_color('blue', 0.7))
             
             ax.set_ylabel(f'$y_{eq+1}$')
             ax.set_xlabel('$t$')
@@ -91,28 +87,35 @@ class ODEAnalysis:
         except:
             pass  # Fallback for other backends"""
 
-    def compare_solvers(self, data, solvers=None):
-        # If no solvers are specified, get all available solver types
+    def compare_solvers(self, data, solvers=None, ):
         if solvers is None:
-            solvers = ODE.get_solver_types()
+            solvers = self.ODE.get_solver_types()
             
         for test_case in data:
             solutions = {}
             
             # Map solver names to their corresponding classes
             solvers_map = {
-                "ForwardEulerSolver": ODE.ForwardEulerSolver,
-                "ExplicitMidpointSolver": ODE.ExplicitMidpointSolver,
-                "RK4Solver": ODE.RK4Solver
+                "ForwardEulerSolver": self.ODE.ForwardEulerSolver,
+                "ExplicitMidpointSolver": self.ODE.ExplicitMidpointSolver,
+                "RK4Solver": self.ODE.RK4Solver
             }
+            
+            # Create a wrapper function for timing
+            @self.timer_decorator
+            def solve_wrapper(solver, solver_name):
+                print(f"Solving {test_case.expr} with {solver_name}...")
+                return solver.solve()
 
             # Solve the test_case with each solver
             for solver_name in solvers:
                 solver_cls = solvers_map.get(solver_name)
                 if solver_cls is None:
                     raise ValueError(f"Solver {solver_name} not recognized.")
+                    
                 solver = solver_cls(test_case)
-                solutions[solver_name] = solver.solve()
+                solution = solve_wrapper(solver, solver_name)
+                solutions[solver_name] = solution
             
             # Number of equations in the system
             num_eq = solutions[next(iter(solutions))].get_size()
@@ -171,3 +174,82 @@ class ODEAnalysis:
             plt.suptitle(f"Solutions for ODE: {test_case.expr}")
             plt.tight_layout()
             plt.show()
+
+    def compare_cpp_py(self, data):
+        # Map solver names to scipy methods
+        solvers_map = {
+            "ForwardEulerSolver": {
+                "cpp": self.ODE.ForwardEulerSolver,
+                "py": "RK23",  # Scipy equivalent
+            },
+            "ExplicitMidpointSolver": {
+                "cpp": self.ODE.ExplicitMidpointSolver,
+                "py": "RK23",  # Midpoint simulated with RK23
+            },
+            "RK4Solver": {
+                "cpp": self.ODE.RK4Solver,
+                "py": "RK45",  # Scipy equivalent
+            },
+        }
+
+        # Wrapper for C++ solvers
+        @self.timer_decorator
+        def cpp_solve_wrapper(solver, solver_name):
+            print("C++: ")
+            return solver.solve().get_result()
+
+        # Wrapper for Python solvers using scipy
+        @self.timer_decorator
+        def py_solve_wrapper(py_solver_method, test_case):
+            print("Scipy: ")
+            
+            import numpy as np
+            from scipy.integrate import solve_ivp
+
+            # Assicura che y0 sia un array 1D
+            y0 = np.atleast_1d(test_case.y0).astype(float)
+
+            # Costruisci la funzione
+            fun = self.ODE.parseExpression(test_case.expr)
+
+            # Genera i punti di valutazione
+            t_points = np.arange(test_case.t0, test_case.tf + test_case.h, test_case.h)
+
+            # Risolvi con SciPy
+            solution = solve_ivp(fun,
+                                (test_case.t0, test_case.tf),
+                                y0,
+                                method=py_solver_method,
+                                t_eval=t_points)
+            
+            sol = solution.y[:, -1]
+            
+            # if sol is a 1D array, return the value
+            if len(sol) == 1:
+                return sol[0]
+            return sol
+
+        # Iterate over test cases
+        for test_case in data:
+            for solver_name, solvers in solvers_map.items():
+                # Get the C++ and Python solver classes
+                cpp_solver_cls = solvers["cpp"]
+                py_solver_method = solvers["py"]
+
+                try:
+                    print(f"Solving {test_case.expr} with {solver_name}...")
+                    expected = test_case.get_expected_solution()
+                    print(f"Expected solution: {expected}")
+                    # Solve using the C++ solver
+                    cpp_solver = cpp_solver_cls(test_case)
+                    cpp_solution = cpp_solve_wrapper(cpp_solver, solver_name)
+                    print(f"C++ solution:\t{cpp_solution},\terror:\t{self.ODE.compute_error(cpp_solution, expected)}")
+
+                    # Solve using the Python solver
+                    py_solution = py_solve_wrapper(py_solver_method, test_case)
+                    print(f"Py solution:\t{py_solution},\terror:\t{self.ODE.compute_error(py_solution, expected)}")
+
+                    print()
+                    
+                except Exception as e:
+                    print(f"Error : {e}")

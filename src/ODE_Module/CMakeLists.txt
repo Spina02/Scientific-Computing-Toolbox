@@ -131,7 +131,7 @@ endif()
 
 # Define variables for paths
 set(VENV_DIR ${ROOT_DIR}/venv)
-set(REQUIREMENTS_FILE ${ROOT_DIR}/scripts/requirements.txt)
+set(REQUIREMENTS_FILE ${ROOT_DIR}/ode_env/requirements.txt)
 set(PYTHON_TEST_SCRIPT ${ROOT_DIR}/tests/ODE_Test.py)
 set(PYTHON_MAIN_SCRIPT ${ROOT_DIR}/main/ODE_Module_main.py)
 
@@ -140,7 +140,9 @@ add_custom_target(setup-venv-ode
     COMMAND ${Python3_EXECUTABLE} -m venv ${VENV_DIR}
     COMMAND ${VENV_DIR}/bin/pip install --upgrade pip
     COMMAND ${VENV_DIR}/bin/pip install -r ${REQUIREMENTS_FILE}
-    COMMENT "Setting up the virtual environment and installing dependencies"
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target utilities
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ODE
+    COMMENT "Setting up virtual environment and building Python modules"
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 

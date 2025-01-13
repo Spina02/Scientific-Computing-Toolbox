@@ -41,8 +41,8 @@ int main(int argc, char** argv) {
          * NOTE: 
          *   The ODE solvers return an ODESolution object:
          *       you can modify the number of steps to print changing
-         *       the value of ODESolution.steps [default = 10]) 
-         *       Use ODESolution.steps = ODESolution.size to print all steps
+         *       the value of ODESolution.steps_to_print [default = 10]) 
+         *       Use ODESolution.steps_to_print = ODESolution.size to print all steps
          *       Use the get_result() method to access the final value
          */
 
@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
         auto euler_solution = euler.solve(); // solve without measuring execution time
         //auto euler_solution = solve_and_measure_execution_time(euler); // solve and measure execution time
         // Print the trajectory using 2 steps
-        euler_solution.steps = 2;
+        euler_solution.steps_to_print = 2;
         std::cout << euler_solution << std::endl;
 
         // Solve using Explicit Midpoint
@@ -112,7 +112,7 @@ int main(int argc, char** argv) {
         auto midpoint_solution = midpoint.solve(); // solve without measuring execution time
         //auto midpoint_solution = solve_and_measure_execution_time(midpoint); // solve and measure execution time
         // Print the trajectory using 4 steps
-        midpoint_solution.steps = 4;
+        midpoint_solution.steps_to_print = 4;
         std::cout << midpoint_solution << std::endl;
 
         // Solve using RK4
@@ -121,15 +121,15 @@ int main(int argc, char** argv) {
         auto rk4_solution = rk4.solve(); // solve without measuring execution time
         //auto rk4_solution = solve_and_measure_execution_time(rk4); // solve and measure execution time
         // Print the trajectory using 6 steps
-        rk4_solution.steps = 6;
+        rk4_solution.steps_to_print = 6;
         std::cout << rk4_solution << std::endl;
 
         // Save results to CSV
-        save_on_CSV(outputFolder / path("scalar_ode_results_FE.csv") , euler_solution);
+        save_to_csv(outputFolder / path("scalar_ode_results_FE.csv") , euler_solution);
         std::cout << "results saved on output/ODE_Module/scalar_ode_results_FE.csv" << std::endl;
-        save_on_CSV(outputFolder / path("scalar_ode_results_EM.csv") , midpoint_solution);
+        save_to_csv(outputFolder / path("scalar_ode_results_EM.csv") , midpoint_solution);
         std::cout << "results saved on output/ODE_Module/scalar_ode_results_EM.csv" << std::endl;
-        save_on_CSV(outputFolder / path("scalar_ode_results_RK4.csv") , rk4_solution);
+        save_to_csv(outputFolder / path("scalar_ode_results_RK4.csv") , rk4_solution);
         std::cout << "results saved on output/ODE_Module/scalar_ode_results_RK4.csv" << std::endl;
 
         // Example 2: Vector ODE (predator-prey model)
@@ -152,26 +152,26 @@ int main(int argc, char** argv) {
         // Solve using Forward Euler
         auto vector_euler = ForwardEulerSolver(vector_expr, vector_y0, t0, tf, h);
         auto vector_euler_solution= vector_euler.solve();
-        vector_euler_solution.steps = 5;
+        vector_euler_solution.steps_to_print = 5;
         std::cout << vector_euler_solution << std::endl;
 
         // Solve using Explicit Midpoint
         auto vector_midpoint = ExplicitMidpointSolver(vector_expr, vector_y0, t0, tf, h);
         auto vector_midpoint_solution= vector_midpoint.solve();
-        vector_midpoint_solution.steps = 5;
+        vector_midpoint_solution.steps_to_print = 5;
         std::cout << vector_midpoint_solution << std::endl;
 
         // Solve using RK4
         auto vector_rk4 = RK4Solver(vector_expr, vector_y0, t0, tf, h);
         auto vector_solution= vector_rk4.solve();
-        vector_solution.steps = 5;
+        vector_solution.steps_to_print = 5;
         std::cout << vector_solution << std::endl;
 
-        save_on_CSV(outputFolder / path("vector_ode_results_FE.csv"), vector_euler_solution);
+        save_to_csv(outputFolder / path("vector_ode_results_FE.csv"), vector_euler_solution);
         std::cout << "results saved on output/ODE_Module/vector_ode_results_FE.csv" << std::endl;
-        save_on_CSV(outputFolder / path("vector_ode_results_EM.csv"), vector_midpoint_solution);
+        save_to_csv(outputFolder / path("vector_ode_results_EM.csv"), vector_midpoint_solution);
         std::cout << "results saved on output/ODE_Module/vector_ode_results_EM.csv" << std::endl;
-        save_on_CSV(outputFolder / path("vector_ode_results_RK4.csv"), vector_solution);
+        save_to_csv(outputFolder / path("vector_ode_results_RK4.csv"), vector_solution);
         std::cout << "results saved on output/ODE_Module/vector_ode_results_RK4.csv" << std::endl;
         */
     } catch (const std::exception& e) {

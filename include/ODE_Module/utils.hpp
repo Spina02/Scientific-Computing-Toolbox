@@ -34,12 +34,12 @@ var_func parseExpression(const var_expr& expr);
  */
 var_expr parse_var_expr(const std::string& str);
 
-/** ### save_on_CSV
+/** ### save_to_csv
  * @brief Save ODE solution data to a CSV file
  * @param filename Path to the output CSV file
  * @param solution ODE solution data to save
  */
-void save_on_CSV(const std::string& filename, const ODESolution& solution);
+void save_to_csv(const std::string& filename, const ODESolution& solution, bool append = false);
 
 /** ### load_tests_from_csv
  * @brief Load test cases from a CSV file

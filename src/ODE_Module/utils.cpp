@@ -94,12 +94,17 @@ var_func parseExpression(const var_expr& ex) {
     }
 }
 
-void save_on_CSV(const std::string& filename, const ODESolution& solution) {
-    int n = solution.size;
+void save_to_csv(const std::string& filename, const ODESolution& solution, bool append) {
+    int n = solution.get_solution().size() - 1;
     // create folder it does not exist
     std::filesystem::create_directories(std::filesystem::path(filename).parent_path());
     // open file
-    std::ofstream file(filename);
+    std::ofstream file;
+    if (append) {
+        file.open(filename, std::ios::app);
+    } else {
+        file.open(filename);
+    }
     // check if file is open
     if (!file.is_open())
         throw std::runtime_error("Could not open file for writing.");
@@ -113,7 +118,6 @@ void save_on_CSV(const std::string& filename, const ODESolution& solution) {
             headers.push_back("y" + std::to_string(i+1));
     else
         headers.push_back("y");
-
 
     // write headers
     for (size_t i = 0; i < headers.size(); ++i) {
@@ -254,19 +258,19 @@ void parse_test_case(const std::unordered_map<std::string, OptionalDataValue>& r
         try {
             test.y0 = parse_var_vec(std::get<double>(row.at("y0").value()));
             try {
-                test.expected_final = parse_var_vec(std::get<double>(row.at("expected_final").value()));
+                test.expected_solution = parse_var_vec(std::get<double>(row.at("expected_solution").value()));
                 test.expected_derivative = parse_var_vec(std::get<double>(row.at("expected_derivative").value()));
             } catch (...) {
-                test.expected_final = std::nullopt;
+                test.expected_solution = std::nullopt;
                 test.expected_derivative  = std::nullopt;
             }
         } catch (...) {
             test.y0 = parse_var_vec(std::get<std::string>(row.at("y0").value()));
             try {
-                test.expected_final = parse_var_vec(std::get<std::string>(row.at("expected_final").value()));
+                test.expected_solution = parse_var_vec(std::get<std::string>(row.at("expected_solution").value()));
                 test.expected_derivative = parse_var_vec(std::get<std::string>(row.at("expected_derivative").value()));
             } catch (...) {
-                test.expected_final = std::nullopt;
+                test.expected_solution = std::nullopt;
                 test.expected_derivative  = std::nullopt;
             }
         }

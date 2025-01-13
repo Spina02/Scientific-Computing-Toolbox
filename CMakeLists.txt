@@ -33,7 +33,7 @@ add_custom_target(test-all
 # Root-level py run target
 add_custom_target(py-run-all
     COMMAND ${CMAKE_COMMAND} --build . --target py-run-interpolation
-    #COMMAND ${CMAKE_COMMAND} --build . --target py-run-ode
+    COMMAND ${CMAKE_COMMAND} --build . --target py-run-ode
     COMMAND ${CMAKE_COMMAND} --build . --target py-run-statistics
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
@@ -75,3 +75,12 @@ add_custom_target(py-test-${short}
 endmacro()
 create_alias(int interpolation)
 create_alias(stat statistics)
+
+# Build utilities Python module
+pybind11_add_module(utilities python_bindings/utilities_bindings.cpp)
+target_link_libraries(utilities PRIVATE Utilities)
+
+# Set output directory for Python modules
+set_target_properties(utilities PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/ODE_Module
+)

@@ -49,16 +49,16 @@ struct ODESolution {
     int size;
     vec_d t_values;
     var_vecs y_values;
-    int steps = 10;
+    int steps_to_print = 10;
 
-    var_vecs get_solution() { return y_values; }
-    var_vec get_result() { return y_values.back(); }
-    vec_d& get_times() { return t_values; }
-    var_expr get_expr() { return expr; }
-    int get_size() {return size; }
-    var_vec get_initial_conditions() { return y_values.front(); }
-    double get_final_time() { return t_values(t_values.size() - 1); }
-    double get_step_size() { return (t_values(t_values.size() - 1) - t_values(0)) / static_cast<double>(t_values.size()); }
+    var_vecs get_solution() const { return y_values; }
+    var_vec get_result() const { return y_values.back(); }
+    vec_d get_times() const { return t_values; }
+    var_expr get_expr() const { return expr; }
+    int get_size() const {return size; }
+    var_vec get_initial_conditions() const { return y_values.front(); }
+    double get_final_time() const { return t_values(t_values.size() - 1); }
+    double get_step_size() const { return (t_values(t_values.size() - 1) - t_values(0)) / static_cast<double>(t_values.size()); }
 };
 
 /**
@@ -69,7 +69,7 @@ struct ODESolution {
  * @param tf Final time
  * @param h Step size
  * @param y0 Initial condition
- * @param expected_final Expected solution at final time
+ * @param expected_solution Expected solution at final time
  * @param expected_derivative Expected derivative value
  */
 struct ODETestCase {
@@ -78,8 +78,11 @@ struct ODETestCase {
     double tf;
     double h;
     var_vec y0;
-    std::optional<var_vec> expected_final;
+    std::optional<var_vec> expected_solution;
     std::optional<var_vec> expected_derivative;
+
+    bool has_expected_solution() const { return expected_solution.has_value(); }
+    std::optional<var_vec> get_expected_solution() const { return expected_solution; }
 };
 
 /**

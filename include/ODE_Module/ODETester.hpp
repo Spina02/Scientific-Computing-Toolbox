@@ -20,7 +20,7 @@
 /**
  * @namespace ScientificToolbox::ODE
  * @brief Namespace containing utilities for Ordinary Differential Equations (ODE) handling
-*/
+ */
 namespace ScientificToolbox::ODE {
 
 /**
@@ -48,6 +48,36 @@ public:
     bool run_ode_tests() const;
 
 private:
+    /** ### almost_equal
+     * @brief Check if two var_vecs are almost equal
+     * @param a First vector
+     * @param b Second vector
+     * @param tol Tolerance for comparison
+     * @return true if the vectors are almost equal, false otherwise
+     */
+    bool almost_equal(const var_vec& a, const var_vec& b, double tol = 1e-10) const {
+        return std::visit([tol](const auto& x, const auto& y) -> bool {
+            using T1 = std::decay_t<decltype(x)>;
+            using T2 = std::decay_t<decltype(y)>;
+
+            // If types don't match, they're not equal
+            if constexpr (!std::is_same_v<T1, T2>) {
+                return false;
+            }
+            // Both are doubles
+            else if constexpr (std::is_same_v<T1, double>) {
+                return std::abs(x - y) <= tol;
+            }
+            // Both are vectors
+            else {
+                if (x.size() != y.size()) return false;
+                for (size_t i = 0; i < x.size(); ++i) {
+                    if (std::abs(x[i] - y[i]) > tol) return false;
+                }
+                return true;
+            }
+        }, a, b);
+    }
     /** ### test_expression
      * @brief Run a single test case for the expression parser
      * @param expr_variant Variant containing the expression to test

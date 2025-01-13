@@ -11,7 +11,12 @@ PYBIND11_MODULE(ODE, m) {
     m.doc() = "Python bindings for the ODE module";
 
     // Data importer:
-    m.def("load_tests_from_csv", &load_tests_from_csv);
+    m.def("load_tests_from_csv", &load_tests_from_csv, py::arg("filename"));
+
+    m.def("save_to_csv", &save_to_csv, 
+        py::arg("filename"), 
+        py::arg("solution"), 
+        py::arg("append") = false);
 
     // ODETestCase class
     py::class_<ODETestCase>(m, "ODETestCase")
@@ -20,8 +25,15 @@ PYBIND11_MODULE(ODE, m) {
         .def_readwrite("tf", &ODETestCase::tf)
         .def_readwrite("h", &ODETestCase::h)
         .def_readwrite("y0", &ODETestCase::y0)
-        .def_readwrite("expected_final", &ODETestCase::expected_final)
-        .def_readwrite("expected_derivative", &ODETestCase::expected_derivative);
+        .def_readwrite("expected_solution", &ODETestCase::expected_solution)
+        .def_readwrite("expected_derivative", &ODETestCase::expected_derivative)
+        .def("has_expected_solution", &ODETestCase::has_expected_solution)
+        .def("get_expected_solution", &ODETestCase::get_expected_solution)
+        .def("__str__", [](const ODETestCase& tc) {
+            std::ostringstream ss;
+            ss << tc;
+            return ss.str();
+        });
 
     // ODESolution class
     py::class_<ODESolution>(m, "ODESolution")
@@ -32,7 +44,12 @@ PYBIND11_MODULE(ODE, m) {
         .def("get_expr", &ODESolution::get_expr)
         .def("get_initial_conditions", &ODESolution::get_initial_conditions)
         .def("get_final_time", &ODESolution::get_final_time)
-        .def("get_step_size", &ODESolution::get_step_size);
+        .def("get_step_size", &ODESolution::get_step_size)
+        .def("__str__", [](const ODESolution& sol) {
+            std::ostringstream ss;
+            ss << sol;
+            return ss.str();
+        });
 
     // ODESolver class
     py::class_<ODESolver>(m, "ODESolver")

@@ -43,8 +43,12 @@ bool ODETester::test_expression(ODETestCase test, int test_num) const {
             std::cout << "  Expected:   " << ex << "\n  Got:        " << res << std::endl << std::endl;
         }, result, expected_val);
     }
-    if (result != expected_val) {
+    if (!almost_equal(result, expected_val)) {
+        std::cout << "  Result: " << result << std::endl << "  Expected: " << expected_val << std::endl;
         std::cout << "  Test " << test_num << " failed: Value is incorrect" <<std::endl;
+        if (DEBUG)
+            std::cout << std::endl << "------------------------------------------" << std::endl;
+        return false;
     }
     std::cout << "  Test " << test_num << " passed" << std::endl;
 
@@ -92,7 +96,7 @@ bool ODETester::test_simple_ode(const ODETestCase& test_case, const std::string 
 
     var_expr expr_variant;
     double t0, tf, h;
-    var_vec y0, expected_final;
+    var_vec y0, expected_solution;
 
     
     expr_variant = test_case.expr;
@@ -100,11 +104,11 @@ bool ODETester::test_simple_ode(const ODETestCase& test_case, const std::string 
     tf = test_case.tf;
     h = test_case.h;
     y0 = test_case.y0;
-    if (!test_case.expected_final.has_value()) {
+    if (!test_case.expected_solution.has_value()) {
         std::cout << "  Test " << test_num << " failed: Expected value not provided" << std::endl;
         return false;
     } else {
-        expected_final = test_case.expected_final.value();
+        expected_solution = test_case.expected_solution.value();
     }
 
 
@@ -146,7 +150,7 @@ bool ODETester::test_simple_ode(const ODETestCase& test_case, const std::string 
 
     const var_vec& final_value = results.back();
 
-    double error = compute_error(final_value, expected_final);
+    double error = compute_error(final_value, expected_solution);
 
     if (DEBUG) {
         // Save current format flags
@@ -157,7 +161,7 @@ bool ODETester::test_simple_ode(const ODETestCase& test_case, const std::string 
 
         std::cout << "  Comparing final values:" << std::endl;
         std::cout << std::endl;
-        std::cout << "    Expected: " << expected_final << std::endl;
+        std::cout << "    Expected: " << expected_solution << std::endl;
         std::cout << "    Got:      " << final_value << std::endl;
         std::cout << "    Error: " << error << std::endl;
         std::cout << std::endl;
