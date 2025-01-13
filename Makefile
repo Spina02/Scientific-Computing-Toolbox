@@ -65,7 +65,7 @@ clean:
 		module="$(word 2,$(MAKECMDGOALS))"; \
 		rm -rf build/src/$$module/*; \
 	else \
-		rm -rf build/* lib/* bin/* output/* scientific_toolbox.egg-info; \
+		rm -rf build/* lib/* bin/* output/* venv scientific_toolbox.egg-info scientific_toolbox/*.so; \
 	fi
 
 # Targets for individual modules
