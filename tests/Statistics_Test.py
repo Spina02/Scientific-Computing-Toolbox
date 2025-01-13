@@ -20,34 +20,24 @@ import stats
 
 
 class TestStatisticsModule(unittest.TestCase):
-    """
-    A comprehensive set of tests for the C++-based 'statistics' module,
-    checking correctness, comparing with NumPy, and visualizing results
-    with matplotlib.
-    """
+    
 
     @classmethod
     def setUpClass(cls):
-        """
-        Called once before the entire test suite. 
-        Here we can seed RNG for reproducibility or create data
-        used by multiple tests.
-        """
+        
         random.seed(42)
         np.random.seed(42)
 
     def setUp(self):
-        """
-        Called before each test. 
-        """
+        
         pass
 
     
     def test_dataset_creation_and_integrity(self):
-        """
-        Basic test that verifies dataset creation, row addition, 
-        column names, and dataset size.
-        """
+       
+        # Basic test that verifies dataset creation, row addition, 
+        # column names, and dataset size.
+        
         ds = stats.Dataset()
         self.assertEqual(ds.size(), 0, "New dataset should be empty.")
 
@@ -65,10 +55,10 @@ class TestStatisticsModule(unittest.TestCase):
 
     
     def test_statistical_methods_normal_distribution(self):
-        """
-        Test mean, variance, std dev, and frequencyCount on a 
-        normally-distributed random sample. Compare to theoretical values.
-        """
+        
+        # Test mean, variance, std dev, and frequencyCount on a 
+        # normally-distributed random sample. Compare to theoretical values.
+        
         mu, sigma = 10.0, 3.0
         n_samples = 10_000
 
@@ -103,9 +93,9 @@ class TestStatisticsModule(unittest.TestCase):
 
     
     def test_median(self):
-        """
-        Tests the median calculation using a small set of known values.
-        """
+       
+        # Tests the median calculation using a small set of known values.
+       
         ds = stats.Dataset()
 
       
@@ -123,10 +113,10 @@ class TestStatisticsModule(unittest.TestCase):
 
   
     def test_correlation_matrix_and_strong_correlation(self):
-        """
-        Test correlationMatrix and reportStrongCorrelations 
-        with well-controlled data.
-        """
+        
+        # Test correlationMatrix and reportStrongCorrelations 
+        # with well-controlled data.
+    
         ds = stats.Dataset()
         n_samples = 1000
 
@@ -171,9 +161,9 @@ class TestStatisticsModule(unittest.TestCase):
 
 
     def test_empty_dataset_errors(self):
-        """
-        Ensure that calling methods on an empty dataset raises exceptions.
-        """
+        
+         # Ensure that calling methods on an empty dataset raises exceptions.
+        
         ds = stats.Dataset()
         with self.assertRaises(RuntimeError):
             _ = ds.getColumnNames()
@@ -183,9 +173,9 @@ class TestStatisticsModule(unittest.TestCase):
             _ = analyzer.mean("NonExistent")
 
     def test_invalid_column_errors(self):
-        """
-        Ensure that calling methods on non-existent columns raises exceptions.
-        """
+        
+        # Ensure that calling methods on non-existent columns raises exceptions.
+        
         ds = stats.Dataset()
         ds.addRow({"A": 1.0})
         analyzer = stats.StatisticalAnalyzer(ds)
@@ -198,11 +188,11 @@ class TestStatisticsModule(unittest.TestCase):
 
    
     def test_numpy_comparison_and_plot(self):
-        """
-        Compare performance & numeric consistency with NumPy,
-        then plot results with matplotlib.
-        This is more of a demonstration than a typical unit test.
-       """
+        
+        # Compare performance & numeric consistency with NumPy,
+        # then plot results with matplotlib.
+        # This is more of a demonstration than a typical unit test.
+       
         n_samples = 200000
         np_data = np.random.normal(loc=5.0, scale=2.0, size=n_samples)
 
