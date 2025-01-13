@@ -38,6 +38,35 @@ void Dataset::addRow(const std::unordered_map<std::string, OptionalDataValue>& r
     data.push_back(row);
 }
 
+
+
+
+bool Dataset::isNumericColumn(const std::string& columnName) const {
+    if (data.empty()) {
+        throw std::runtime_error("Cannot check column type in empty dataset");
+    }
+
+    
+    if (data[0].find(columnName) == data[0].end()) {
+        throw std::runtime_error("Column " + columnName + " not found");
+    }
+
+    
+    for (const auto& row : data) {
+        const auto& value = row.at(columnName);
+        
+        if (!value) continue; 
+
+        if (!std::holds_alternative<int>(value.value()) && 
+            !std::holds_alternative<double>(value.value())) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
 // Template specialization for numeric types
 template<typename T>
 std::vector<T> Dataset::getColumn(const std::string& columnName) const {
