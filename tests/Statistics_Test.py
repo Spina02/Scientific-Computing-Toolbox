@@ -203,7 +203,7 @@ class TestStatisticsModule(unittest.TestCase):
         then plot results with matplotlib.
         This is more of a demonstration than a typical unit test.
        """
-        n_samples = 200_000
+        n_samples = 200000
         np_data = np.random.normal(loc=5.0, scale=2.0, size=n_samples)
 
       
@@ -230,21 +230,41 @@ class TestStatisticsModule(unittest.TestCase):
             msg="C++ std dev should match NumPy std dev within tolerance.")
 
        
-        t0 = time.time()
-        _ = analyzer.mean("Rand")
-        _ = analyzer.variance("Rand")
-        _ = analyzer.standardDeviation("Rand")
-        cxx_time = time.time() - t0
+        start = time.time()
+        cxx_mean = analyzer.mean("Rand")
+        mean_cxx_time = time.time() - start
 
-        t1 = time.time()
-        _ = np.mean(np_data)
-        _ = np.var(np_data)
-        _ = np.std(np_data)
-        np_time = time.time() - t1
+        start = time.time()
+        py_mean = np.mean(np_data)
+        mean_py_time = time.time() - start
 
-        print("\nPerformance Comparison:")
-        print(f"  C++ (bindings) time: {cxx_time:.4f} seconds")
-        print(f"  NumPy time:          {np_time:.4f} seconds\n")
+        print("\nMean comparison:")
+        print(f"  C++ mean: {cxx_mean:.4f} (time: {mean_cxx_time:.4f} s)")
+        print(f"  NumPy mean: {py_mean:.4f} (time: {mean_py_time:.4f} s)")
+
+        start = time.time()
+        cxx_var = analyzer.variance("Rand")
+        var_cxx_time = time.time() - start
+
+        start = time.time()
+        py_var = np.var(np_data)
+        var_py_time = time.time() - start
+
+        print("\nVariance comparison:")
+        print(f"  C++ variance: {cxx_var:.4f} (time: {var_cxx_time:.4f} s)")
+        print(f"  NumPy variance: {py_var:.4f} (time: {var_py_time:.4f} s)")
+
+        start = time.time()
+        cxx_std = analyzer.standardDeviation("Rand")
+        std_cxx_time = time.time() - start
+
+        start = time.time()
+        py_std = np.std(np_data)
+        std_py_time = time.time() - start
+
+        print("\nStandard Deviation comparison:")
+        print(f"  C++ std: {cxx_std:.4f} (time: {std_cxx_time:.4f} s)")
+        print(f"  NumPy std: {py_std:.4f} (time: {std_py_time:.4f} s)\n")
 
        
 
