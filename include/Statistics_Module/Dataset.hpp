@@ -74,6 +74,12 @@ public:
 
     void addRow(const std::unordered_map<std::string, OptionalDataValue>& row);
 
+
+    bool isNumericColumn(const std::string& columnName) const;
+
+    
+
+
 private:
     std::vector<std::unordered_map<std::string, OptionalDataValue>> data;
 
