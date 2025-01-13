@@ -118,6 +118,7 @@ class InterpolationAnalysis:
             fig.legend(handles=external_legend_elements, loc='upper left', bbox_to_anchor=(0, 1), frameon=False)
 
             plt.tight_layout()
+            os.makedirs('../output', exist_ok=True)
             plt.savefig(f'../output/{filename_prefix}_interpolations.png')
 
     def analyze_accuracy(self, points, sparse_points):

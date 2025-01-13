@@ -5,7 +5,7 @@ project(ODE_Module)
 set(MODULE ODE_Module)
 
 # Compilation Flags
-set(CXXFLAGS "-Wall -Wpedantic -Wno-nested-anon-types -Werror  -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wpedantic -Wno-nested-anon-types -Werror  -fPIC")
 
 # Check dependencies muparser and eigen3 and if not found, give a message
 find_package(PkgConfig REQUIRED)

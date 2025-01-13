@@ -71,7 +71,8 @@ private:
             // Both are vectors
             else {
                 if (x.size() != y.size()) return false;
-                for (size_t i = 0; i < x.size(); ++i) {
+                // Change size_t to Eigen::Index to match vector size type
+                for (Eigen::Index i = 0; i < x.size(); ++i) {
                     if (std::abs(x[i] - y[i]) > tol) return false;
                 }
                 return true;

@@ -24,44 +24,42 @@ class ODEAnalysis:
         self.ODE = ODE
         self.timer_decorator = utilities.timer_decorator
         
-    def plot_solution(self, sol, title=None):
+    def plot_solution(self, sol, title=None, save_path=None, show=True):
+        """Plot ODE solution
+        
+        Args:
+            sol: ODE solution to plot
+            title: Optional title for the plot
+            save_path: Optional path to save the plot
+            show: Whether to display the plot with plt.show()
+        """
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
         t_values = np.array(sol.get_times())
-        y = sol.get_solution()
-        num_eq = sol.get_size()
+        y_values = np.array(sol.get_solution())
         
-        # Gestione dimensioni dinamiche
-        fig_width = max(15, 5 * num_eq)  # Almeno 15, ma aumenta con il numero di equazioni
-        fig_height = 6  # Altezza fissa o leggermente adattata
-        
-        fig = plt.figure(figsize=(fig_width, fig_height))
-        gridspec = GridSpec(1, num_eq, figure=fig)
-        
-        # Divide le soluzioni in base alle equazioni
-        if num_eq == 1:
-            y = [y]
+        if y_values.ndim == 1:
+            ax.plot(t_values, y_values, label='y(t)')
         else:
-            y = list(zip(*y))  # Trasponi per separare le equazioni
+            for i in range(y_values.shape[1]):
+                ax.plot(t_values, y_values[:, i], label=f'y{i+1}(t)')
         
-        # Creazione dei subplots
-        for eq in range(num_eq):
-            ax = fig.add_subplot(gridspec[0, eq])
-            
-            # Linea standard per la soluzione
-            ax.plot(t_values, y[eq], label='Soluzione', linestyle='-', linewidth=2, color=self._lighten_color('blue', 0.7))
-            
-            ax.set_ylabel(f'$y_{eq+1}$')
-            ax.set_xlabel('$t$')
-            ax.set_title(f"Equazione {eq+1}:\n{sol.get_expr()[eq]}", fontsize=12)
-            ax.legend()
-            ax.grid(True, alpha=0.3)
+        ax.set_xlabel('t')
+        ax.set_ylabel('y')
+        ax.grid(True)
+        ax.legend()
         
-        # Titolo generale
         if title:
-            fig.suptitle(title, fontsize=16)
-        
-        # Regolazione layout
-        fig.tight_layout()  # Lascia spazio per il titolo generale
-        plt.show()
+            ax.set_title(title)
+            
+        if save_path:
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            plt.savefig(save_path)
+            
+        if show:
+            plt.show()
+        else:
+            plt.close()
         
     def _lighten_color(self, color, amount=0.5):
                 """
@@ -87,7 +85,15 @@ class ODEAnalysis:
         except:
             pass  # Fallback for other backends"""
 
-    def compare_solvers(self, data, solvers=None, ):
+    def compare_solvers(self, data, solvers=None, save_path=None, show=True):
+        """Compare different ODE solvers
+        
+        Args:
+            data: Test cases data
+            solvers: Optional list of solvers to compare
+            save_path: Optional path to save the plot
+            show: Whether to display the plot with plt.show()
+        """
         if solvers is None:
             solvers = self.ODE.get_solver_types()
             
@@ -173,7 +179,15 @@ class ODEAnalysis:
             
             plt.suptitle(f"Solutions for ODE: {test_case.expr}")
             plt.tight_layout()
-            plt.show()
+            
+            if save_path:
+                os.makedirs(save_path, exist_ok=True)
+                plt.savefig(os.path.join(save_path, f"case_{eq_idx}.png"))
+                
+            if show:
+                plt.show()
+            else:
+                plt.close()
 
     def compare_cpp_py(self, data):
         # Map solver names to scipy methods

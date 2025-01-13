@@ -30,10 +30,10 @@ std::ostream& operator<<(std::ostream& os, ODETestCase test) {
     os << "  Step size         :\t" << test.h << std::endl;
     os << "  y(0)              :\t" << test.y0 << std::endl;
     if (test.expected_solution.has_value()) {
-        os << "  Expected final value:\t" << test.expected_solution.value() << std::endl;
+    os << "  expected result   :\t" << test.expected_solution.value() << std::endl;
     }
     if (test.expected_derivative.has_value()) {
-        os << "  Expected derivative:\t" << test.expected_derivative.value() << std::endl;
+    os << "  Expected y(t)     :\t" << test.expected_derivative.value() << std::endl;
     }
     return os;
 }

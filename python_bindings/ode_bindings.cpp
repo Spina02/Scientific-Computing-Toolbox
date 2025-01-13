@@ -27,6 +27,7 @@ PYBIND11_MODULE(ODE, m) {
         .def_readwrite("y0", &ODETestCase::y0)
         .def_readwrite("expected_solution", &ODETestCase::expected_solution)
         .def_readwrite("expected_derivative", &ODETestCase::expected_derivative)
+        .def("get_expr", &ODETestCase::get_expr)
         .def("has_expected_solution", &ODETestCase::has_expected_solution)
         .def("get_expected_solution", &ODETestCase::get_expected_solution)
         .def("__str__", [](const ODETestCase& tc) {

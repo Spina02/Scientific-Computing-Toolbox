@@ -83,6 +83,7 @@ struct ODETestCase {
 
     bool has_expected_solution() const { return expected_solution.has_value(); }
     std::optional<var_vec> get_expected_solution() const { return expected_solution; }
+    var_expr get_expr() const { return expr; }
 };
 
 /**
