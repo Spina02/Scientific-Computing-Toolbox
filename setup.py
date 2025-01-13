@@ -109,6 +109,19 @@ setup(
             extra_compile_args=["-std=c++17"] + eigen_cflags,
             extra_link_args=eigen_libs,
         ),
+        Extension(
+            'scientific_toolbox.utilities',
+            sources=[
+                "python_bindings/utilities_bindings.cpp",
+                *glob.glob("src/Utilities_Module/*.cpp"),
+            ],
+            include_dirs=[
+                "extern/pybind11/include",
+                "include",
+            ],
+            language='c++',
+            extra_compile_args=["-std=c++17"] 
+        )
     ],
     cmdclass={'build_ext': BuildExt},
     classifiers=[
