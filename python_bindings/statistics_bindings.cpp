@@ -10,17 +10,13 @@ namespace py = pybind11;
 
 using namespace ScientificToolbox::Statistics;
 
-// CALLBACK DEMO (?)
-// double cpp_callback_example(std::function<double(double)> pyFunc, double x) {
-//     //  calling a Python function from C++
-//     return pyFunc(x);
-// }
 
 
 
 
 
-PYBIND11_MODULE(stats, m) {
+
+PYBIND11_MODULE(_stats, m) {
     m.doc() = "Python bindings for the statistics module";
 
     py::class_<Dataset, std::shared_ptr<Dataset>>(m, "Dataset")

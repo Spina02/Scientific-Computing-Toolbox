@@ -96,7 +96,7 @@ setup(
             extra_link_args=eigen_libs + muparser_libs,
         ),
         Extension(
-            'scientific_toolbox.stats',
+            'scientific_toolbox._stats',
             sources=[
                 "python_bindings/statistics_bindings.cpp",
                 *glob.glob("src/Statistics_Module/*.cpp"),
