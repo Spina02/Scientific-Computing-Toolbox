@@ -39,11 +39,8 @@ target_include_directories(stats PRIVATE
     ${EIGEN3_INCLUDE_DIR}
 )
 
-
 # Link the pybind11 module to Eigen3
 target_link_libraries(stats PRIVATE Eigen3::Eigen)
-
-
 
 # Define source files
 set(SOURCES 
@@ -61,34 +58,19 @@ target_include_directories(${MODULE} PUBLIC
     ${EIGEN3_INCLUDE_DIR}
 )
 # Link with required libraries
-target_link_libraries(stats PRIVATE 
-    ${MODULE}
-    Eigen3::Eigen
-)
+target_link_libraries(stats PRIVATE ${MODULE} Eigen3::Eigen)
 
 # Link with Eigen3
 target_link_libraries(${MODULE} PUBLIC Eigen3::Eigen)
-target_link_libraries(${MODULE}
-    PUBLIC
-        Utilities
-        ${EIGEN3_LIBRARIES}
-)
+target_link_libraries(${MODULE} PUBLIC ${EIGEN3_LIBRARIES})
 
 # Compile the main program
 add_executable(main_stat ${MAIN_DIR}/Statistics_Module_main.cpp)
-target_link_libraries(main_stat 
-    PRIVATE
-        ${MODULE}
-        Utilities
-)
+target_link_libraries(main_stat PRIVATE ${MODULE})
 
 # Compile the test program
 add_executable(test_stat ${TEST_DIR}/Statistics_Module_test.cpp)
-target_link_libraries(test_stat
-    PRIVATE
-        ${MODULE}
-        Utilities
-)
+target_link_libraries(test_stat PRIVATE ${MODULE})
 
 # Set output directories
 set_target_properties(${MODULE} main_stat test_stat 

@@ -75,13 +75,7 @@ file(GLOB_RECURSE MODULE_SOURCES ${MODULE_SRC_DIR}/*.cpp)
 add_library(${MODULE} SHARED ${MODULE_SOURCES})
 
 # Link all dependencies with keyword syntax
-target_link_libraries(${MODULE} 
-    PUBLIC 
-        Utilities
-    PRIVATE
-        ${MUPARSER_LIBRARY}
-        ${EIGEN3_LIBRARY}
-)
+target_link_libraries(${MODULE} PRIVATE ${MUPARSER_LIBRARY} ${EIGEN3_LIBRARY})
 
 # Set the output directory for the library
 set_target_properties(${MODULE} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${LIB_DIR})

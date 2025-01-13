@@ -1,15 +1,18 @@
 cmake_minimum_required(VERSION 3.10)
 project(ScientificComputingToolbox)
 
+# Consenti linking in subdirectory
+cmake_policy(SET CMP0079 NEW)
+
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Create Utilities library
-add_library(Utilities SHARED src/Utilities.cpp)
-target_include_directories(Utilities PUBLIC include)
+# Definisci la libreria header-only
+add_library(Utilities INTERFACE)
+target_include_directories(Utilities INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-# Add subdirectories
+# Aggiungi subdirectory (senza target_link_libraries)
 add_subdirectory(src/Interpolation_Module)
 add_subdirectory(src/ODE_Module)
 add_subdirectory(src/Statistics_Module)

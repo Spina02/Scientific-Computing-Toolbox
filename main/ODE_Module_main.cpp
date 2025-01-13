@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 
         std::cout << "ODE Module Demo\n" << std::endl;
 
-        // You can load the data from a CSV file using the ImportCSV class
+        // You can load the data from a CSV file using the Importer class
         std::vector<ODETestCase> test_cases = load_tests_from_csv(inputFile);
 
         /*

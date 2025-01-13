@@ -46,7 +46,9 @@ T measure_execution_time_py(std::function<T()> callback) {
 }
 
 /**
- * @class ImportCSV
+ * @brief 
+ * 
+ * @class Importer
  * @brief Class for importing and parsing CSV files with mixed data types
  * 
  * This class provides functionality to read CSV files and parse their contents into
@@ -62,6 +64,7 @@ T measure_execution_time_py(std::function<T()> callback) {
  * 
  * @see OptionalDataValue
  */
+
 class Importer {
 public: 
 
@@ -73,7 +76,7 @@ public:
      * 
      * Opens and reads a CSV file line by line, parsing the header and subsequent data rows.
      */
-    void Importer::import(const std::string& filename) {
+    void import(const std::string& filename) {
         std::ifstream file(filename);
         if (!file.is_open()) {
             throw std::runtime_error("Could not open CSV file.");
@@ -111,7 +114,7 @@ private:
      * 
      * Splits the header line by commas and stores column names in headers_ vector.
      */
-    void Importer::parseHeader(const std::string& line) {
+    void parseHeader(const std::string& line) {
         std::stringstream ss(line);
         std::string header;
 
@@ -152,7 +155,7 @@ private:
      * and converting non-empty values to appropriate data types.
      * Stores the parsed data in the data_ structure.
      */
-    void Importer::parseLine(const std::string& line) {
+    void parseLine(const std::string& line) {
         std::stringstream ss(line);
         std::string cell;
         std::unordered_map<std::string, OptionalDataValue> row;
@@ -215,7 +218,7 @@ private:
      * 2. Removes trailing whitespace characters  
      * 3. If the remaining string starts and ends with quotes, removes them
      */
-    std::string Importer::trim(const std::string& str) {
+    std::string trim(const std::string& str) {
         size_t start = 0;
         while (start < str.size() && std::isspace(static_cast<unsigned char>(str[start]))) {
             ++start;
@@ -236,7 +239,6 @@ private:
     }
 
     /**
-     *  parseValue
      * @brief Attempts to parse a string value into an appropriate data type
      * @param cell String containing the value to parse
      * @return OptionalDataValue containing the parsed value
@@ -244,31 +246,44 @@ private:
      * 
      * Tries to convert the input string to:
      * 1. Integer
-     * 2. Double
+     * 2. Double 
      * If both conversions fail, returns the original string
      */
-    OptionalDataValue Importer::parseValue(const std::string& cell) {
+    OptionalDataValue parseValue(const std::string& cell) {
         std::string trimmed_cell = trim(cell);
 
-        if (trimmed_cell.find(',') != std::string::npos) {
-            return trimmed_cell;
+        // Handle empty or comma-containing cells
+        if (trimmed_cell.empty() || trimmed_cell.find(',') != std::string::npos) {
+            return std::make_optional<DataValue>(trimmed_cell);
         }
 
-        int int_value;
-        auto int_result = std::from_chars(trimmed_cell.data(), trimmed_cell.data() + trimmed_cell.size(), int_value);
-        if (int_result.ec == std::errc() && int_result.ptr == trimmed_cell.data() + trimmed_cell.size()) {
-            return int_value;
-        }
-
-        double double_value;
+        // Try parsing as integer
         try {
-            double_value = std::stod(trimmed_cell);
-            return double_value;
+            size_t pos = 0;
+            int int_value = std::stoi(trimmed_cell, &pos);
+            if (pos == trimmed_cell.length()) {
+                return std::make_optional<DataValue>(int_value);
+            }
         } catch (...) {
-            return trimmed_cell;
+            // Failed to parse as integer, continue to double
         }
+
+        // Try parsing as double
+        try {
+            size_t pos = 0;
+            double double_value = std::stod(trimmed_cell, &pos);
+            if (pos == trimmed_cell.length()) {
+                return std::make_optional<DataValue>(double_value);
+            }
+        } catch (...) {
+            // Failed to parse as double, return as string
+        }
+
+        // Return as string if all numeric conversions fail
+        return std::make_optional<DataValue>(trimmed_cell);
     }
 };
-}
+
+} // namespace ScientificToolbox
 
 #endif // UTILITIES_HPP

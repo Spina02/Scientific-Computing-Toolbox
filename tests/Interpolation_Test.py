@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import time
 from scipy.interpolate import interp1d, lagrange as scipy_lagrange, CubicSpline
 
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 class InterpolationAnalysis:
     def __init__(self):
         script_dir = os.path.dirname(__file__)
@@ -85,7 +87,7 @@ class InterpolationAnalysis:
             fig.legend(handles=external_legend_elements, loc='upper left', bbox_to_anchor=(0, 1), frameon=False)
 
             plt.tight_layout()
-            plt.savefig(f'../output/{filename_prefix}_interpolations_from_function.png')
+            plt.savefig(f'{ROOT_DIR}/output/{filename_prefix}_interpolations_from_function.png')
         
         else:
             points = self.interpolation.df_to_set_of_points(data)
