@@ -1,7 +1,7 @@
 # __init__.py in python_bindings/
 
 from .interpolation import *
-from .ODE import *
+from .ode import *
 from .stats import *
 from .utilities import *
 

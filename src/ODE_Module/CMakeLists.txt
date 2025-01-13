@@ -45,15 +45,15 @@ set(BIN_DIR ${ROOT_DIR}/bin)
 set(PY_DIR ${ROOT_DIR}/python_bindings)
 
 # Add the pybind11 module
-pybind11_add_module(ODE ${PY_DIR}/ode_bindings.cpp)
+pybind11_add_module(ode ${PY_DIR}/ode_bindings.cpp)
 
-target_link_libraries(ODE PRIVATE ${MODULE})
+target_link_libraries(ode PRIVATE ${MODULE})
 
 # Link the pybind11 module to muparser
-target_link_libraries(ODE PRIVATE ${MUPARSER_LIBRARIES})
+target_link_libraries(ode PRIVATE ${MUPARSER_LIBRARIES})
 
 # Link the pybind11 module to eigen3
-target_link_libraries(ODE PRIVATE ${EIGEN3_LIBRARIES})
+target_link_libraries(ode PRIVATE ${EIGEN3_LIBRARIES})
 
 # Set the include directories
 include_directories(
@@ -135,7 +135,7 @@ add_custom_target(setup-venv-ode
     COMMAND ${VENV_DIR}/bin/pip install --upgrade pip
     COMMAND ${VENV_DIR}/bin/pip install -r ${REQUIREMENTS_FILE}
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target utilities
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ODE
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ode
     COMMENT "Setting up virtual environment and building Python modules"
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )

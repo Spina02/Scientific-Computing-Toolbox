@@ -1,29 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.gridspec import GridSpec
 import matplotlib.colors as mc
 import colorsys
 import os
 import sys
 from scipy.integrate import solve_ivp
+from ._ode import *
+from scientific_toolbox.utilities import timer_decorator
+
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class ODEAnalysis:
     def __init__(self):
-        self.script_dir = os.path.abspath(os.path.normpath(os.path.dirname(__file__)))
-        self.root_dir = os.path.abspath(os.path.normpath(os.path.join(self.script_dir, '../../')))
-        self.build_dir = os.path.join(self.root_dir, 'build/src/ODE_Module/')
-        
-        # Add build directory to path for compiled modules
-        if self.build_dir not in sys.path:
-            sys.path.insert(0, self.build_dir)
-        
-        # Import after path setup
-        import ODE
-        import utilities
-        
-        self.ODE = ODE
-        self.timer_decorator = utilities.timer_decorator
-        
+        pass
+
     def plot_solution(self, sol, title=None, save_path=None, show=True):
         """Plot ODE solution
         
@@ -95,20 +85,20 @@ class ODEAnalysis:
             show: Whether to display the plot with plt.show()
         """
         if solvers is None:
-            solvers = self.ODE.get_solver_types()
+            solvers = get_solver_types()
             
         for test_case in data:
             solutions = {}
             
             # Map solver names to their corresponding classes
             solvers_map = {
-                "ForwardEulerSolver": self.ODE.ForwardEulerSolver,
-                "ExplicitMidpointSolver": self.ODE.ExplicitMidpointSolver,
-                "RK4Solver": self.ODE.RK4Solver
+                "ForwardEulerSolver": ForwardEulerSolver,
+                "ExplicitMidpointSolver": ExplicitMidpointSolver,
+                "RK4Solver": RK4Solver
             }
             
             # Create a wrapper function for timing
-            @self.timer_decorator
+            @timer_decorator
             def solve_wrapper(solver, solver_name):
                 print(f"Solving {test_case.expr} with {solver_name}...")
                 return solver.solve()
@@ -193,27 +183,27 @@ class ODEAnalysis:
         # Map solver names to scipy methods
         solvers_map = {
             "ForwardEulerSolver": {
-                "cpp": self.ODE.ForwardEulerSolver,
+                "cpp": ForwardEulerSolver,
                 "py": "RK23",  # Scipy equivalent
             },
             "ExplicitMidpointSolver": {
-                "cpp": self.ODE.ExplicitMidpointSolver,
+                "cpp": ExplicitMidpointSolver,
                 "py": "RK23",  # Midpoint simulated with RK23
             },
             "RK4Solver": {
-                "cpp": self.ODE.RK4Solver,
+                "cpp": RK4Solver,
                 "py": "RK45",  # Scipy equivalent
             },
         }
 
         # Wrapper for C++ solvers
-        @self.timer_decorator
+        @timer_decorator
         def cpp_solve_wrapper(solver, solver_name):
             print("C++: ")
             return solver.solve().get_result()
 
         # Wrapper for Python solvers using scipy
-        @self.timer_decorator
+        @timer_decorator
         def py_solve_wrapper(py_solver_method, test_case):
             print("Scipy: ")
             
@@ -224,7 +214,7 @@ class ODEAnalysis:
             y0 = np.atleast_1d(test_case.y0).astype(float)
 
             # Costruisci la funzione
-            fun = self.ODE.parseExpression(test_case.expr)
+            fun = parseExpression(test_case.expr)
 
             # Genera i punti di valutazione
             t_points = np.arange(test_case.t0, test_case.tf + test_case.h, test_case.h)
@@ -257,11 +247,11 @@ class ODEAnalysis:
                     # Solve using the C++ solver
                     cpp_solver = cpp_solver_cls(test_case)
                     cpp_solution = cpp_solve_wrapper(cpp_solver, solver_name)
-                    print(f"C++ solution:\t{cpp_solution},\terror:\t{self.ODE.compute_error(cpp_solution, expected)}")
+                    print(f"C++ solution:\t{cpp_solution},\terror:\t{compute_error(cpp_solution, expected)}")
 
                     # Solve using the Python solver
                     py_solution = py_solve_wrapper(py_solver_method, test_case)
-                    print(f"Py solution:\t{py_solution},\terror:\t{self.ODE.compute_error(py_solution, expected)}")
+                    print(f"Py solution:\t{py_solution},\terror:\t{compute_error(py_solution, expected)}")
 
                     print()
                     

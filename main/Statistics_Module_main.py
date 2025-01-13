@@ -6,7 +6,7 @@ import datetime
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(ROOT_DIR, 'lib', 'python'))
 
-import stats
+import scientific_toolbox.stats as stats
 
 class StatisticsAnalyzer:
     def __init__(self, data_dir='../data/', output_dir='../output/'):

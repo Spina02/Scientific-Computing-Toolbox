@@ -5,7 +5,6 @@ import os
 import sys
 import glob
 
-
 class BuildExt(build_ext):
     """Custom build_ext to ensure pybind11 submodule is used."""
     def build_extensions(self):
@@ -88,7 +87,7 @@ setup(
             language='c++',
         ),
         Extension(
-            'scientific_toolbox._ODE',
+            'scientific_toolbox._ode',
             sources=[
                 "python_bindings/ode_bindings.cpp",
                 *glob.glob("src/ODE_Module/*.cpp"),

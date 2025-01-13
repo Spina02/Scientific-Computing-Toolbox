@@ -7,7 +7,7 @@
 namespace py = pybind11;
 using namespace ScientificToolbox::ODE;
 
-PYBIND11_MODULE(_ODE, m) {
+PYBIND11_MODULE(_ode, m) {
     m.doc() = "Python bindings for the ODE module";
 
     // Data importer:
