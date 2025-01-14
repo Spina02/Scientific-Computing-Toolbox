@@ -21,9 +21,7 @@ This library has been created by [Giacomo Amerio](mailto:giacomoamerio24@gmail.c
 All modules use inheritance for the natural form of hierarchy that exists in the various areas.
 
 #### Individual contributions
-
-***############################################## 
-TODO -> ADD PYHTON SUTFF ##############################################***
+Giacomo Amerio developed the Statistics Module, the general utilities of parsing and importing data and python tests optimisation. Christian Faccio developed the Interpolation Module and the general CMakeLists structure and the pip installability. Andrea Spinelli developed the ODE Module and the makefile structure. All contributed to the debugging and optimisation phase, mostly Andrea who stimulated the whole group to look for the stars and make a great project.
 
 - Giacomo Amerio developed the Statistics Module, and the general utilities of parsing and importing data.
 - Christian Faccio developed the Interpolation Module. 
@@ -152,7 +150,7 @@ After the installation you can test the if package runs properly launching C++ a
 
 ## Running
 
-Our project contains different standalone executables which takes a
+Our project contains different standalone executables which take input from the user and perform the desired operations. You can run them as follows:
 
 - C++
     ```bash 
@@ -181,39 +179,6 @@ Our project contains different standalone executables which takes a
 make clean
 ```
 
-### Cleaning individual Modules
-```bash
-make clean interpolation
-make clean ode
-make clean statistics
-```
 
 > [!NOTE]
 > Both Interpolation and ODE modules include comprehensive test analysis sections that demonstrate error metrics, convergence rates, and other performance indicators.
-
-## Module Specific example usage
-
-### Interpolation Module
-```bash
-./build/Interpolation_Module/bin/Interpolation_Module_main [input_file] [value_to_interpolate]
-
-# Follow the interactive prompts to specify input files and interpolation parameters
-```
-
-### ODE Module
-```bash
-./build/ODE_Module/bin/ODE_Module_main
-
-# This file contains a demostration of usage of the ODE module. Results are saved to output/ODE_Module/
-```
-
-> [!TIP]
-> It is possible to enable DEBUG prints in tweaking the flag in `include/ODE_Module/utils.cpp`.
-
-### Statistics Module
-```bash
-./build/Statistics_Module/bin/Statistics_Module_main [input_file] [output_file] [target_columns]
-
-# Example
-./build/Statistics_Module/bin/Statistics_Module_main Food_and_Nutrition__.csv stats.txt "Weight,Height"
-```
