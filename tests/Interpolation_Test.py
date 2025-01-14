@@ -70,6 +70,16 @@ class TestInterpolation(unittest.TestCase):
         random_data = analyzer.random_data_generator(0, 10, 20, seed=17)
         analyzer.time_comparison(random_data)
         self.assertTrue(True)
+
+    def test_interpolation(self):
+        data = pd.read_csv(ROOT_DIR + '/data/random_data.csv')
+        interpolator = interp.Interpolator()
+        interpolator.get_data(data)
+        interpolator.set_interpolation_method('linear')
+        interpolator.set_value_to_interpolate(5.67)
+        interpolator.interpolate()
+        interpolator.plot()
+        self.assertTrue(True)
     
     
 
