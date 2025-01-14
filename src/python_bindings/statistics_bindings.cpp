@@ -30,7 +30,7 @@ PYBIND11_MODULE(_stats, m) {
         .def("variance", &StatisticalAnalyzer::variance<double>)
         .def("standardDeviation", &StatisticalAnalyzer::standardDeviation<double>)
         .def("frequencyCount", &StatisticalAnalyzer::frequencyCount<double>)
-        .def("frequencyCountStr", &StatisticalAnalyzer::frequencyCountStr<std::string>) 
+        .def("frequencyCountStr", &StatisticalAnalyzer::frequencyCount<std::string>) 
         .def("correlationMatrix", &StatisticalAnalyzer::correlationMatrix)
         .def("reportStrongCorrelations", 
             [](StatisticalAnalyzer& self, const std::vector<std::string>& columnNames, double threshold) {

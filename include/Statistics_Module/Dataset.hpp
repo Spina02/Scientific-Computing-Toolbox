@@ -12,6 +12,39 @@
 
 namespace ScientificToolbox::Statistics {
 
+/**
+ * @brief A class representing a dataset for statistical analysis
+ * 
+ * The Dataset class provides functionality to store and manipulate tabular data
+ * where each row is a collection of named values, and each value can be of different types
+ * (handled through OptionalDataValue). The data structure supports mixed-type columns
+ * and missing values.
+ * 
+ * @details The class implements:
+ * - Forward iterator support for row-wise traversal
+ * - Column-based data access
+ * - Dynamic row addition
+ * - Column type checking
+ * 
+ * The internal structure uses a vector of unordered maps, where:
+ * - Each vector element represents a row
+ * - Each unordered_map represents columns as key-value pairs
+ * - Keys are column names (strings)
+ * - Values are OptionalDataValue objects that can hold different types
+ * 
+ * Iterator implementation provides standard forward iterator capabilities
+ * conforming to C++ iterator requirements.
+ * 
+ * @note The class is part of the ScientificToolbox::Statistics namespace
+ * and is designed for scientific computing applications.
+ * 
+ * Usage example:
+ * @code
+ * Dataset ds;
+ * ds.addRow({{"col1", 1}, {"col2", "value"}});
+ * auto numericData = ds.getColumn<double>("col1");
+ * @endcode
+ */
 class Dataset {
 public:
     class Iterator {
