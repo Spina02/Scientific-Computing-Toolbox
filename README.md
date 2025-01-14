@@ -22,10 +22,16 @@ All modules use inheritance for the natural form of hierarchy that exists in the
 
 #### Individual contributions
 
-Giacomo Amerio developed the Statistics Module, and the general utilities of parsing and importing data. Christian Faccio developed the Interpolation Module. Andrea Spinelli developed the ODE Module and the makefile structure. All contributed to the debugging and optimisation phase, mostly Andrea who stimulated the whole group to look for the stars and make a great project.
+***############################################## 
+TODO -> ADD PYHTON SUTFF ##############################################***
 
+- Giacomo Amerio developed the Statistics Module, and the general utilities of parsing and importing data.
+- Christian Faccio developed the Interpolation Module. 
+- Andrea Spinelli developed the ODE Module and the makefile structure.
 
+All contributed to the debugging and optimisation phase, mostly Andrea who stimulated the whole group to look for the stars and make a great project.
 
+---
 
 ## Project Structure
 ```bash
@@ -33,7 +39,7 @@ Giacomo Amerio developed the Statistics Module, and the general utilities of par
 ├── data/
 ├── demos/
 │   ├── notebooks/
-├── extern/ # Pybind11 module
+├── extern/                   # Pybind11 module
 ├── include/
 │   ├── Interpolation_Module/ 
 │   ├── ODE_Module/
@@ -44,9 +50,9 @@ Giacomo Amerio developed the Statistics Module, and the general utilities of par
 ├── scientific_toolbox/
 ├── src/
 │   ├── Interpolation_Module/ # Here you can find the Interpolation Module CMakeLists.txt
-│   ├── ODE_Module/ # Here you can find the ODE Module CMakeLists.txt
-│   └── python_bindings
-│   └── Statistics_Module/    # Here you can find the Statistics Module CMakeLists.txt
+│   ├── ODE_Module/           # Here you can find the ODE Module CMakeLists.txt
+│   ├── Statistics_Module/    # Here you can find the Statistics Module CMakeLists.txt
+│   └── python_bindings/
 ├── tests/
 ├── CMakeLists.txt
 ├── MIT-License.txt
@@ -54,24 +60,24 @@ Giacomo Amerio developed the Statistics Module, and the general utilities of par
 ├── requirements.txt
 └── setup.py
 ```
-
-
+---
 
 ## Installation
 
-To clone
+You can use the following command in your terminal to clone this repository.
 ```bash
 git clone --recurse-submodules https://github.com/christianfaccio/Scientific_Computing_Toolbox.git
 ```
 >[!warning]
->make sure to initialise the pybind11 submodule after cloning the repository using the following command
+> make sure to initialise the pybind11 submodule during the  cloning with the command above. If you already cloned it without `--recurse-submodules` flag, you can still initialize the submodule using the following command:
 >```bash
 >git submodule update --init --recursive
 >```
 
-
 #### External Libraries
-The project requires ***Eigen*** , ***GSL*** , ***muParser*** . You can install it using your package manager:
+To build the C++ library **only** you just need to have ***Eigen*** , ***GSL*** and ***muParser*** libraries.
+
+You can install them using your package manager:
 
 - **Debian/Ubuntu**:
 
@@ -87,62 +93,88 @@ The project requires ***Eigen*** , ***GSL*** , ***muParser*** . You can install 
     ```bash
     brew install eigen gsl muparser
     ```
-
-If any of this libraries is installed in a non-standard location, you can specify the paths:
-```bash
-MUPARSER_INCLUDE=/path/to/include MUPARSER_LIB=/path/to/lib make
-
-GSL_INCLUDE=/path/to/include 
-GSL_LIB=/path/to/lib make
-
-EIGEN_INCLUDE=/path/to/include make
-```
-
+---
 
 ## Building
 
-### Build all Modules
+We decided to create a single command to compile the entire toolbox. You can simply run the following command right after cloning the repository (make sure you initialised the  submodules before).
 ```bash
 make 
 ``` 
 
-### Build individual Modules
-```bash
-make interpolation
-make ode
-make statistics
-```
+With this command alone one can use the C++ part of the library properly 
 
-> [!NOTE]
-> Both test and run commands will automatically compile the code if needed.
+In order to use the python interface, you can choose between installing the toolbox locally (in your computer) or using a virtual environment:
+
+- **Install locally**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+- **Use a python virtual environment**:
+    ```bash
+    make venv
+    ```
+    This command creates a virtual environment with every requirement needed to run the `scientific_toolbox` package (specified in requirements.txt).
+
+    You can activate the venv using `source ./venv/bin/activate` and deactivate it using `deactivate`.
+
+> [!tip]
+> The commands `make py-run` and `make py-test` do not require the venv to be explicitely activate, indeed they call directly the python executable there defined (`./venv/bin/python`).
 
 ## Testing
 
-### Test all Modules
-```bash
-make test
-```
+After the installation you can test the if package runs properly launching C++ and python tests as follows:
 
-### Test individual Modules
-```bash
-make test interpolation
-make test ode
-make test statistics
-```
+- C++ tests
+
+    ```bash
+    # Test all modules
+    make test
+
+    # Test individual Modules
+    make test interpolation
+    make test ode
+    make test statistics
+    ```
+
+- Python tests:
+
+    ```bash
+    # Test all modules
+    make py-test
+
+    # Test individual Modules
+    make py-test interpolation
+    make py-test ode
+    make py-test statistics
+    ```
 
 ## Running
 
-### Run all Modules
-```bash 
-make run
-```
+Our project contains different standalone executables which takes a
 
-### Run individual Modules
-```bash
-make run interpolation
-make run ode
-make run statistics
-```
+- C++
+    ```bash 
+    # Run all Modules
+    make run
+
+    # Run individual Modules
+    make run interpolation
+    make run ode
+    make run statistics
+    ```
+- Python:
+
+    ```bash
+    # Test all modules
+    make py-run
+
+    # Test individual Modules
+    make py-run interpolation
+    make py-run ode
+    make py-run statistics
+    ```
 
 ## Cleaning all Build Files
 ```bash
