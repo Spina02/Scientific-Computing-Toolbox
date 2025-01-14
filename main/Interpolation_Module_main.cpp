@@ -10,7 +10,7 @@
 #include <string>    // For string manipulation
 
 
-#include "../include/Interpolation_Module.hpp"
+#include "../include/Interpolation_Module/Interpolation_Module.hpp"
 
 using namespace ScientificToolbox::Interpolation;
 

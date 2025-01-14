@@ -35,15 +35,16 @@ int main() {
 
     for (auto solver_type : solver_types) {
         auto solver_ptr = factories[solver_type]("y", y0, t0, tf, h);
-        auto sol = measure_execution_time<ODESolution>([&solver_ptr]() {
+        auto [time, sol] = measure_execution_time<ODESolution>([&solver_ptr]() {
             return solver_ptr->solve();
         });
         double error = compute_error(sol.get_result(), solution);
         double order = compute_order_of_convergence(solver_type);
         
         std::cout << "Solver: " << solver_type << std::endl;
-        std::cout << "  Error: " << error << std::endl;
-        std::cout << "  Order of Convergence: " << order << std::endl;
+        std::cout << "  Error: \t\t\t" << error << std::endl;
+        std::cout << "  Order of Convergence: \t" << order << std::endl;
+        std::cout << "  Execution Time: \t\t" << time << " seconds" << std::endl;
     }
 
     return 0;

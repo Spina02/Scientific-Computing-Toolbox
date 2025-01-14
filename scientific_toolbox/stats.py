@@ -3,11 +3,13 @@ import sys
 import csv
 import datetime
 
+try:
+    from ._stats import *
+except ImportError:
+    print("\nModule not found. Have you built the project?\nRun 'make' in the build directory, then 'pip install -e .'\n")
+    sys.exit(1)
+
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-from ._stats import *
-
 
 class StatisticsAnalyzer:
     def __init__(self, data_dir='../data/', output_dir='../output/'):
@@ -41,11 +43,11 @@ class StatisticsAnalyzer:
             raise FileNotFoundError(f"File '{data_path}' not found.")
             
         self.dataset = self._read_csv_to_dataset(data_path)
-        self.analyzer = stats.StatisticalAnalyzer(self.dataset)
+        self.analyzer = _stats.StatisticalAnalyzer(self.dataset)
         self._identify_numeric_columns()
 
     def _read_csv_to_dataset(self, file_path):
-        dataset = stats.Dataset()
+        dataset = _stats.Dataset()
         with open(file_path, mode='r', newline='', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for row in reader:

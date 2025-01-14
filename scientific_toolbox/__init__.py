@@ -5,4 +5,4 @@ from .ode import *
 from .stats import *
 from .utilities import *
 
-__all__ = ['interpolation', 'stats', 'utilities', 'ode']
+__all__ = ['interpolation', 'ode', 'stats', 'utilities']

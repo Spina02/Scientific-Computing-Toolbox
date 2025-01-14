@@ -1,15 +1,14 @@
 import os
-import sys
 import csv
 import datetime
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(os.path.join(ROOT_DIR, 'lib', 'python'))
+#sys.path.append(os.path.join(ROOT_DIR, 'lib', 'python'))
 
 import scientific_toolbox.stats as stats
 
 class StatisticsAnalyzer:
-    def __init__(self, data_dir='../data/', output_dir='../output/'):
+    def __init__(self, data_dir=f'{ROOT_DIR}/data/', output_dir=f'{ROOT_DIR}/output/'):
         self.data_dir = data_dir
         self.output_dir = output_dir
         self.dataset = None

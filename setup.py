@@ -73,7 +73,7 @@ setup(
     
     ext_modules=[
         Extension(
-            'scientific_toolbox.interpolation',
+            'scientific_toolbox._interpolation',
             sources=[
                 "python_bindings/interpolation_bindings.cpp",
                 *glob.glob("src/Interpolation_Module/*.cpp"),

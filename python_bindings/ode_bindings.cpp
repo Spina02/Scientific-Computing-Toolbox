@@ -2,7 +2,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/eigen.h>
 #include <pybind11/functional.h>
-#include "../include/ODE_Module.hpp"
+#include "../include/ODE_Module/ODE_Module.hpp"
 
 namespace py = pybind11;
 using namespace ScientificToolbox::ODE;
@@ -20,6 +20,7 @@ PYBIND11_MODULE(_ode, m) {
 
     // ODETestCase class
     py::class_<ODETestCase>(m, "ODETestCase")
+        .def(py::init<var_expr, var_vec, double, double, double, std::optional<var_vec>, std::optional<var_vec>>())
         .def_readwrite("expr", &ODETestCase::expr)
         .def_readwrite("t0", &ODETestCase::t0)
         .def_readwrite("tf", &ODETestCase::tf)

@@ -4,7 +4,7 @@
 #include <string>
 #include <filesystem>
 
-#include "../include/ODE_Module.hpp"
+#include "../include/ODE_Module/ODE_Module.hpp"
 #include "../include/Utilities.hpp"
 
 using namespace std::filesystem;

@@ -28,20 +28,19 @@ using OptionalDataValue = std::optional<DataValue>;
 namespace ScientificToolbox {
 
 template <typename T, typename Callable, typename... Args>
-T measure_execution_time(Callable&& callback, Args&&... args) {
+std::pair<double, T> measure_execution_time(Callable&& callback, Args&&... args) {
     
     auto start = std::chrono::high_resolution_clock::now();
     T result = std::forward<Callable>(callback)(std::forward<Args>(args)...);
     auto end = std::chrono::high_resolution_clock::now();
     
     std::chrono::duration<double> duration = end - start;
-    std::cout << "Execution time: " << duration.count() << " seconds" << std::endl;
     
-    return result;
+    return std::make_pair(duration.count(), result);
 }
 
 template <typename T>
-T measure_execution_time_py(std::function<T()> callback) {
+std::pair<double, T> measure_execution_time_py(std::function<T()> callback) {
     return measure_execution_time<T>(callback);
 }
 

@@ -65,23 +65,27 @@ struct ODESolution {
  * @struct ODETestCase
  * @brief Defines a test case for ODE solvers
  * @param expr Mathematical expression(s) defining the ODE
+ * @param y0 Initial condition
  * @param t0 Initial time
  * @param tf Final time
  * @param h Step size
- * @param y0 Initial condition
  * @param expected_solution Expected solution at final time
  * @param expected_derivative Expected derivative value
  */
 struct ODETestCase {
+    ODETestCase() = default; // Add this line
+    ODETestCase(var_expr expr, var_vec y0, double t0, double tf, double h, std::optional<var_vec> expected_solution = std::nullopt, std::optional<var_vec> expected_derivative = std::nullopt)
+        : expr(expr), y0(y0), t0(t0), tf(tf), h(h), expected_solution(expected_solution), expected_derivative(expected_derivative) {}
+    
     var_expr expr;
+    var_vec y0;
     double t0;
     double tf;
     double h;
-    var_vec y0;
     std::optional<var_vec> expected_solution;
     std::optional<var_vec> expected_derivative;
 
-    bool has_expected_solution() const { return expected_solution.has_value(); }
+        bool has_expected_solution() const { return expected_solution.has_value(); }
     std::optional<var_vec> get_expected_solution() const { return expected_solution; }
     var_expr get_expr() const { return expr; }
 };

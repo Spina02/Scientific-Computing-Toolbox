@@ -1,10 +1,14 @@
-import sys
 import os
+import sys
+import scientific_toolbox
 
-import numpy as np
-
-from scientific_toolbox.ode import ODEAnalysis, load_tests_from_csv, ForwardEulerSolver, ExplicitMidpointSolver, RK4Solver, compute_error, save_to_csv
-
+# make shure you have the scientific_toolbox package installed with `pip install -e .`
+try:
+    import scientific_toolbox.ode as ode
+except ImportError as e:
+    print("\nModule not found. Have you built the project?\nRun 'make' in the build directory, then 'pip install -e .'\n")
+    print(e)
+    sys.exit(1)
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 data_dir = os.path.join(ROOT_DIR, 'data')
@@ -17,7 +21,7 @@ def main():
         data_path = os.path.join(data_dir, 'ode_tests.csv')
         print(f"No path was entered, using the default ODEs in {data_path}")
         
-    data = load_tests_from_csv(data_path)
+    data = ode.load_tests_from_csv(data_path)
     
     os.makedirs(output_dir, exist_ok=True)
     
@@ -33,7 +37,7 @@ def main():
         "rk4"       : os.path.join(output_dir, "rk4_plots")
     }
     
-    analyzer = ODEAnalysis()
+    analyzer = ode.ODEAnalysis()
     
     # Clear the output files
     for file in output_files.values():
@@ -43,22 +47,22 @@ def main():
     for i, case in enumerate(data):
         print(case)
         
-        euler = ForwardEulerSolver(case)
+        euler = ode.ForwardEulerSolver(case)
         euler_solution = euler.solve()
         print(f"The euler solution of the ODE is:\t{euler_solution.get_result()}")
-        save_to_csv(output_files["euler"], euler_solution, append = True)
+        ode.save_to_csv(output_files["euler"], euler_solution, append = True)
         analyzer.plot_solution(euler_solution, title = f"{case.get_expr()} - Euler", save_path = os.path.join(plot_folders["euler"], f"case_{i}"), show = False)
         
-        midpoint = ExplicitMidpointSolver(case)
+        midpoint = ode.ExplicitMidpointSolver(case)
         midpoint_solution = midpoint.solve()
         print(f"The midpoint solution of the ODE is:\t{midpoint_solution.get_result()}")
-        save_to_csv(output_files["midpoint"], midpoint_solution, append = True)
+        ode.save_to_csv(output_files["midpoint"], midpoint_solution, append = True)
         analyzer.plot_solution(midpoint_solution, title = f"{case.get_expr()} - Midpoint", save_path = os.path.join(plot_folders["midpoint"], f"case_{i}"), show = False)
         
-        rk4 = RK4Solver(case)
+        rk4 = ode.RK4Solver(case)
         rk4_solution = rk4.solve()
-        print(f"The RK4 solution of the ODE is:\t{rk4_solution.get_result()}")       
-        save_to_csv(output_files["rk4"], rk4_solution, append = True)
+        print(f"The RK4 solution of the ODE is:\t\t{rk4_solution.get_result()}")       
+        ode.save_to_csv(output_files["rk4"], rk4_solution, append = True)
         analyzer.plot_solution(rk4_solution, title = f"{case.get_expr()} - RK4", save_path = os.path.join(plot_folders["rk4"], f"case_{i}"), show = False)
         
         print()
