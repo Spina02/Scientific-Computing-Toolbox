@@ -13,38 +13,21 @@ DATA_DIR = os.path.join(ROOT_DIR, 'data')
 OUTPUT_DIR = os.path.join(ROOT_DIR, 'output/Interpolation_Module/')
 
 class Interpolator:
-    def __init__(self, data_dir=DATA_DIR, output_dir=OUTPUT_DIR):
+    def __init__(self, data_dir=DATA_DIR):
         self.data_dir = data_dir
-        self.output_dir = output_dir
         self.data = None
         self.method = "linear"
         self.interp = None
 
 
-    def get_data(self):
-        data_file = input("Enter the path to the data to interpolate: ")
-        data_path = os.path.join(self.data_dir, data_file) if data_file else os.path.join(self.data_dir, 'random_data.csv')
-        
-        if not data_file:
-            print("No path was entered, using the default random data in random_data.csv")
-        
-        self.data = pd.read_csv(data_path)
+    def get_data(self, data):
+        self.data = data
 
-    def choose_interpolation_method(self):
-        method = input("Enter the interpolation method (\"linear\", \"lagrange\", \"newton\", \"spline\"): ")
-        if not method:
-            self.method = "linear"
-            print("No method entered, using the linear one")
-        else:
-            self.method = method.lower()
+    def set_interpolation_method(self, method):
+        self.method = method
 
-    def choose_value_to_interpolate(self):
-        value_to_interpolate = input(f"Enter the value to interpolate (in the range [{min(self.data['x'])}, {max(self.data['x'])}]): ")
-        if not value_to_interpolate:
-            self.value_to_interpolate = (max(self.data['x']) - min(self.data['x'])) / 2
-            print("No value was entered, using 0.5")
-        else:
-            self.value_to_interpolate = float(value_to_interpolate)
+    def set_value_to_interpolate(self, value):
+        self.value_to_interpolate = value
         
         # Assessing value_to_interpolate
         if self.value_to_interpolate < min(self.data['x']) or self.value_to_interpolate > max(self.data['x']):
@@ -79,13 +62,6 @@ class Interpolator:
         plt.scatter(self.value_to_interpolate, y_chosen, color='red', label=f"Interpolated value: {y_chosen}")
         plt.title(f"Interpolation using {self.method} method")
         plt.legend()
-
-    def run(self):
-        self.get_data()
-        self.choose_interpolation_method()
-        self.choose_value_to_interpolate()
-        self.interpolate()
-        self.plot()
         
 class InterpolationAnalysis:
     def __init__(self):
