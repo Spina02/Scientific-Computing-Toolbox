@@ -16,6 +16,7 @@
 #include "analysis.hpp"
 #include "../Utilities.hpp"
 #include <iostream>
+#include <filesystem>
 
 /**
  * @namespace ScientificToolbox::ODE
@@ -33,7 +34,14 @@ namespace ScientificToolbox::ODE {
 class ODETester {
 public:
     ODETester() = default;
-    ODETester(std::string filename);
+    ODETester(std::string filename) {
+        if (filename.empty()) {
+            std::string project_dir = std::filesystem::current_path();
+            load_tests_from_csv(project_dir + "/data/ode_tests.csv");
+        } else {
+            load_tests_from_csv(filename);
+        }
+    }
 
     ~ODETester() = default;
 
