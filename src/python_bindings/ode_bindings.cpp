@@ -2,7 +2,8 @@
 #include <pybind11/stl.h>
 #include <pybind11/eigen.h>
 #include <pybind11/functional.h>
-#include "../include/ODE_Module/ODE_Module.hpp"
+#include "../../include/ODE_Module/ODE_Module.hpp"
+#include "../../include/ODE_Module/ODETester.hpp"
 
 namespace py = pybind11;
 using namespace ScientificToolbox::ODE;
@@ -12,6 +13,14 @@ PYBIND11_MODULE(_ode, m) {
 
     // Data importer:
     m.def("load_tests_from_csv", &load_tests_from_csv, py::arg("filename"));
+    // Utilities
+    m.def("parse_var_expr", &parse_var_expr);
+    m.def("parseExpression", &parseExpression);
+    m.def("get_solver_types", &get_solver_types);
+    // Analysis utilities
+    m.def("compute_error", &compute_error);
+    m.def("solve_and_measure_execution_time", &solve_and_measure_execution_time);
+    m.def("compute_order_of_convergence", &compute_order_of_convergence);
 
     m.def("save_to_csv", &save_to_csv, 
         py::arg("filename"), 
@@ -72,11 +81,9 @@ PYBIND11_MODULE(_ode, m) {
         .def(py::init<var_expr&, var_vec&, double, double, double>())
         .def(py::init<ODETestCase>());
 
-    // Analysis utilities
-    m.def("compute_error", &compute_error);
-    m.def("solve_and_measure_execution_time", &solve_and_measure_execution_time);
-    m.def("compute_order_of_convergence", &compute_order_of_convergence);
-    m.def("get_solver_types", &get_solver_types);
-    m.def("parseExpression", &parseExpression);
-    m.def("parse_var_expr", &parse_var_expr);
+    py::class_<ODETester>(m, "ODETester")
+        .def(py::init<>())
+        .def(py::init<std::string>())
+        .def("run_parser_tests", &ODETester::run_parser_tests)
+        .def("run_ode_tests", &ODETester::run_ode_tests);
 }

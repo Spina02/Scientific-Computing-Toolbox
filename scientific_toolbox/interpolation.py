@@ -1,59 +1,78 @@
-# imports
 import os
 import time
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import time
 from scipy.interpolate import interp1d, lagrange as scipy_lagrange, CubicSpline
 from ._interpolation import *
 
+# Constants defining directory paths
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(ROOT_DIR, 'data')
 OUTPUT_DIR = os.path.join(ROOT_DIR, 'output/Interpolation_Module/')
 
 class Interpolator:
-    def __init__(self, data_dir=DATA_DIR, output_dir=OUTPUT_DIR):
+    """
+    A class to handle various interpolation methods for a given dataset.
+
+    Attributes:
+        data_dir (str): Path to the data directory.
+        data (pd.DataFrame): Data to be interpolated, containing 'x' and 'y' columns.
+        method (str): The interpolation method to use ('linear', 'lagrange', 'newton', 'spline').
+        interp: The interpolation object used for computations.
+    """
+
+    def __init__(self, data_dir=DATA_DIR):
         self.data_dir = data_dir
-        self.output_dir = output_dir
         self.data = None
         self.method = "linear"
         self.interp = None
 
+    def get_data(self, data):
+        """
+        Load data for interpolation.
 
-    def get_data(self):
-        data_file = input("Enter the path to the data to interpolate: ")
-        data_path = os.path.join(self.data_dir, data_file) if data_file else os.path.join(self.data_dir, 'random_data.csv')
-        
-        if not data_file:
-            print("No path was entered, using the default random data in random_data.csv")
-        
-        self.data = pd.read_csv(data_path)
+        Parameters:
+            data (pd.DataFrame): Data with 'x' and 'y' columns.
+        """
+        self.data = data
 
-    def choose_interpolation_method(self):
-        method = input("Enter the interpolation method (\"linear\", \"lagrange\", \"newton\", \"spline\"): ")
-        if not method:
-            self.method = "linear"
-            print("No method entered, using the linear one")
-        else:
-            self.method = method.lower()
+    def set_interpolation_method(self, method):
+        """
+        Set the interpolation method.
 
-    def choose_value_to_interpolate(self):
-        value_to_interpolate = input(f"Enter the value to interpolate (in the range [{min(self.data['x'])}, {max(self.data['x'])}]): ")
-        if not value_to_interpolate:
-            self.value_to_interpolate = (max(self.data['x']) - min(self.data['x'])) / 2
-            print("No value was entered, using 0.5")
-        else:
-            self.value_to_interpolate = float(value_to_interpolate)
-        
-        # Assessing value_to_interpolate
+        Parameters:
+            method (str): Interpolation method ('linear', 'lagrange', 'newton', 'spline').
+        """
+        self.method = method
+
+    def set_value_to_interpolate(self, value):
+        """
+        Set the value to be interpolated.
+
+        Parameters:
+            value (float): The x-coordinate for interpolation.
+
+        Raises:
+            ValueError: If the value is out of the data's x-range.
+        """
+        self.value_to_interpolate = value
+
         if self.value_to_interpolate < min(self.data['x']) or self.value_to_interpolate > max(self.data['x']):
             raise ValueError(f"Value to interpolate {self.value_to_interpolate} is out of bounds.")
 
     def interpolate(self):
+        """
+        Perform interpolation using the selected method.
+
+        Returns:
+            float: The interpolated y-value.
+
+        Raises:
+            ValueError: If an invalid interpolation method is specified.
+        """
         points = df_to_set_of_points(self.data)
-        
-        # Choosing the interpolation method based on user input
+
         if self.method == "linear":
             self.interp = LinearInterpolation(points)
         elif self.method == "lagrange":
@@ -70,29 +89,42 @@ class Interpolator:
         return interpolated_value
 
     def plot(self):
+        """
+        Plot the interpolation curve along with the original data points and the interpolated point.
+        """
         x = np.linspace(min(self.data['x']), max(self.data['x']), 1000)
         y = [self.interp.interpolate(i) for i in x]
         y_chosen = self.interp.interpolate(self.value_to_interpolate)
-        
-        plt.plot(x, y)
-        plt.scatter(self.data['x'], self.data['y'])
-        plt.scatter(self.value_to_interpolate, y_chosen, color='red', label=f"Interpolated value: {y_chosen}")
-        plt.title(f"Interpolation using {self.method} method")
-        plt.legend()
 
-    def run(self):
-        self.get_data()
-        self.choose_interpolation_method()
-        self.choose_value_to_interpolate()
-        self.interpolate()
-        self.plot()
-        
+        plt.plot(x, y, label=f"{self.method.capitalize()} Interpolation")
+        plt.scatter(self.data['x'], self.data['y'], label="Data Points")
+        plt.scatter(self.value_to_interpolate, y_chosen, color='red', label=f"Interpolated value: {y_chosen}")
+        plt.title(f"Interpolation using {self.method.capitalize()} method")
+        plt.legend()
+        plt.show()
+
 class InterpolationAnalysis:
+    """
+    A class for generating, analyzing, and visualizing interpolation data.
+    """
+
     def __init__(self):
         pass
 
     @staticmethod
     def random_data_generator(min, max, num_points, seed=None):
+        """
+        Generate random data points within a specified range.
+
+        Parameters:
+            min (float): Minimum x-value.
+            max (float): Maximum x-value.
+            num_points (int): Number of points to generate.
+            seed (int, optional): Random seed for reproducibility.
+
+        Returns:
+            pd.DataFrame: Dataframe containing 'x' and 'y' columns.
+        """
         if seed is not None:
             np.random.seed(seed)
         x = np.linspace(min, max, num_points)
@@ -101,6 +133,18 @@ class InterpolationAnalysis:
 
     @staticmethod
     def data_generator(min, max, num_points, function):
+        """
+        Generate data points based on a function.
+
+        Parameters:
+            min (float): Minimum x-value.
+            max (float): Maximum x-value.
+            num_points (int): Number of points to generate.
+            function (callable): Function to generate y-values from x-values.
+
+        Returns:
+            pd.DataFrame: Dataframe containing 'x' and 'y' columns.
+        """
         x = np.linspace(min, max, num_points)
         y = function(x)
         return pd.DataFrame({'x': x, 'y': y})
@@ -108,15 +152,15 @@ class InterpolationAnalysis:
     def sparse_points_generator(self, min, max, n, function=np.sin):
         """
         Generate sparse points using a specified function.
-        
+
         Parameters:
-        min (float): Minimum value of x.
-        max (float): Maximum value of x.
-        n (int): Number of points.
-        function (callable): Function to compute y values. Default is np.sin.
-        
+            min (float): Minimum x-value.
+            max (float): Maximum x-value.
+            n (int): Number of sparse points.
+            function (callable): Function to generate y-values. Default is np.sin.
+
         Returns:
-        pd.DataFrame: Dataframe with columns x and y.
+            pd.DataFrame: Sparse data with 'x' and 'y' columns.
         """
         sparse_x = np.linspace(min, max, n)
         sparse_y = [function(x_i) for x_i in sparse_x]
@@ -125,6 +169,16 @@ class InterpolationAnalysis:
 
     @staticmethod
     def sample_values(values, num_samples):
+        """
+        Sample values from a given set.
+
+        Parameters:
+            values (list): List of values to sample from.
+            num_samples (int): Number of samples to select.
+
+        Returns:
+            pd.DataFrame: Sampled data with 'x' and 'y' columns.
+        """
         values = np.array(values)
         x = np.random.choice(values, num_samples - 2, replace=False)
         x = list(x)
@@ -137,7 +191,13 @@ class InterpolationAnalysis:
         return pd.DataFrame({'x': x, 'y': y})
 
     def interpolate_and_plot(self, data, sparse_data=None):
-        
+        """
+        Plot interpolation results for different methods, optionally comparing against sparse data.
+
+        Parameters:
+            data (pd.DataFrame): Original data with 'x' and 'y' columns.
+            sparse_data (pd.DataFrame, optional): Sparse data for comparison.
+        """
         if sparse_data is not None:
             sparse_points = df_to_set_of_points(sparse_data)
             points = df_to_set_of_points(data)
@@ -322,6 +382,15 @@ class InterpolationAnalysis:
             
 
     def time_comparison(self, data):
+        """
+        Measure and compare the runtime of different interpolation implementations.
+
+        Args:
+            data (pd.DataFrame): Data containing 'x' and 'y' columns for interpolation.
+
+        Returns:
+            None: Prints timing results for each interpolation method to the console.
+        """
         points = df_to_set_of_points(data)
 
         time_linear = []

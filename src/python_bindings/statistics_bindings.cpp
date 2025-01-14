@@ -1,5 +1,5 @@
-#include "../include/Statistics_Module/Dataset.hpp"
-#include "../include/Statistics_Module/Statistical_analyzer.hpp"
+#include "../../include/Statistics_Module/Dataset.hpp"
+#include "../../include/Statistics_Module/Statistical_analyzer.hpp"
 
 
 #include <pybind11/pybind11.h>
@@ -9,12 +9,6 @@
 namespace py = pybind11;
 
 using namespace ScientificToolbox::Statistics;
-
-
-
-
-
-
 
 PYBIND11_MODULE(_stats, m) {
     m.doc() = "Python bindings for the statistics module";

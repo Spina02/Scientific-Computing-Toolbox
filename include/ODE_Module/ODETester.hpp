@@ -32,7 +32,9 @@ namespace ScientificToolbox::ODE {
  */
 class ODETester {
 public:
-    ODETester();
+    ODETester() = default;
+    ODETester(std::string filename);
+
     ~ODETester() = default;
 
     /** ### run_parser_tests
