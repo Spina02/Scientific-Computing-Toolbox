@@ -1,15 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h> // For std::vector conversion
-#include "../include/Interpolation_Module/utilities_interpolation.hpp"
-
-#include "../include/Interpolation_Module/Interpolation.hpp"
-#include "../include/Interpolation_Module/LinearInterpolation.hpp"
-#include "../include/Interpolation_Module/Lagrange.hpp"
-#include "../include/Interpolation_Module/Newton.hpp"
-#include "../include/Interpolation_Module/Cubic_Spline_Interpolation.hpp"
-
-#include "../include/Interpolation_Module/InterpolationTester.hpp"
-#include "../include/Interpolation_Module/AnalysisInterpolation.hpp"
+#include "../include/Interpolation_Module/Interpolation_Module.hpp"
 
 namespace py = pybind11;
 using namespace ScientificToolbox::Interpolation;

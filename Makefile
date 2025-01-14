@@ -68,6 +68,9 @@ clean:
 		rm -rf build/* lib/* bin/* output/* venv scientific_toolbox.egg-info scientific_toolbox/*.so; \
 	fi
 
+venv:
+	@$(MAKE) -C build venv
+
 # Targets for individual modules
 ode statistics interpolation:
 	@:

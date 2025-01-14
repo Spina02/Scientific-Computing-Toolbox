@@ -28,8 +28,8 @@ set(MODULE_INCLUDE_DIR ${INCLUDE_DIR}/${MODULE})
 set(MODULE_SRC_DIR ${SRC_DIR}/${MODULE})
 set(MAIN_DIR ${ROOT_DIR}/main)
 set(TEST_DIR ${ROOT_DIR}/tests)
-set(LIB_DIR ${ROOT_DIR}/lib)
-set(BIN_DIR ${ROOT_DIR}/bin)
+set(LIB_DIR ${ROOT_DIR}/build/lib)
+set(BIN_DIR ${ROOT_DIR}/build/bin)
 set(PY_DIR ${ROOT_DIR}/python_bindings)
 
 # Add the pybind11 module
@@ -102,32 +102,32 @@ add_custom_target(bind-interpolation
 )
 
 # setting Python3_EXECUTABLE
-find_package(Python3 COMPONENTS Interpreter Development)
-if (NOT Python3_FOUND)
-    message(FATAL_ERROR "Python3 not found!")
-endif()
-
+# find_package(Python3 COMPONENTS Interpreter Development)
+# if (NOT Python3_FOUND)
+#     message(FATAL_ERROR "Python3 not found!")
+# endif()
+# 
 # Define variables for paths
 set(VENV_DIR ${ROOT_DIR}/venv)
 set(REQUIREMENTS_FILE ${ROOT_DIR}/scripts/requirements.txt)
 set(PYTHON_TEST_SCRIPT ${ROOT_DIR}/tests/Interpolation_Test.py)
 set(PYTHON_MAIN_SCRIPT ${ROOT_DIR}/main/Interpolation_Module_main.py)
-
-# Custom target for setting up the virtual environment
-add_custom_target(setup-venv
-    COMMAND ${Python3_EXECUTABLE} -m venv ${VENV_DIR}
-    COMMAND ${VENV_DIR}/bin/pip install --upgrade pip
-    COMMAND ${VENV_DIR}/bin/pip install -r ${REQUIREMENTS_FILE}
-    COMMENT "Setting up the virtual environment and installing dependencies"
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-)
-
+# 
+# # Custom target for setting up the virtual environment
+# add_custom_target(setup-venv
+#     COMMAND ${Python3_EXECUTABLE} -m venv ${VENV_DIR}
+#     COMMAND ${VENV_DIR}/bin/pip install --upgrade pip
+#     COMMAND ${VENV_DIR}/bin/pip install -r ${REQUIREMENTS_FILE}
+#     COMMENT "Setting up the virtual environment and installing dependencies"
+#     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+# )
+# 
 # Custom target for running the Python test script
 add_custom_target(py-test-interpolation
     COMMAND ${VENV_DIR}/bin/python ${PYTHON_TEST_SCRIPT}
     COMMENT "Running Python test script"
     WORKING_DIRECTORY ${ROOT_DIR}
-    DEPENDS setup-venv
+    DEPENDS venv
 )
 
 # Custom target for running the Python main script
@@ -135,6 +135,5 @@ add_custom_target(py-run-interpolation
     COMMAND ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT}
     COMMENT "Running Python main script"
     WORKING_DIRECTORY ${MAIN_DIR}
-    DEPENDS setup-venv
+    DEPENDS venv
 )
-

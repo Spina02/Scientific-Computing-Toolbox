@@ -23,12 +23,6 @@ int main(int argc, char** argv) {
     std::string filename = project_dir + "/data/random_data.csv";
     double x = 1.5;
 
-    std::cout << "argc: " << argc << std::endl;
-
-    for (int i = 0; i < argc; i++) {
-        std::cout << "argv[" << i << "]: " << argv[i] << std::endl;
-    }
-
     if (argc > 1) {
         filename = project_dir + "/data/" + std::string(argv[1]);
     }
