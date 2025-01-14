@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-#sys.path.insert(0, os.path.join(ROOT_DIR, 'lib', 'python'))  
+ 
 
 
 import scientific_toolbox.stats as stats

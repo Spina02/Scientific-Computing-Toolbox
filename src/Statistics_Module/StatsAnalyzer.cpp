@@ -137,5 +137,6 @@ template double StatisticalAnalyzer::median<double>(const std::string&) const;
 template double StatisticalAnalyzer::variance<double>(const std::string&) const;
 template double StatisticalAnalyzer::standardDeviation<double>(const std::string&) const;
 template std::unordered_map<double, size_t> StatisticalAnalyzer::frequencyCount<double>(const std::string&) const;
+template std::unordered_map<std::string, size_t> StatisticalAnalyzer::frequencyCount<std::string>(const std::string&) const;
 
 }
