@@ -120,6 +120,11 @@ In order to use the python interface, you can choose between installing the tool
 > [!tip]
 > The commands `make py-run` and `make py-test` do not require the venv to be explicitely activate, indeed they call directly the python executable there defined (`./venv/bin/python`).
 
+## Demos
+
+In the demos/notebooks folder you can find simple and useful demonstrations on how to use the three modules and their methods.
+
+
 ## Testing
 
 After the installation you can test the if package runs properly launching C++ and python tests as follows:
