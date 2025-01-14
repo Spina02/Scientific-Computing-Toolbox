@@ -135,10 +135,13 @@ add_custom_target(py-test-statistics
     COMMAND ${VENV_DIR}/bin/python ${PYTHON_TEST_SCRIPT}
     COMMENT "Running Python test script"
     WORKING_DIRECTORY ${TEST_DIR}
+    DEPENDS venv
 )
 
+# Custom target for running the Python main script
 add_custom_target(py-run-statistics
     COMMAND ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT} ${ARGS}
     COMMENT "Running Python main script"
     WORKING_DIRECTORY ${MAIN_DIR}
+    DEPENDS venv
 )

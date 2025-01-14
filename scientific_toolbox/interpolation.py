@@ -14,8 +14,8 @@ OUTPUT_DIR = os.path.join(ROOT_DIR, 'output/Interpolation_Module/')
 
 class Interpolator:
     def __init__(self, data_dir=DATA_DIR, output_dir=OUTPUT_DIR):
-        self.data_dir = DATA_DIR
-        self.output_dir = OUTPUT_DIR
+        self.data_dir = data_dir
+        self.output_dir = output_dir
         self.data = None
         self.method = "linear"
         self.interp = None
