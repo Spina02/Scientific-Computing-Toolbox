@@ -79,8 +79,6 @@ class Interpolator:
         plt.scatter(self.value_to_interpolate, y_chosen, color='red', label=f"Interpolated value: {y_chosen}")
         plt.title(f"Interpolation using {self.method} method")
         plt.legend()
-        plt.savefig(os.path.join(self.output_dir, 'plot_main.png'))
-        print(f"Plot saved to {os.path.join(self.output_dir, 'plot_main.png')}")
 
     def run(self):
         self.get_data()
@@ -173,7 +171,6 @@ class InterpolationAnalysis:
             fig.legend(handles=external_legend_elements, loc='upper left', bbox_to_anchor=(0, 1), frameon=False)
 
             plt.tight_layout()
-            plt.savefig(f'{ROOT_DIR}/output/{filename_prefix}_interpolations_from_function.png')
         
         else:
             points = df_to_set_of_points(data)
@@ -206,10 +203,10 @@ class InterpolationAnalysis:
             fig.legend(handles=external_legend_elements, loc='upper left', bbox_to_anchor=(0, 1), frameon=False)
 
             plt.tight_layout()
-            os.makedirs('../output', exist_ok=True)
-            plt.savefig(f'../output/{filename_prefix}_interpolations.png')
 
-    def analyze_accuracy(self, points, sparse_points):
+    def analyze_accuracy(self, data, sparse_data):
+        points = df_to_set_of_points(data)
+        sparse_points = df_to_set_of_points(sparse_data)
         analysis = AnalysisInterpolation()
         methods = ["linear", "lagrange", "newton", "cubic_spline"]
         accuracies = {}
@@ -218,7 +215,9 @@ class InterpolationAnalysis:
             accuracies[method] = mae
         return accuracies
 
-    def analyze_efficiency(self, points, sparse_points):
+    def analyze_efficiency(self, data, sparse_data):
+        points = df_to_set_of_points(data)
+        sparse_points = df_to_set_of_points(sparse_data)
         analysis = AnalysisInterpolation()
         methods = ["linear", "lagrange", "newton", "cubic_spline"]
         efficiencies = {}
@@ -300,7 +299,6 @@ class InterpolationAnalysis:
 
         # Adjust layout
         plt.tight_layout(rect=[0, 0, 1, 0.95])  # Leave space for the legend
-        plt.savefig('../output/interpolations_with_different_npoints.png')
 
         # Plotting OOC
         fig, axs = plt.subplots(2, 2, figsize=(10, 8))
@@ -313,7 +311,6 @@ class InterpolationAnalysis:
             ax.set_title(name)
         fig.legend(handles=external_legend_elements, loc='upper left', bbox_to_anchor=(0, 1), frameon=False)
         plt.tight_layout()
-        plt.savefig('../output/order_of_convergence.png')
 
         # Printing ooc
         print("Linear OOC: ", linear_ooc)
