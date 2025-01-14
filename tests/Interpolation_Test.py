@@ -78,7 +78,6 @@ class TestInterpolation(unittest.TestCase):
         interpolator.set_interpolation_method('linear')
         interpolator.set_value_to_interpolate(5.67)
         interpolator.interpolate()
-        interpolator.plot()
         self.assertTrue(True)
     
     
