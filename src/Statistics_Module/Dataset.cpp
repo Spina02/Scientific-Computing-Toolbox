@@ -5,14 +5,13 @@
 
 namespace ScientificToolbox::Statistics {
 
-// Constructor implementation
 Dataset::Dataset(const std::vector<std::unordered_map<std::string, OptionalDataValue>>& inputData) : data(inputData) {
     if (data.empty()) {
         throw std::runtime_error("Cannot create dataset from empty data");
     }
 }
 
-// Column names getter
+
 std::vector<std::string> Dataset::getColumnNames() const {
     if (data.empty()) {
         throw std::runtime_error("Cannot get column names from empty dataset");
@@ -27,7 +26,7 @@ std::vector<std::string> Dataset::getColumnNames() const {
 
 
 void Dataset::addRow(const std::unordered_map<std::string, OptionalDataValue>& row) {
-    // Verifying if  row has same columns as existing data
+    
     if (!data.empty()) {
         for (const auto& [key, _] : data[0]) {
             if (row.find(key) == row.end()) {

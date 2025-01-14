@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.join(ROOT_DIR, 'lib', 'python'))  
+#sys.path.insert(0, os.path.join(ROOT_DIR, 'lib', 'python'))  
+
 
 import scientific_toolbox.stats as stats
 
@@ -57,7 +58,7 @@ class TestStatisticsModule(unittest.TestCase):
         # normally-distributed random sample. Compare to theoretical values.
         
         mu, sigma = 10.0, 3.0
-        n_samples = 10_000
+        n_samples = 10000
 
         samples = [random.gauss(mu, sigma) for _ in range(n_samples)]
 
@@ -188,7 +189,7 @@ class TestStatisticsModule(unittest.TestCase):
         
         # Compare performance & numeric consistency with NumPy,
         # then plot results with matplotlib.
-        # This is more of a demonstration than a typical unit test.
+    
        
         n_samples = 200000
         np_data = np.random.normal(loc=5.0, scale=2.0, size=n_samples)
@@ -224,10 +225,16 @@ class TestStatisticsModule(unittest.TestCase):
         start = time.time()
         py_mean = np.mean(np_data)
         mean_py_time = time.time() - start
+        
+        start = time.time()
+        python_mean = sum(np_data) / len(np_data)
+        python_mean_time = time.time() - start
+        
 
         print("\nMean comparison:")
         print(f"  C++ mean: {cxx_mean:.4f} (time: {mean_cxx_time:.4f} s)")
         print(f"  NumPy mean: {py_mean:.4f} (time: {mean_py_time:.4f} s)")
+        print(f"  Python mean: {python_mean:.4f} (time: {python_mean_time:.4f} s)")
 
         start = time.time()
         cxx_var = analyzer.variance("Rand")
@@ -236,10 +243,15 @@ class TestStatisticsModule(unittest.TestCase):
         start = time.time()
         py_var = np.var(np_data)
         var_py_time = time.time() - start
+        
+        start = time.time()
+        python_var = sum((x - python_mean) ** 2 for x in np_data) / len(np_data)
+        python_var_time = time.time() - start
 
         print("\nVariance comparison:")
         print(f"  C++ variance: {cxx_var:.4f} (time: {var_cxx_time:.4f} s)")
         print(f"  NumPy variance: {py_var:.4f} (time: {var_py_time:.4f} s)")
+        print(f"  Python variance: {python_var:.4f} (time: {python_var_time:.4f} s)")
 
         start = time.time()
         cxx_std = analyzer.standardDeviation("Rand")
@@ -248,10 +260,15 @@ class TestStatisticsModule(unittest.TestCase):
         start = time.time()
         py_std = np.std(np_data)
         std_py_time = time.time() - start
+        
+        start_ = time.time()
+        python_std = math.sqrt(python_var)
+        python_std_time = time.time() - start_
 
         print("\nStandard Deviation comparison:")
         print(f"  C++ std: {cxx_std:.4f} (time: {std_cxx_time:.4f} s)")
         print(f"  NumPy std: {py_std:.4f} (time: {std_py_time:.4f} s)\n")
+        print(f"  Python std: {python_std:.4f} (time: {python_std_time:.4f} s)")
 
        
 

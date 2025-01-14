@@ -28,6 +28,18 @@ class StatisticsAnalyzer:
             f.write(text + '\n')
         print(text)
 
+
+    def _read_csv_to_dataset(self, file_path):
+        dataset = stats.Dataset()
+        with open(file_path, mode='r', newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                parsed_row = {k: float(v) if v.replace('.','',1).isdigit() else v 
+                            for k, v in row.items()}
+                dataset.addRow(parsed_row)
+        return dataset
+
+
     def get_data(self):
         data_file = input("Enter the name of the csv data file: ")
         data_path = os.path.join(self.data_dir, data_file) if data_file else os.path.join(self.data_dir, 'Food_and_Nutrition__.csv')
@@ -42,15 +54,7 @@ class StatisticsAnalyzer:
         self.analyzer = stats.StatisticalAnalyzer(self.dataset)
         self._identify_numeric_columns()
 
-    def _read_csv_to_dataset(self, file_path):
-        dataset = stats.Dataset()
-        with open(file_path, mode='r', newline='', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                parsed_row = {k: float(v) if v.replace('.','',1).isdigit() else v 
-                            for k, v in row.items()}
-                dataset.addRow(parsed_row)
-        return dataset
+    
 
     def _identify_numeric_columns(self):
         self.numeric_columns = [col for col in self.dataset.getColumnNames() 
