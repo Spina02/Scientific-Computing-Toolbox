@@ -58,10 +58,18 @@ int main() {
                 outFile << "Variance: " << analyzer.variance<double>(col) << "\n";
                 outFile << "Standard Deviation: " << analyzer.standardDeviation<double>(col) << "\n\n";
                 
-                auto freqCount = analyzer.frequencyCount<double>(col);
-                outFile << "Frequency distribution:\n";
-                for (const auto& [value, count] : freqCount) {
-                    outFile << value << ": " << count << "\n";
+                if (dataset->isNumericColumn(col)) {
+                    auto freqCount = analyzer.frequencyCount<double>(col);
+                    outFile << "Frequency distribution:\n";
+                    for (const auto& [value, count] : freqCount) {
+                        outFile << value << ": " << count << "\n";
+                    }
+                } else {
+                    auto freqCount = analyzer.frequencyCount<std::string>(col);
+                    outFile << "Frequency distribution:\n";
+                    for (const auto& [value, count] : freqCount) {
+                        outFile << value << ": " << count << "\n";
+                    }
                 }
                 outFile << "\n";
             } catch (const std::exception& e) {

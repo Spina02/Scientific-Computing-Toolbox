@@ -3,7 +3,6 @@ import csv
 import datetime
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-#sys.path.append(os.path.join(ROOT_DIR, 'lib', 'python'))
 
 import scientific_toolbox.stats as stats
 
@@ -40,6 +39,11 @@ class StatisticsAnalyzer:
         return dataset
 
 
+    def _identify_numeric_columns(self):
+        self.numeric_columns = [col for col in self.dataset.getColumnNames() 
+                              if self.dataset.isNumeric(col)]
+        self.write_to_file(f"\nNumeric columns found: {self.numeric_columns}")
+
     def get_data(self):
         data_file = input("Enter the name of the csv data file: ")
         data_path = os.path.join(self.data_dir, data_file) if data_file else os.path.join(self.data_dir, 'Food_and_Nutrition__.csv')
@@ -56,17 +60,10 @@ class StatisticsAnalyzer:
 
     
 
-    def _identify_numeric_columns(self):
-        self.numeric_columns = [col for col in self.dataset.getColumnNames() 
-                              if self._is_numeric_column(col)]
-        self.write_to_file(f"\nNumeric columns found: {self.numeric_columns}")
+    
 
-    def _is_numeric_column(self, column_name):
-        try:
-            self.analyzer.mean(column_name)
-            return True
-        except:
-            return False
+
+
 
     def choose_analysis(self):
         self.write_to_file("\nAvailable analyses:")
@@ -93,11 +90,14 @@ class StatisticsAnalyzer:
             self.write_to_file(f"  Std Dev: {self.analyzer.standardDeviation(col):.4f}")
 
     def frequency_analysis(self, columns=None):
-        columns = columns or self.numeric_columns
+        columns = columns or self.dataset.getColumnNames()
         self.write_to_file("\nFrequency analysis:")
         for col in columns:
             self.write_to_file(f"\nColumn: {col}")
-            self.write_to_file(f"  Frequency count: {self.analyzer.frequencyCount(col)}")
+            if self.dataset.isNumeric(col):
+                self.write_to_file(f"  Frequency count: {self.analyzer.frequencyCount(col)}")
+            else:
+                self.write_to_file(f"  Frequency count: {self.analyzer.frequencyCountStr(col)}")
 
     def correlation_analysis(self):
         if len(self.numeric_columns) > 1:
