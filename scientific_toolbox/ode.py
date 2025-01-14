@@ -1,3 +1,12 @@
+"""Scientific toolbox module for solving and analyzing Ordinary Differential Equations (ODEs).
+
+This module provides:
+- Multiple ODE solver implementations (Forward Euler, Explicit Midpoint, RK4)
+- Visualization and analysis tools
+- Performance comparison between C++ and Python implementations
+- Test case management
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mc
@@ -8,9 +17,54 @@ from scipy.integrate import solve_ivp
 from ._ode import *
 from scientific_toolbox.utilities import timer_decorator
 
+from ._ode import (
+    ODETestCase as _ODETestCase,
+    ODESolution as _ODESolution,
+    ODESolver as _ODESolver,
+    ForwardEulerSolver as _ForwardEulerSolver,
+    ExplicitMidpointSolver as _ExplicitMidpointSolver,
+    RK4Solver as _RK4Solver,
+    ODETester as _ODETester,
+    load_tests_from_csv as _load_tests_from_csv,
+    
+)
+
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+def load_tests_from_csv(file_path):
+    __doc__ = _load_tests_from_csv.__doc__
+    return _load_tests_from_csv(file_path)
+
+class ODETestCase(_ODETestCase):
+    __doc__ = _ODETestCase.__doc__
+
+class ODESolution(_ODESolution):
+    __doc__ = _ODESolution.__doc__
+
+class ODESolver(_ODESolver):
+    __doc__ = _ODESolver.__doc__
+
+class ForwardEulerSolver(_ForwardEulerSolver):
+    __doc__ = _ForwardEulerSolver.__doc__
+
+class ExplicitMidpointSolver(_ExplicitMidpointSolver):
+    __doc__ = _ExplicitMidpointSolver.__doc__
+
+class RK4Solver(_RK4Solver):
+    __doc__ = _RK4Solver.__doc__
+
+class ODETester(_ODETester):
+    __doc__ = _ODETester.__doc__
+
 class ODEAnalysis:
+    """
+    Class for analyzing and visualizing ODE solutions.
+    
+    This class provides methods for:
+    - Plotting ODE solutions: `plot_solution`
+    - Comparing different ODE solvers: `compare_solvers`
+    - Comparing C++ and Python solvers: `compare_cpp_py`
+    """
     def __init__(self):
         pass
 
