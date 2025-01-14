@@ -97,8 +97,8 @@ class ODEAnalysis:
         }
         
         # Create a wrapper function for timing
-        @timer_decorator
-        def solve_wrapper(solver, solver_name):
+        @timer_decorator # -> (double, Solution)
+        def solve_wrapper(solver):
             return solver.solve()
 
         # Solve the test_case with each solver

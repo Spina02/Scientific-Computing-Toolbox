@@ -103,12 +103,12 @@ message(STATUS "Python3_EXECUTABLE=${Python3_EXECUTABLE}")
 message(STATUS "REQUIREMENTS_FILE=${REQUIREMENTS_FILE}")
 
 if (NOT EXISTS ${REQUIREMENTS_FILE})
-    message(FATAL_ERROR "File requirements.txt non trovato: ${REQUIREMENTS_FILE}")
+    message(FATAL_ERROR "File requirements.txt not found: ${REQUIREMENTS_FILE}")
 endif()
 
 add_custom_command(
     OUTPUT "${VENV_DIR}/bin/activate"
-    COMMAND ${CMAKE_COMMAND} -E echo "Creazione virtual environment in ${VENV_DIR}..."
+    COMMAND ${CMAKE_COMMAND} -E echo "Create virtual environment in ${VENV_DIR}..."
     COMMAND ${Python3_EXECUTABLE} -m venv "${VENV_DIR}"
     COMMAND "${VENV_DIR}/bin/pip" install --upgrade pip
     COMMAND "${VENV_DIR}/bin/pip" install -r "${REQUIREMENTS_FILE}"
