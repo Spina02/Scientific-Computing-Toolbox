@@ -66,6 +66,7 @@ __pycache__/
 /bin/
 /lib/
 /output/
+/venv/
 *.egg-info/
 Makefile
 *.cmake.cache
