@@ -174,11 +174,11 @@ Our project contains different standalone executables which take input from the 
     make py-run statistics
     ```
 
+    as mentioned above, these last commands automatically uses the virtual environment created before.
+
+    If you want to run them without it you can just type `python ./main/<file_name>.py`
+
 ## Cleaning all Build Files
 ```bash
 make clean
 ```
-
-
-> [!NOTE]
-> Both Interpolation and ODE modules include comprehensive test analysis sections that demonstrate error metrics, convergence rates, and other performance indicators.
