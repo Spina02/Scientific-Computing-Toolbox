@@ -107,12 +107,6 @@ class InterpolationAnalysis:
         y = function(x)
         return pd.DataFrame({'x': x, 'y': y})
 
-    def sparse_points_generator(self, min, max, n):
-        sparse_x = np.linspace(min, max, n)
-        sparse_y = [np.sin(x_i) for x_i in sparse_x]
-        sparse_data = pd.DataFrame({'x': sparse_x, 'y': sparse_y})
-        return df_to_set_of_points(sparse_data)
-
     @staticmethod
     def sample_values(values, num_samples):
         values = np.array(values)
