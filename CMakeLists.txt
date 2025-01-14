@@ -87,3 +87,34 @@ target_link_libraries(utilities PRIVATE Utilities)
 set_target_properties(utilities PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/ODE_Module
 )
+
+#setting Python3_EXECUTABLE
+find_package(Python3 COMPONENTS Interpreter Development)
+if (NOT Python3_FOUND)
+    message(FATAL_ERROR "Python3 not found!")
+endif()
+
+# Define variables for paths
+set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(VENV_DIR ${ROOT_DIR}/venv)
+set(REQUIREMENTS_FILE ${ROOT_DIR}/requirements.txt)
+
+if(NOT EXISTS ${VENV_DIR}/bin/activate)
+    message(STATUS "No existing venv found in ${VENV_DIR}, adding dependency on 'venv' target.")
+    add_dependencies(py-run-interpolation venv)
+    add_dependencies(py-run-ode venv)
+    add_dependencies(py-run-statistics venv)
+    add_dependencies(py-run-all venv)
+    add_dependencies(py-test-interpolation venv)
+    add_dependencies(py-test-ode venv)
+    add_dependencies(py-test-statistics venv)
+    add_dependencies(py-test-all venv)
+endif()
+
+add_custom_target(venv
+    COMMAND ${Python3_EXECUTABLE} -m venv ${VENV_DIR}
+    COMMAND ${VENV_DIR}/bin/pip install --upgrade pip
+    COMMAND ${VENV_DIR}/bin/pip install -r ${REQUIREMENTS_FILE}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Creating virtual environment and installing dependencies"
+)

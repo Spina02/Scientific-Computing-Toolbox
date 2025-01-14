@@ -25,8 +25,8 @@ set(MODULE_INCLUDE_DIR ${INCLUDE_DIR}/${MODULE})
 set(MODULE_SRC_DIR ${SRC_DIR}/${MODULE})
 set(MAIN_DIR ${ROOT_DIR}/main)
 set(TEST_DIR ${ROOT_DIR}/tests)
-set(LIB_DIR ${ROOT_DIR}/lib)
-set(BIN_DIR ${ROOT_DIR}/bin)
+set(LIB_DIR ${ROOT_DIR}/build/lib)
+set(BIN_DIR ${ROOT_DIR}/build/bin)
 set(PY_DIR ${ROOT_DIR}/python_bindings)
 
 # Create pybind11 module
@@ -103,46 +103,42 @@ if (NOT Python3_FOUND)
     message(FATAL_ERROR "Python3 not found!")
 endif()
 
-
-# Set Python module output directory
-set(PYTHON_MODULE_DIR ${ROOT_DIR}/lib/python)
-file(MAKE_DIRECTORY ${PYTHON_MODULE_DIR})
-
-# Set the output directory for the Python module
-set_target_properties(stats PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${PYTHON_MODULE_DIR}
-    PREFIX ""
-    SUFFIX ".so"
-)
-
+# # Set Python module output directory
+# set(PYTHON_MODULE_DIR ${ROOT_DIR}/lib/python)
+# file(MAKE_DIRECTORY ${PYTHON_MODULE_DIR})
+# 
+# # Set the output directory for the Python module
+# set_target_properties(stats PROPERTIES
+#     LIBRARY_OUTPUT_DIRECTORY ${PYTHON_MODULE_DIR}
+#     PREFIX ""
+#     SUFFIX ".so"
+# )
+# 
 # Define variables for paths
 set(VENV_DIR ${ROOT_DIR}/venv)
 set(REQUIREMENTS_FILE ${ROOT_DIR}/stat_env/requirements.txt)
 set(PYTHON_TEST_SCRIPT ${ROOT_DIR}/tests/Statistics_Test.py)
 set(PYTHON_MAIN_SCRIPT ${ROOT_DIR}/main/Statistics_Module_main.py)
-
-
-
-add_custom_target(setup-venv-stats
-    COMMAND ${Python3_EXECUTABLE} -m venv ${VENV_DIR}
-    COMMAND ${VENV_DIR}/bin/pip install --upgrade pip
-    COMMAND ${VENV_DIR}/bin/pip install -r ${REQUIREMENTS_FILE}
-    COMMENT "Setting up the virtual environment and installing dependencies"
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-)
-
+# 
+# 
+# 
+# add_custom_target(setup-venv-stats
+#     COMMAND ${Python3_EXECUTABLE} -m venv ${VENV_DIR}
+#     COMMAND ${VENV_DIR}/bin/pip install --upgrade pip
+#     COMMAND ${VENV_DIR}/bin/pip install -r ${REQUIREMENTS_FILE}
+#     COMMENT "Setting up the virtual environment and installing dependencies"
+#     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+# )
+# 
 # Custom target for running the Python test script
 add_custom_target(py-test-statistics
     COMMAND ${VENV_DIR}/bin/python ${PYTHON_TEST_SCRIPT}
     COMMENT "Running Python test script"
     WORKING_DIRECTORY ${TEST_DIR}
-    DEPENDS setup-venv-stats 
 )
 
-
 add_custom_target(py-run-statistics
-    COMMAND ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT}            ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT} ${ARGS}
+    COMMAND ${VENV_DIR}/bin/python ${PYTHON_MAIN_SCRIPT} ${ARGS}
     COMMENT "Running Python main script"
     WORKING_DIRECTORY ${MAIN_DIR}
-    DEPENDS setup-venv-stats stats
 )

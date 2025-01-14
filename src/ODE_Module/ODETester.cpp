@@ -36,7 +36,7 @@ bool ODETester::test_expression(ODETestCase test, int test_num) const {
     Func f{parseExpression(expr_variant), expr_variant};
     var_vec result = f(t_val, y_val);
     if (DEBUG) {
-        std::cout << "  Expression: " << expr_variant << std::endl;
+        std::cout << "  Expression: dy/dt =" << expr_variant << std::endl;
         std::cout << "  t =         " << t_val << std::endl;
         std::cout << "  y =         " << y_val << std::endl << std::endl;
         std::visit([](const var_vec& res, const var_vec& ex) {
