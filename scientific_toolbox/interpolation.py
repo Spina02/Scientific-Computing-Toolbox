@@ -29,6 +29,24 @@ class InterpolationAnalysis:
         y = function(x)
         return pd.DataFrame({'x': x, 'y': y})
 
+    def sparse_points_generator(self, min, max, n, function=np.sin):
+        """
+        Generate sparse points using a specified function.
+        
+        Parameters:
+        min (float): Minimum value of x.
+        max (float): Maximum value of x.
+        n (int): Number of points.
+        function (callable): Function to compute y values. Default is np.sin.
+        
+        Returns:
+        pd.DataFrame: Dataframe with columns x and y.
+        """
+        sparse_x = np.linspace(min, max, n)
+        sparse_y = [function(x_i) for x_i in sparse_x]
+        sparse_data = pd.DataFrame({'x': sparse_x, 'y': sparse_y})
+        return df_to_set_of_points(sparse_data)
+
     @staticmethod
     def sample_values(values, num_samples):
         values = np.array(values)
@@ -42,7 +60,7 @@ class InterpolationAnalysis:
         y = [np.sin(x_i) for x_i in x]
         return pd.DataFrame({'x': x, 'y': y})
 
-    def interpolate_and_plot(self, data, filename_prefix, sparse_data=None):
+    def interpolate_and_plot(self, data, sparse_data=None):
         
         if sparse_data is not None:
             sparse_points = df_to_set_of_points(sparse_data)
@@ -132,7 +150,16 @@ class InterpolationAnalysis:
             efficiencies[method] = analysis.EfficiencyAnalysis(points, sparse_points, method)
         return efficiencies
     
-    def plot_order_of_convergence(self, data, sparse_data, n_points_vector):
+    def plot_order_of_convergence(self, data, sparse_data, n_points_vector, function=np.sin):
+        """
+        Plot the order of convergence for different interpolation methods using specified sparse point generation function.
+        
+        Parameters:
+        data (pd.DataFrame): Original data.
+        sparse_data (pd.DataFrame): Sparse data.
+        n_points_vector (list): Vector of point counts for sparse data generation.
+        function (callable): Function to compute y values for sparse points. Default is np.sin.
+        """
         points = df_to_set_of_points(data)
 
         x = np.linspace(sparse_data['x'].min(), sparse_data['x'].max(), 1000)
@@ -159,20 +186,18 @@ class InterpolationAnalysis:
         ]
 
         # Plotting original data points
-        axs[0, 0].plot(data['x'], data['y'], 'ro', label='Data points')
-        axs[0, 1].plot(data['x'], data['y'], 'ro', label='Data points')
-        axs[1, 0].plot(data['x'], data['y'], 'ro', label='Data points')
-        axs[1, 1].plot(data['x'], data['y'], 'ro', label='Data points')
+        for ax in axs.flat:
+            ax.plot(data['x'], data['y'], 'ro', label='Data points')
 
-        for i in range(len(n_points_vector)):
-            sparse_points = self.sparse_points_generator(0, 10, n_points_vector[i])
+        for i, n_points in enumerate(n_points_vector):
+            sparse_points = self.sparse_points_generator(0, 10, n_points, function=function)
             vec_sparse_points.append(sparse_points)
             if i != 0:
                 linear_ooc.append(AnalysisInterpolation().OrderConvergenceAnalysis(points, vec_sparse_points[i-1], vec_sparse_points[i], "linear"))
                 lagrangge_ooc.append(AnalysisInterpolation().OrderConvergenceAnalysis(points, vec_sparse_points[i-1], vec_sparse_points[i], "lagrange"))
                 newton_ooc.append(AnalysisInterpolation().OrderConvergenceAnalysis(points, vec_sparse_points[i-1], vec_sparse_points[i], "newton"))
                 spline_ooc.append(AnalysisInterpolation().OrderConvergenceAnalysis(points, vec_sparse_points[i-1], vec_sparse_points[i], "cubic_spline"))
-            
+
             linear_interpolation = LinearInterpolation(sparse_points)
             lagrange_interpolation = Lagrange(sparse_points)
             newton_interpolation = Newton(sparse_points)
@@ -182,11 +207,11 @@ class InterpolationAnalysis:
             y_lagrange = [lagrange_interpolation.interpolate(x_i) for x_i in x]
             y_newton = [newton_interpolation.interpolate(x_i) for x_i in x]
             y_spline = [spline_interpolation.interpolate(x_i) for x_i in x]
-            
-            axs[0, 0].plot(x, y_linear, color=n_colors[i % len(n_colors)], label=f'n = {n_points_vector[i]}')
-            axs[0, 1].plot(x, y_lagrange, color=n_colors[i % len(n_colors)], label=f'n = {n_points_vector[i]}')
-            axs[1, 0].plot(x, y_newton, color=n_colors[i % len(n_colors)], label=f'n = {n_points_vector[i]}')
-            axs[1, 1].plot(x, y_spline, color=n_colors[i % len(n_colors)], label=f'n = {n_points_vector[i]}')
+
+            axs[0, 0].plot(x, y_linear, color=n_colors[i % len(n_colors)], label=f'n = {n_points}')
+            axs[0, 1].plot(x, y_lagrange, color=n_colors[i % len(n_colors)], label=f'n = {n_points}')
+            axs[1, 0].plot(x, y_newton, color=n_colors[i % len(n_colors)], label=f'n = {n_points}')
+            axs[1, 1].plot(x, y_spline, color=n_colors[i % len(n_colors)], label=f'n = {n_points}')
 
         # Adding subtitles
         axs[0, 0].set_title('Linear Interpolation')
@@ -204,7 +229,7 @@ class InterpolationAnalysis:
         fig, axs = plt.subplots(2, 2, figsize=(10, 8))
         fig.suptitle('Order of Convergence')
         external_legend_elements = [
-            plt.Line2D([0], [0], color = 'blue',marker = 'o', linestyle='-', label = 'Error')
+            plt.Line2D([0], [0], color='blue', marker='o', linestyle='-', label='Error')
         ]        
         for ax, (name, ooc) in zip(axs.flat, [("Linear", linear_ooc), ("Lagrange", lagrangge_ooc), ("Newton", newton_ooc), ("Spline", spline_ooc)]):
             ax.plot(n_points_vector[1:], ooc, 'bo-', label='Error')
@@ -276,9 +301,8 @@ class InterpolationAnalysis:
             print("Spline Interpolation is faster than Scipy Spline Interpolation.")
 
 class Interpolator:
-    def __init__(self, data_dir=data_dir, output_dir=output_dir):
+    def __init__(self, data_dir=data_dir):
         self.data_dir = data_dir
-        self.output_dir = output_dir
         self.data = None
         self.method = "linear"
         self.interp = None
@@ -342,8 +366,6 @@ class Interpolator:
         plt.scatter(self.value_to_interpolate, y_chosen, color='red', label=f"Interpolated value: {y_chosen}")
         plt.title(f"Interpolation using {self.method} method")
         plt.legend()
-        plt.savefig(os.path.join(self.output_dir, 'plot_main.png'))
-        print(f"Plot saved to {os.path.join(self.output_dir, 'plot_main.png')}")
 
     def run(self):
         self.get_data()
