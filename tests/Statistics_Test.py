@@ -267,8 +267,8 @@ class TestStatisticsModule(unittest.TestCase):
 
         print("\nStandard Deviation comparison:")
         print(f"  C++ std: {cxx_std:.4f} (time: {std_cxx_time:.4f} s)")
-        print(f"  NumPy std: {py_std:.4f} (time: {std_py_time:.4f} s)\n")
-        print(f"  Python std: {python_std:.4f} (time: {python_std_time:.4f} s)")
+        print(f"  NumPy std: {py_std:.4f} (time: {std_py_time:.4f} s)")
+        print(f"  Python std: {python_std:.4f} (time: {python_std_time:.4f} s)\n")
 
        
 
