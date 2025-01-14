@@ -2,11 +2,11 @@
 
 ## Homework 
 
-Repository GitHub: https://github.com/christianfaccio/Scientific_Computing_Toolbox.git
+[Repository GitHub](https://github.com/christianfaccio/Scientific_Computing_Toolbox.git
+)
 
-To clone this repository type this in your command line: git clone --recurse-submodules https://github.com/christianfaccio/Scientific_Computing_Toolbox.git
 
-This library has been created by Giacomo Amerio (giacomoamerio24@gmail.com), Christian Faccio (christianfaccio@outlook.it) and Andrea Spinelli (andreaspinelli2002@gmail.com). It is a toolbox written in C++ that contains three modules:
+This library has been created by [Giacomo Amerio](mailto:giacomoamerio24@gmail.com), [Christian Faccio](mailto:christianfaccio@outlook.it) and [Andrea Spinelli](mailto:andreaspinelli2002@gmail.com). It is a toolbox written in C++ and Python that contains three modules:
 
 1) Statistics Module - template only, covers descriptive statistics and correlation analysis on a given dataset. For this module it's being used templates for functions' simplicity and different types of data input. 
 2) Interpolation Module - covers four types of interpolation on a given set of points (Linear, Polynomial with Lagrange and Newton method, Cubic Spline). For this module it's being used templates for different data input (int and double). 
@@ -24,37 +24,46 @@ Giacomo Amerio developed the Statistics Module, and the general utilities of par
 ```bash
 .
 ├── data/
+├── demos/
+│   ├── notebooks/
+├── extern/ # Pybind11 module
 ├── include/
 │   ├── Interpolation_Module/ 
 │   ├── ODE_Module/
 │   ├── Statistics_Module/
-│   ├── Utilities/
-│   ├── Interpolation_Module.hpp
-│   ├── ODE_Module.hpp
 │   ├── ScientificToolbox.hpp
-│   └── Statistics_Module.hpp
+│   ├── Utilities.hpp
 ├── main/
-│   ├── Interpolation_Module_main.cpp
-│   ├── ODE_Module_main.cpp
-│   └── Statistics_Module_main.cpp
+├── scientific_toolbox/
 ├── src/
-│   ├── Interpolation_Module/ # Here you can find the Interpolation Module Makefile
-│   ├── ODE_Module/           # Here you can find the ODE Module Makefile
-│   └── Statistics_Module/    # Here you can find the Statistics Module Makefile
+│   ├── Interpolation_Module/ # Here you can find the Interpolation Module CMakeLists.txt
+│   ├── ODE_Module/ # Here you can find the ODE Module CMakeLists.txt
+│   └── python_bindings
+│   └── Statistics_Module/    # Here you can find the Statistics Module CMakeLists.txt
 ├── tests/
-│   ├── Interpolation_Module_test.cpp
-│   ├── ODE_Module_test.cpp
-│   └── Statistics_Module_test.cpp
-├── Makefile
+├── CMakeLists.txt
 ├── MIT-License.txt
-└── README.md
+├── README.md
+├── requirements.txt
+└── setup.py
 ```
 
 
 
-## Dependencies
+## Installation
 
-### External Libraries
+To clone
+```bash
+git clone --recurse-submodules https://github.com/christianfaccio/Scientific_Computing_Toolbox.git
+```
+>[!warning]
+>make sure to initialise the pybind11 submodule after cloning the repository using the following command
+>```bash
+>git submodule update --init --recursive
+>```
+
+
+#### External Libraries
 The project requires ***Eigen*** , ***GSL*** , ***muParser*** . You can install it using your package manager:
 
 - **Debian/Ubuntu**:
