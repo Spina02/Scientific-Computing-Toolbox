@@ -30,7 +30,7 @@ set(MAIN_DIR ${ROOT_DIR}/main)
 set(TEST_DIR ${ROOT_DIR}/tests)
 set(LIB_DIR ${ROOT_DIR}/build/lib)
 set(BIN_DIR ${ROOT_DIR}/build/bin)
-set(PY_DIR ${ROOT_DIR}/python_bindings)
+set(PY_DIR ${ROOT_DIR}/src/python_bindings)
 
 # Add the pybind11 module
 pybind11_add_module(interpolation ${PY_DIR}/interpolation_bindings.cpp)

@@ -75,8 +75,9 @@ setup(
         Extension(
             'scientific_toolbox._interpolation',
             sources=[
-                "python_bindings/interpolation_bindings.cpp",
+                "src/python_bindings/interpolation_bindings.cpp",
                 *glob.glob("src/Interpolation_Module/*.cpp"),
+
             ],
             include_dirs=[
                 "extern/pybind11/include",
@@ -89,8 +90,9 @@ setup(
         Extension(
             'scientific_toolbox._ode',
             sources=[
-                "python_bindings/ode_bindings.cpp",
+                "src/python_bindings/ode_bindings.cpp",
                 *glob.glob("src/ODE_Module/*.cpp"),
+
             ],
             include_dirs=[
                 "extern/pybind11/include",
@@ -103,8 +105,9 @@ setup(
         Extension(
             'scientific_toolbox._stats',
             sources=[
-                "python_bindings/statistics_bindings.cpp",
+                "src/python_bindings/statistics_bindings.cpp",
                 *glob.glob("src/Statistics_Module/*.cpp"),
+
             ],
             include_dirs=[
                 "extern/pybind11/include",
@@ -117,7 +120,8 @@ setup(
         Extension(
             'scientific_toolbox.utilities',
             sources=[
-                "python_bindings/utilities_bindings.cpp",
+                "src/python_bindings/utilities_bindings.cpp",
+
             ],
             include_dirs=[
                 "extern/pybind11/include",

@@ -7,6 +7,7 @@
 #include "ExplicitMidpointSolver.hpp"
 #include "RK4Solver.hpp"
 #include "analysis.hpp"
+#include "ODETester.hpp"
 #include "../Utilities.hpp"
 
 #endif

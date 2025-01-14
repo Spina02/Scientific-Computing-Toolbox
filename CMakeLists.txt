@@ -84,8 +84,8 @@ create_alias(int interpolation)
 create_alias(stat statistics)
 
 # Build utilities Python module
-pybind11_add_module(utilities python_bindings/utilities_bindings.cpp)
-target_link_libraries(utilities PRIVATE Utilities)
+pybind11_add_module(utilities src/python_bindings/utilities_bindings.cpp)
+#target_link_libraries(utilities PRIVATE Utilities)
 
 # Set output directory for Python modules
 set_target_properties(utilities PROPERTIES
