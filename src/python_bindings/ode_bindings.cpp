@@ -2,7 +2,8 @@
 #include <pybind11/stl.h>
 #include <pybind11/eigen.h>
 #include <pybind11/functional.h>
-#include "../include/ODE_Module/ODE_Module.hpp"
+#include "../../include/ODE_Module/ODE_Module.hpp"
+#include "../../include/ODE_Module/ODETester.hpp"
 
 namespace py = pybind11;
 using namespace ScientificToolbox::ODE;
