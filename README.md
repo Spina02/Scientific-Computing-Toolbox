@@ -1,6 +1,20 @@
 # Scientific Computing Toolbox
 
-## Homework 
+- [Homework](#homework)
+- [Project structure](#project-structure)
+- [Testing](#testing)
+- [Installation](#installation)
+    - [Clone the repo](#clone-the-repo)
+    - [Building](#building)
+        - [C++ package](#c-package)
+        - [Python package](#python-package)
+            - [Install locally](#install-locally)
+            - [Virtual Environment](#use-a-python-virtual-environment)
+    - [Cleaning of building files](#cleaning-all-build-files)
+    - [Uninstall](#uninstall)
+- [Demos](#demos)
+
+## Homework
 
 [Repository GitHub](https://github.com/christianfaccio/Scientific_Computing_Toolbox.git
 )
@@ -58,9 +72,10 @@ All contributed to the debugging and optimisation phase, mostly Andrea who stimu
 ├── requirements.txt
 └── setup.py
 ```
----
 
 ## Installation
+
+### Clone the repo
 
 You can use the following command in your terminal to clone this repository.
 ```bash
@@ -91,9 +106,10 @@ You can install them using your package manager:
     ```bash
     brew install eigen gsl muparser
     ```
----
 
-## Building
+### Building
+
+#### C++ package
 
 We decided to create a single command to compile the entire toolbox. You can simply run the following command right after cloning the repository (make sure you initialised the  submodules before).
 ```bash
@@ -102,14 +118,17 @@ make
 
 With this command alone one can use the C++ part of the library properly 
 
-In order to use the python interface, you can choose between installing the toolbox locally (in your computer) or using a virtual environment:
+#### Python package
 
-- **Install locally**:
+In order to use the python interface, you need the C++ package to be installed as explained in the previous section,
+then you can choose between installing the toolbox **locally** (in your computer) or using a **virtual environment**:
+
+- #### Install locally:
     ```bash
     pip install -r requirements.txt
     ```
 
-- **Use a python virtual environment**:
+- #### Use a python virtual environment:
     ```bash
     make venv
     ```
@@ -119,11 +138,6 @@ In order to use the python interface, you can choose between installing the tool
 
 > [!tip]
 > The commands `make py-run` and `make py-test` do not require the venv to be explicitely activate, indeed they call directly the python executable there defined (`./venv/bin/python`).
-
-## Demos
-
-In the demos/notebooks folder you can find simple and useful demonstrations on how to use the three modules and their methods.
-
 
 ## Testing
 
@@ -183,7 +197,23 @@ Our project contains different standalone executables which take input from the 
 
     If you want to run them without it you can just type `python ./main/<file_name>.py`
 
-## Cleaning all Build Files
+### Cleaning all Build Files
+The following command will remove all the objets generated in previous steps, including `.so` files. If you do this you will need to repeat [building](#building) steps.
+
 ```bash
 make clean
 ```
+
+### Uninstall
+
+To uninstal the package you can use the following command:
+
+```bash
+pip uninstall scientific_toolbox
+```
+
+## Demos
+
+In the `demos/notebooks` folder you can find simple and useful demonstrations on how to use the three modules and their methods.
+
+Notebooks requires the package to be installed, therefore it's necessary to [activate the venv](#use-a-python-virtual-environment) or to [install the package locally](#install-locally).
