@@ -2,7 +2,6 @@
 
 - [Homework](#homework)
 - [Project structure](#project-structure)
-- [Testing](#testing)
 - [Installation](#installation)
     - [Clone the repo](#clone-the-repo)
     - [Building](#building)
@@ -12,6 +11,8 @@
             - [Virtual Environment](#use-a-python-virtual-environment)
     - [Cleaning of building files](#cleaning-all-build-files)
     - [Uninstall](#uninstall)
+- [Testing](#testing)
+- [Running](#running)
 - [Demos](#demos)
 
 ## Homework
@@ -137,7 +138,14 @@ then you can choose between installing the toolbox **locally** (in your computer
     You can activate the venv using `source ./venv/bin/activate` and deactivate it using `deactivate`.
 
 > [!tip]
-> The commands `make py-run` and `make py-test` do not require the venv to be explicitely activate, indeed they call directly the python executable there defined (`./venv/bin/python`).
+> The commands `make py-run` and `make py-test` (see [running](#running) section) do not require the venv to be explicitely activate, indeed they call directly the python executable there defined (`./venv/bin/python`).
+
+### Cleaning all Build Files
+The following command will remove all the objets generated in previous steps, including `.so` files. If you do this you will need to repeat [building](#building) steps.
+
+```bash
+make clean
+```
 
 ## Testing
 
@@ -196,13 +204,6 @@ Our project contains different standalone executables which take input from the 
     as mentioned above, these last commands automatically uses the virtual environment created before.
 
     If you want to run them without it you can just type `python ./main/<file_name>.py`
-
-### Cleaning all Build Files
-The following command will remove all the objets generated in previous steps, including `.so` files. If you do this you will need to repeat [building](#building) steps.
-
-```bash
-make clean
-```
 
 ### Uninstall
 
